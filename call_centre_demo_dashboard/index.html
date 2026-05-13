@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ACE · Transforming Contact Centers with Gen-AI · ADIB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ============ SIDEBAR (dark navy, retained) ============ */
+    --nav-bg-1: #0a1a33;
+    --nav-bg-2: #061226;
+    --nav-text: #d8e2f2;
+    --nav-text-muted: #8198b8;
+    --nav-text-quiet: #5b7095;
+    --nav-line: rgba(180, 200, 230, 0.08);
+    --nav-line-strong: rgba(180, 200, 230, 0.14);
+    --nav-active-bg: rgba(255, 255, 255, 0.04);
+
+    /* ============ EXECUTIVE WORKSPACE (light) ============ */
+    --bg-canvas: #F4F6F9;
+    --bg-elevated: #FFFFFF;
+    --bg-warm: #F7F8FA;
+    --bg-cool: #EEF2F7;
+    --bg-section: #FBFCFD;
+
+    --line: #E4E9F0;
+    --line-soft: #EDF1F6;
+    --line-strong: #D6DDE7;
+
+    --ink-900: #0B1F3A;
+    --ink-800: #123A72;
+    --ink-700: #1F3A66;
+    --ink-600: #3A4F73;
+    --ink-500: #5A6F92;
+    --ink-400: #7A8BA8;
+    --ink-300: #A3B0C5;
+
+    --accent-blue: #1A4FA3;
+    --accent-blue-soft: #E6EEFB;
+    --accent-cyan: #0891B2;
+    --accent-cyan-soft: #E0F2F8;
+    --accent-gold: #B08D3E;
+    --accent-gold-soft: #F5EFE0;
+
+    --nav-w: 272px;
+    --nav-w-collapsed: 78px;
+
+    --font-display: 'Fraunces', 'Times New Roman', serif;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+    --shadow-xs: 0 1px 2px rgba(11, 31, 58, 0.04);
+    --shadow-sm: 0 1px 2px rgba(11, 31, 58, 0.04), 0 2px 4px rgba(11, 31, 58, 0.04);
+    --shadow-md: 0 2px 4px rgba(11, 31, 58, 0.04), 0 8px 16px rgba(11, 31, 58, 0.05);
+    --shadow-lg: 0 4px 8px rgba(11, 31, 58, 0.05), 0 24px 40px -12px rgba(11, 31, 58, 0.08);
+    --shadow-xl: 0 8px 16px rgba(11, 31, 58, 0.06), 0 40px 80px -20px rgba(11, 31, 58, 0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg-canvas);
+    color: var(--ink-600);
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(1400px 800px at 100% 0%, rgba(26, 79, 163, 0.025), transparent 60%),
+      radial-gradient(1000px 600px at 0% 100%, rgba(26, 79, 163, 0.02), transparent 60%),
+      var(--bg-canvas);
+    background-attachment: fixed;
+  }
+
+  ::selection { background: var(--accent-blue-soft); color: var(--ink-900); }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: var(--nav-w);
+    background: linear-gradient(180deg, var(--nav-bg-1) 0%, var(--nav-bg-2) 100%);
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+    z-index: 50;
+    display: flex; flex-direction: column;
+    transition: width 0.45s cubic-bezier(.2,.8,.2,1);
+    overflow: hidden;
+    box-shadow: 1px 0 0 rgba(255,255,255,0.02) inset, 4px 0 24px -8px rgba(11, 31, 58, 0.15);
+  }
+  .sidebar.collapsed { width: var(--nav-w-collapsed); }
+
+  .sidebar::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(600px 400px at 0% 0%, rgba(26, 79, 163, 0.18), transparent 50%),
+      radial-gradient(400px 300px at 100% 100%, rgba(26, 79, 163, 0.08), transparent 50%);
+    pointer-events: none;
+  }
+
+  .brand {
+    padding: 28px 26px 26px;
+    display: flex; align-items: center; gap: 14px;
+    border-bottom: 1px solid var(--nav-line);
+    min-height: 96px;
+    position: relative;
+    z-index: 1;
+  }
+  .brand-mark {
+    width: 38px; height: 38px;
+    flex-shrink: 0;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #1A4FA3 0%, #0B1F3A 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
+    position: relative;
+  }
+  .brand-mark::after {
+    content: "";
+    position: absolute;
+    inset: 11px;
+    border-radius: 3px;
+    background: linear-gradient(135deg, #E6EEFB, #B7CCEB);
+    opacity: 0.95;
+  }
+  .brand-text { display: flex; flex-direction: column; line-height: 1.1; opacity: 1; transition: opacity .25s; white-space: nowrap; }
+  .sidebar.collapsed .brand-text { opacity: 0; pointer-events: none; }
+  .brand-name {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    color: #F2F6FC;
+  }
+  .brand-tag {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    color: var(--nav-text-muted);
+    text-transform: uppercase;
+    margin-top: 5px;
+    font-weight: 500;
+  }
+
+  .nav-label {
+    padding: 26px 28px 12px;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.24em;
+    color: var(--nav-text-quiet);
+    text-transform: uppercase;
+    font-weight: 500;
+    opacity: 1;
+    transition: opacity .25s;
+    position: relative; z-index: 1;
+  }
+  .sidebar.collapsed .nav-label { opacity: 0; }
+
+  .nav { list-style: none; padding: 0 14px; flex: 1; position: relative; z-index: 1; }
+  .nav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 14px;
+    margin-bottom: 3px;
+    border-radius: 8px;
+    color: var(--nav-text);
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 450;
+    letter-spacing: -0.005em;
+    transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .nav-item::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 50%; transform: translateY(-50%);
+    width: 2px; height: 0;
+    background: #E6EEFB;
+    border-radius: 0 2px 2px 0;
+    transition: height 0.3s cubic-bezier(.2,.8,.2,1);
+  }
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: #F2F6FC;
+  }
+  .nav-item.active {
+    background: var(--nav-active-bg);
+    color: #F2F6FC;
+    font-weight: 500;
+  }
+  .nav-item.active::before { height: 18px; }
+  .nav-item .icon {
+    width: 18px; height: 18px;
+    flex-shrink: 0;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.85;
+  }
+  .nav-item.active .icon { opacity: 1; }
+  .nav-item .label { opacity: 1; transition: opacity 0.25s; }
+  .sidebar.collapsed .nav-item .label { opacity: 0; }
+
+  .nav-footer {
+    padding: 18px 22px 24px;
+    border-top: 1px solid var(--nav-line);
+    display: flex; align-items: center; gap: 12px;
+    position: relative; z-index: 1;
+  }
+  .nav-footer .avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, #1A4FA3, #0B1F3A);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 500; font-size: 14px;
+    color: #F2F6FC;
+    flex-shrink: 0;
+  }
+  .nav-footer .who { line-height: 1.3; opacity: 1; transition: opacity 0.25s; overflow: hidden; white-space: nowrap; }
+  .sidebar.collapsed .nav-footer .who { opacity: 0; }
+  .nav-footer .who .name { font-size: 13px; font-weight: 500; color: #F2F6FC; }
+  .nav-footer .who .role { font-size: 11px; color: var(--nav-text-muted); margin-top: 2px; font-weight: 400; }
+
+  .collapse-btn {
+    position: absolute;
+    top: 50%;
+    right: -12px;
+    transform: translateY(-50%);
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    color: var(--ink-600);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 51;
+    transition: all 0.3s;
+    box-shadow: var(--shadow-sm);
+  }
+  .collapse-btn:hover { color: var(--accent-blue); border-color: var(--line-strong); }
+  .collapse-btn svg { width: 12px; height: 12px; transition: transform 0.4s; }
+  .sidebar.collapsed .collapse-btn svg { transform: rotate(180deg); }
+
+  /* ============ MAIN ============ */
+  .main {
+    margin-left: var(--nav-w);
+    transition: margin-left 0.45s cubic-bezier(.2,.8,.2,1);
+    min-height: 100vh;
+    position: relative;
+  }
+  .sidebar.collapsed ~ .main { margin-left: var(--nav-w-collapsed); }
+
+  .topbar {
+    position: sticky; top: 0;
+    background: rgba(244, 246, 249, 0.85);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border-bottom: 1px solid var(--line);
+    padding: 18px 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    z-index: 20;
+  }
+  .crumbs {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .crumbs .sep { color: var(--ink-300); }
+  .crumbs .current { color: var(--ink-800); }
+  .topbar-right { display: flex; align-items: center; gap: 14px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 7px 14px;
+    border-radius: 100px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--ink-700);
+    text-transform: uppercase;
+    font-weight: 500;
+    box-shadow: var(--shadow-xs);
+  }
+  .pill .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+  }
+  .topbar-right .icon-btn {
+    width: 38px; height: 38px;
+    border-radius: 9px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-500);
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: var(--shadow-xs);
+  }
+  .topbar-right .icon-btn:hover {
+    color: var(--accent-blue);
+    border-color: var(--line-strong);
+  }
+  .icon-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ============ LAUNCH CTA ============ */
+  .launch-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 10px 18px 10px 20px;
+    background: linear-gradient(135deg, #0B1F3A 0%, #123A72 100%);
+    color: #F2F6FC;
+    border: 1px solid #0B1F3A;
+    border-radius: 10px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.005em;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+    box-shadow: 0 1px 2px rgba(11, 31, 58, 0.08), 0 4px 12px -4px rgba(11, 31, 58, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+  .launch-cta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 30%, rgba(109, 200, 255, 0.18) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.6s cubic-bezier(.2,.8,.2,1);
+  }
+  .launch-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(11, 31, 58, 0.1), 0 12px 28px -8px rgba(11, 31, 58, 0.3);
+    border-color: var(--accent-blue);
+  }
+  .launch-cta:hover::before { transform: translateX(100%); }
+  .launch-cta svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; opacity: 0.9; }
+  .launch-cta .cta-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #6DC8FF;
+    box-shadow: 0 0 8px rgba(109, 200, 255, 0.6);
+    margin-right: 2px;
+  }
+  @media (max-width: 900px) {
+    .launch-cta .cta-text { display: none; }
+    .launch-cta { padding: 10px 14px; }
+  }
+
+  /* ============ SECTION ============ */
+  .section { display: none; padding: 64px 56px 96px; animation: fadeUp 0.6s cubic-bezier(.2,.8,.2,1); }
+  .section.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero {
+    max-width: 1280px;
+    margin: 0 auto 56px;
+    position: relative;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.28em;
+    color: var(--accent-blue);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    padding: 6px 12px 6px 10px;
+    border: 1px solid var(--line-strong);
+    border-radius: 100px;
+    background: var(--bg-elevated);
+    font-weight: 500;
+  }
+  .eyebrow::before {
+    content: ""; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent-blue);
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(38px, 5vw, 64px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--ink-900);
+    margin-bottom: 24px;
+    max-width: 980px;
+  }
+  .hero h1 .accent {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink-800);
+  }
+  .hero p.sub {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink-500);
+    max-width: 680px;
+    font-weight: 400;
+  }
+  .hero-meta {
+    margin-top: 40px;
+    display: flex; align-items: center; gap: 40px;
+    padding-top: 30px;
+    border-top: 1px solid var(--line);
+    max-width: 760px;
+  }
+  .hero-meta .stat .num {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 500;
+    color: var(--ink-900);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .hero-meta .stat .num .unit {
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--ink-400);
+    margin-left: 6px;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  .hero-meta .stat .lbl {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    margin-top: 10px;
+    font-weight: 500;
+  }
+  .hero-meta .divider { width: 1px; height: 36px; background: var(--line-strong); }
+
+  .hero-mark {
+    position: absolute;
+    top: 0; right: 0;
+    width: 280px; height: 280px;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  /* ============ GRID ============ */
+  .grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(12, 1fr);
+  }
+  .card {
+    position: relative;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 32px 30px;
+    overflow: hidden;
+    transition: all 0.35s cubic-bezier(.2,.8,.2,1);
+    box-shadow: var(--shadow-xs);
+  }
+  .card:hover {
+    border-color: var(--line-strong);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .card.span-4 { grid-column: span 4; }
+  .card.span-6 { grid-column: span 6; }
+  .card.span-8 { grid-column: span 8; }
+  .card.span-12 { grid-column: span 12; }
+
+  .card-icon {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    background: var(--accent-blue-soft);
+    border: 1px solid #D7E4F7;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 22px;
+    color: var(--accent-blue);
+  }
+  .card-icon svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .card h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 21px;
+    letter-spacing: -0.018em;
+    color: var(--ink-900);
+    margin-bottom: 10px;
+    line-height: 1.25;
+  }
+  .card p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-500);
+  }
+  .card .index {
+    position: absolute;
+    top: 24px; right: 26px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--ink-300);
+    font-weight: 500;
+  }
+  .card .tag {
+    display: inline-block;
+    margin-top: 18px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--ink-700);
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border: 1px solid var(--line-strong);
+    border-radius: 100px;
+    background: var(--bg-warm);
+    font-weight: 500;
+  }
+
+  /* ============ FEATURE ROW ============ */
+  .feature-row {
+    max-width: 1280px;
+    margin: 0 auto 28px;
+    display: flex; align-items: end; justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .feature-row h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    color: var(--ink-900);
+    line-height: 1.2;
+  }
+  .feature-row .meta {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* ============ CONVERSATIONAL UI ============ */
+  .convo-frame {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 44px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+  }
+  .convo-frame::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+    opacity: 0.8;
+  }
+  .convo-section-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  .convo-chip {
+    display: inline-block; padding: 9px 16px;
+    margin: 6px 8px 6px 0;
+    border: 1px solid var(--line-strong);
+    border-radius: 100px;
+    background: var(--bg-warm);
+    color: var(--ink-700);
+    font-size: 13.5px;
+    font-weight: 450;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .convo-chip:hover {
+    border-color: var(--accent-blue);
+    background: var(--accent-blue-soft);
+    color: var(--accent-blue);
+  }
+  .convo-input {
+    margin-top: 32px;
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 20px;
+    background: var(--bg-warm);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    transition: border-color 0.25s;
+  }
+  .convo-input:focus-within { border-color: var(--accent-blue); background: var(--bg-elevated); }
+  .convo-input .prompt-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent-blue);
+  }
+  .convo-input input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--ink-900);
+    font-family: var(--font-body);
+    font-size: 15px;
+  }
+  .convo-input input::placeholder { color: var(--ink-400); }
+  .convo-input .send {
+    padding: 10px 18px;
+    background: var(--ink-900);
+    color: #FFFFFF;
+    border: none; border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.25s;
+  }
+  .convo-input .send:hover { background: var(--accent-blue); }
+
+  /* ============ ARCHITECTURE CANVAS ============ */
+  .arch-canvas {
+    max-width: 1280px;
+    margin: 0 auto;
+    aspect-ratio: 16 / 7.2;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .arch-canvas::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(11, 31, 58, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(11, 31, 58, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse at 50% 50%, black 30%, transparent 80%);
+  }
+  .arch-placeholder {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .arch-placeholder .label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.24em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .arch-placeholder .title-px {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 26px;
+    color: var(--ink-700);
+    letter-spacing: -0.02em;
+  }
+
+  /* ============ PROCESSOR ============ */
+  .processor {
+    max-width: 1280px;
+    margin: 0 auto;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .processor-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    margin-bottom: 42px;
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--line);
+  }
+  .processor-stats .item .v {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 36px;
+    letter-spacing: -0.025em;
+    color: var(--ink-900);
+    line-height: 1;
+  }
+  .processor-stats .item .v .u {
+    font-family: var(--font-body);
+    font-weight: 500;
+    color: var(--ink-400);
+    font-size: 14px;
+    margin-left: 6px;
+    letter-spacing: 0;
+  }
+  .processor-stats .item .l {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    margin-top: 12px;
+    font-weight: 500;
+  }
+  .pipeline {
+    display: flex; align-items: center; gap: 0;
+    overflow-x: auto;
+    padding: 8px 0;
+  }
+  .pipeline-step {
+    flex: 1;
+    min-width: 160px;
+    padding: 20px 16px;
+    background: var(--bg-warm);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .pipeline-step:hover {
+    border-color: var(--accent-blue);
+    background: var(--accent-blue-soft);
+  }
+  .pipeline-step .num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent-blue);
+    letter-spacing: 0.18em;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .pipeline-step .nm {
+    font-family: var(--font-display);
+    font-size: 16px;
+    color: var(--ink-900);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .pipeline-arrow {
+    flex-shrink: 0;
+    width: 28px;
+    color: var(--ink-300);
+    text-align: center;
+    font-family: var(--font-mono);
+  }
+
+  /* ============ RIBBON ============ */
+  .ribbon {
+    max-width: 1280px;
+    margin: 60px auto 0;
+    padding: 20px 28px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    font-weight: 500;
+    box-shadow: var(--shadow-xs);
+  }
+  .ribbon .left { display: flex; align-items: center; gap: 14px; }
+  .ribbon .left .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent-blue);
+  }
+  .ribbon .right { color: var(--ink-500); }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 900px) {
+    .sidebar { width: var(--nav-w-collapsed); }
+    .sidebar.collapsed { width: var(--nav-w); }
+    .main { margin-left: var(--nav-w-collapsed); }
+    .sidebar.collapsed ~ .main { margin-left: var(--nav-w); }
+    .section { padding: 40px 24px 64px; }
+    .topbar { padding: 14px 24px; }
+    .card.span-4, .card.span-6, .card.span-8 { grid-column: span 12; }
+    .hero-mark { display: none; }
+    .processor-stats { grid-template-columns: repeat(2, 1fr); }
+    .processor, .convo-frame { padding: 28px; }
+  }
+
+  /* ============ STAGGER ANIMATIONS ============ */
+  .section.active .card,
+  .section.active .processor,
+  .section.active .convo-frame,
+  .section.active .arch-canvas {
+    animation: rise 0.6s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .section.active .card:nth-child(1) { animation-delay: 0.04s; }
+  .section.active .card:nth-child(2) { animation-delay: 0.09s; }
+  .section.active .card:nth-child(3) { animation-delay: 0.14s; }
+  .section.active .card:nth-child(4) { animation-delay: 0.19s; }
+  .section.active .card:nth-child(5) { animation-delay: 0.24s; }
+  .section.active .card:nth-child(6) { animation-delay: 0.29s; }
+  .section.active .card:nth-child(7) { animation-delay: 0.34s; }
+  .section.active .card:nth-child(8) { animation-delay: 0.39s; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============== SIDEBAR ============== -->
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-mark"></div>
+    <div class="brand-text">
+      <div class="brand-name">ACE</div>
+      <div class="brand-tag">Backed by Data, On Time, Every Time</div>
+    </div>
+  </div>
+
+  <button class="collapse-btn" id="collapseBtn" aria-label="Toggle navigation">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+
+  <div class="nav-label">Executive Suite</div>
+
+  <ul class="nav" id="nav">
+    <li class="nav-item active" data-target="opportunity">
+      <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <span class="label">Areas of Opportunity</span>
+    </li>
+    <li class="nav-item" data-target="modules">
+      <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      <span class="label">AI Solution Modules</span>
+    </li>
+    <li class="nav-item" data-target="architecture">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>
+      <span class="label">Architecture</span>
+    </li>
+    <li class="nav-item" data-target="processing">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
+      <span class="label">10K Calls Processing</span>
+    </li>
+    <li class="nav-item" data-target="benefits">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7h-5"/><path d="M21 7v5"/></svg>
+      <span class="label">Business Benefits Demo</span>
+    </li>
+    <li class="nav-item" data-target="convo">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.38 8.38 0 0 1 3 11.5 8.5 8.5 0 0 1 11.5 3 8.38 8.38 0 0 1 21 11.5z"/></svg>
+      <span class="label">Conversational AI Query</span>
+    </li>
+  </ul>
+
+  <div class="nav-footer">
+    <div class="avatar">N</div>
+    <div class="who">
+      <div class="name">Nij Aravi</div>
+      <div class="role">Analytics & AI Lead</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ============== MAIN ============== -->
+<main class="main">
+
+  <div class="topbar">
+    <div class="crumbs">
+      <span>ADIB</span>
+      <span class="sep">/</span>
+      <span>ACE Platform</span>
+      <span class="sep">/</span>
+      <span class="current" id="crumbCurrent">Areas of Opportunity</span>
+    </div>
+    <div class="topbar-right">
+      <div class="pill"><span class="dot"></span>Live · 10K calls / day</div>
+      <button class="icon-btn" aria-label="Search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      </button>
+      <button class="icon-btn" aria-label="Notifications">
+        <svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+      </button>
+      <a href="login.html" class="launch-cta">
+        <span class="cta-dot"></span>
+        <span class="cta-text">Launch Intelligence Console</span>
+        <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- ============== SECTION 1: AREAS OF OPPORTUNITY ============== -->
+  <section class="section active" id="opportunity">
+    <div class="hero">
+      <svg class="hero-mark" viewBox="0 0 280 280" fill="none">
+        <circle cx="140" cy="140" r="130" stroke="#D6DDE7" stroke-width="0.5"/>
+        <circle cx="140" cy="140" r="90" stroke="#D6DDE7" stroke-width="0.5"/>
+        <circle cx="140" cy="140" r="50" stroke="#D6DDE7" stroke-width="0.5"/>
+        <circle cx="140" cy="140" r="4" fill="#1A4FA3"/>
+      </svg>
+      <div class="eyebrow">Executive Brief · 01</div>
+      <h1>Transforming the contact centre with <span class="accent">Gen-AI intelligence.</span></h1>
+      <p class="sub">88% of calls come from existing ADIB customers — yet manual audits cover only a fraction. ACE scales near real-time insights to 100% of customer conversations, surfacing every issue, opportunity, and coaching moment that voice carries.</p>
+      <div class="hero-meta">
+        <div class="stat">
+          <div class="num">88<span class="unit">%</span></div>
+          <div class="lbl">Calls from existing customers</div>
+        </div>
+        <div class="divider"></div>
+        <div class="stat">
+          <div class="num">40<span class="unit">%</span></div>
+          <div class="lbl">Product sales calls</div>
+        </div>
+        <div class="divider"></div>
+        <div class="stat">
+          <div class="num">44<span class="unit">%</span></div>
+          <div class="lbl">Product service / info</div>
+        </div>
+        <div class="divider"></div>
+        <div class="stat">
+          <div class="num">25<span class="unit">%</span></div>
+          <div class="lbl">High-value customers</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <h2>Areas of Opportunity for Contact Centre</h2>
+      <div class="meta">Six strategic priorities</div>
+    </div>
+
+    <div class="grid">
+      <div class="card span-4">
+        <span class="index">01</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <h3>Improve Avg Handling Time</h3>
+        <p>High customer queries are overwhelming existing support capacity. High wait times and dropped calls impact satisfaction and brand perception.</p>
+        <span class="tag">AHT Optimisation</span>
+      </div>
+      <div class="card span-4">
+        <span class="index">02</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M12 3v9l6 3"/></svg></div>
+        <h3>Scale Insights to 100% of Calls</h3>
+        <p>Voice call data remains largely unstructured and underutilised. Manual audits cover only a fraction; delay in feedback loops prevents timely intervention and affects cross-sell.</p>
+        <span class="tag">Coverage</span>
+      </div>
+      <div class="card span-4">
+        <span class="index">03</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 21s-8-4.5-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-8 11-8 11"/></svg></div>
+        <h3>Monitor High-Value Sentiment</h3>
+        <p>Improved mechanism to flag calls with negative tone or critical issues. High-value customers may churn unnoticed; escalation today depends on manual judgement or post-call complaints.</p>
+        <span class="tag">Customer Retention</span>
+      </div>
+      <div class="card span-4">
+        <span class="index">04</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <h3>Agent & Manager Insights</h3>
+        <p>Agents receive generic or infrequent coaching, lacking data-driven insights. Managers struggle to pinpoint specific improvement areas; absence of structured feedback loops hampers continuous growth.</p>
+        <span class="tag">Workforce Intelligence</span>
+      </div>
+      <div class="card span-4">
+        <span class="index">05</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6M4.22 4.22l4.24 4.24m7.08 7.08 4.24 4.24M1 12h6m10 0h6M4.22 19.78l4.24-4.24m7.08-7.08 4.24-4.24"/></svg></div>
+        <h3>Activate Cross-Sell Opportunities</h3>
+        <p>Every call is a moment of intent. 40% of calls are product sales — most opportunities walk away unnoticed and unrouted to relationship teams.</p>
+        <span class="tag">Revenue Signal</span>
+      </div>
+      <div class="card span-4">
+        <span class="index">06</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h3>100% AI Driven Quality Audits</h3>
+        <p>Mandatory disclosures, KYC verification, and scripted controls become verifiable at full scale. Quality assurance moves from sample-based to comprehensive.</p>
+        <span class="tag">Compliance</span>
+      </div>
+    </div>
+
+    <div class="ribbon">
+      <div class="left"><span class="dot"></span>Foundation phase · Layout & theme preview</div>
+      <div class="right">ADIB · Confidential · Prepared for Executive Committee</div>
+    </div>
+  </section>
+
+  <!-- ============== SECTION 2: AI SOLUTION MODULES ============== -->
+  <section class="section" id="modules">
+    <div class="hero">
+      <div class="eyebrow">Features & Use Cases · 02</div>
+      <h1>Five AI components. <span class="accent">Seven business outcomes.</span></h1>
+      <p class="sub">A focused stack of agentic AI components powers every downstream use case — from quality audits to cross-sell. Independently observable, jointly composable, built for the ADIB context.</p>
+    </div>
+
+    <div class="feature-row">
+      <h2>AI Components</h2>
+      <div class="meta">Core building blocks</div>
+    </div>
+
+    <div class="grid">
+      <div class="card span-4">
+        <span class="index">AI·01</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M5 8h14M5 12h14M5 16h10"/><circle cx="19" cy="16" r="2"/></svg></div>
+        <h3>Language Identification & Transcripts</h3>
+        <p>Whisper-based transcription tuned for ADIB's call mix: 90% Arabic, 10% English. Transcripts power every downstream module.</p>
+      </div>
+      <div class="card span-4">
+        <span class="index">AI·02</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><circle cx="17" cy="7" r="3"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg></div>
+        <h3>Speaker Diarization</h3>
+        <p>Distinguishes agent from customer turn-by-turn. Foundation for interaction scoring, sentiment, and hold analytics.</p>
+      </div>
+      <div class="card span-4">
+        <span class="index">AI·03</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 21s-8-4.5-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-8 11-8 11"/></svg></div>
+        <h3>Sentiment Identification</h3>
+        <p>Turn-by-turn emotional trajectory for customer and agent. Surfaces escalation risk and satisfaction signals.</p>
+      </div>
+      <div class="card span-4">
+        <span class="index">AI·04</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg></div>
+        <h3>Call Topics & Summary</h3>
+        <p>Concise call narratives ready for case files, supervisor review, and follow-up routing. Searchable across the full corpus.</p>
+      </div>
+      <div class="card span-4">
+        <span class="index">AI·05</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15 8 22 9 17 14 18 21 12 18 6 21 7 14 2 9 9 8 12 2"/></svg></div>
+        <h3>Key Conversation Highlights</h3>
+        <p>Structured metrics extracted from every conversation: priority, escalation flags, intent, eligibility, and quality indicators.</p>
+      </div>
+      <div class="card span-4" style="background: linear-gradient(160deg, #0B1F3A, #123A72); border-color: #0B1F3A;">
+        <span class="index" style="color: rgba(255,255,255,0.4);">·</span>
+        <div class="card-icon" style="background: rgba(230, 238, 251, 0.12); border-color: rgba(230, 238, 251, 0.18); color: #B7CCEB;"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <h3 style="color: #F2F6FC;">100% AI-Driven Quality Audits</h3>
+        <p style="color: #C5D3E5;">Every call audited automatically. Sample-based QA replaced by comprehensive, consistent, real-time assessment across all conversations.</p>
+      </div>
+    </div>
+
+    <div class="feature-row" style="margin-top: 56px;">
+      <h2>Use Cases</h2>
+      <div class="meta">Six business applications</div>
+    </div>
+
+    <div class="grid">
+      <div class="card span-4">
+        <span class="index">UC·01</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+        <h3>Insights into Calls</h3>
+        <p>100% view into the types and volumes of enquiries across all products and services of the bank.</p>
+      </div>
+      <div class="card span-4">
+        <span class="index">UC·02</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/></svg></div>
+        <h3>Agent Performance Analytics</h3>
+        <p>Continuously evaluates agent performance based on all their customer conversations. Delivers quantitative and qualitative insights to support coaching and training.</p>
+      </div>
+      <div class="card span-4">
+        <span class="index">UC·03</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3>AI Coaching for Agents</h3>
+        <p>AI assistant offering actionable improvement suggestions for agents — personalised, grounded in their own conversations.</p>
+      </div>
+      <div class="card span-4">
+        <span class="index">UC·04</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.38 8.38 0 0 1 3 11.5 8.5 8.5 0 0 1 11.5 3 8.38 8.38 0 0 1 21 11.5z"/><circle cx="12" cy="11.5" r="2"/></svg></div>
+        <h3>Sentiment Management</h3>
+        <p>Negative sentiment calls with high-performing or profitable clients will be escalated to team leaders for better handling of the situation.</p>
+      </div>
+      <div class="card span-4">
+        <span class="index">UC·05</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <h3>Powering Cross-Sell</h3>
+        <p>Ability to track and re-engage customers who have made enquiries to take banking products in the future. AED 7.9M annual opportunity identified.</p>
+      </div>
+      <div class="card span-4">
+        <span class="index">UC·06</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></div>
+        <h3>Call Search Capability</h3>
+        <p>Leverage the call summarisation content to search for calls pertaining to any particular type of enquiry or issue for further investigation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== SECTION 3: ARCHITECTURE ============== -->
+  <section class="section" id="architecture">
+    <div class="hero">
+      <div class="eyebrow">Solution Architecture · 03</div>
+      <h1>From recorded call to <span class="accent">manager dashboard.</span></h1>
+      <p class="sub">A Kafka-Spark streaming pipeline with batch backup handles every call. Agentic AI components enrich each conversation with sentiment, escalation signals, and structured summaries — flowing into the data lake and surfacing on dashboards and leaderboards.</p>
+    </div>
+
+    <div class="arch-canvas" style="aspect-ratio: 16/8;">
+      <svg viewBox="0 0 1280 640" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" style="position:absolute; inset:0; width:100%; height:100%;">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#A3B0C5"/>
+          </marker>
+          <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#1A4FA3"/>
+          </marker>
+          <linearGradient id="nodeGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFFFFF"/>
+            <stop offset="100%" stop-color="#F7F8FA"/>
+          </linearGradient>
+          <linearGradient id="aiGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#E6EEFB"/>
+            <stop offset="100%" stop-color="#D7E4F7"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Lane labels -->
+        <text x="40" y="40" font-family="JetBrains Mono, monospace" font-size="11" fill="#7A8BA8" letter-spacing="2">INGEST</text>
+        <text x="320" y="40" font-family="JetBrains Mono, monospace" font-size="11" fill="#7A8BA8" letter-spacing="2">PROCESS</text>
+        <text x="680" y="40" font-family="JetBrains Mono, monospace" font-size="11" fill="#7A8BA8" letter-spacing="2">STORE</text>
+        <text x="900" y="40" font-family="JetBrains Mono, monospace" font-size="11" fill="#7A8BA8" letter-spacing="2">ENRICH (AGENTIC AI)</text>
+        <text x="1140" y="40" font-family="JetBrains Mono, monospace" font-size="11" fill="#7A8BA8" letter-spacing="2">SERVE</text>
+
+        <!-- Call Centre Agent -->
+        <g>
+          <circle cx="100" cy="200" r="46" fill="url(#nodeGrad)" stroke="#D6DDE7" stroke-width="1.5"/>
+          <path d="M 100 178 a 16 16 0 1 1 0 32 a 16 16 0 1 1 0 -32 M 76 222 a 24 18 0 0 1 48 0" fill="none" stroke="#1A4FA3" stroke-width="1.5"/>
+          <text x="100" y="276" font-family="Inter" font-size="12" font-weight="500" fill="#0B1F3A" text-anchor="middle">Call Centre</text>
+          <text x="100" y="292" font-family="Inter" font-size="12" font-weight="500" fill="#0B1F3A" text-anchor="middle">Agent</text>
+        </g>
+
+        <!-- Recorded Calls -->
+        <g>
+          <rect x="220" y="166" width="74" height="68" rx="10" fill="url(#nodeGrad)" stroke="#D6DDE7" stroke-width="1.5"/>
+          <path d="M 244 196 v 8 M 250 192 v 16 M 256 188 v 24 M 262 192 v 16 M 268 196 v 8" stroke="#1A4FA3" stroke-width="1.5" stroke-linecap="round"/>
+          <text x="257" y="262" font-family="Inter" font-size="12" font-weight="500" fill="#0B1F3A" text-anchor="middle">Recorded</text>
+          <text x="257" y="278" font-family="Inter" font-size="12" font-weight="500" fill="#0B1F3A" text-anchor="middle">Calls</text>
+        </g>
+        <line x1="146" y1="200" x2="218" y2="200" stroke="#A3B0C5" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+        <!-- Kafka + Spark Realtime -->
+        <g>
+          <rect x="340" y="130" width="220" height="60" rx="10" fill="url(#nodeGrad)" stroke="#D6DDE7" stroke-width="1.5"/>
+          <text x="450" y="158" font-family="Fraunces" font-size="14" font-weight="500" fill="#0B1F3A" text-anchor="middle">Kafka → Spark</text>
+          <text x="450" y="176" font-family="JetBrains Mono, monospace" font-size="10" fill="#7A8BA8" text-anchor="middle" letter-spacing="1">REALTIME STREAM</text>
+        </g>
+
+        <!-- Spark / Python Batch -->
+        <g>
+          <rect x="340" y="210" width="220" height="60" rx="10" fill="url(#nodeGrad)" stroke="#D6DDE7" stroke-width="1.5"/>
+          <text x="450" y="238" font-family="Fraunces" font-size="14" font-weight="500" fill="#0B1F3A" text-anchor="middle">Spark / Python</text>
+          <text x="450" y="256" font-family="JetBrains Mono, monospace" font-size="10" fill="#7A8BA8" text-anchor="middle" letter-spacing="1">BATCH PROCESSING</text>
+        </g>
+        <line x1="294" y1="190" x2="338" y2="160" stroke="#A3B0C5" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <line x1="294" y1="210" x2="338" y2="240" stroke="#A3B0C5" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+        <!-- STT -->
+        <g>
+          <rect x="600" y="170" width="90" height="60" rx="10" fill="url(#nodeGrad)" stroke="#D6DDE7" stroke-width="1.5"/>
+          <text x="645" y="198" font-family="Fraunces" font-size="13" font-weight="500" fill="#0B1F3A" text-anchor="middle">Speech-To</text>
+          <text x="645" y="214" font-family="Fraunces" font-size="13" font-weight="500" fill="#0B1F3A" text-anchor="middle">Text Engine</text>
+        </g>
+        <line x1="560" y1="160" x2="598" y2="190" stroke="#A3B0C5" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <line x1="560" y1="240" x2="598" y2="210" stroke="#A3B0C5" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+        <!-- Data Store -->
+        <g>
+          <ellipse cx="745" cy="180" rx="34" ry="10" fill="#FFFFFF" stroke="#D6DDE7" stroke-width="1.5"/>
+          <path d="M 711 180 v 36 a 34 10 0 0 0 68 0 v -36" fill="url(#nodeGrad)" stroke="#D6DDE7" stroke-width="1.5"/>
+          <path d="M 711 198 a 34 10 0 0 0 68 0" fill="none" stroke="#D6DDE7" stroke-width="1.2"/>
+          <text x="745" y="248" font-family="Inter" font-size="12" font-weight="500" fill="#0B1F3A" text-anchor="middle">Data Store</text>
+        </g>
+        <line x1="690" y1="200" x2="711" y2="200" stroke="#A3B0C5" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+        <!-- DataLake -->
+        <g>
+          <path d="M 822 120 q -10 -10 -22 0 q -8 -12 -22 0 q -8 -10 -22 0" fill="none" stroke="#1A4FA3" stroke-width="1.5"/>
+          <path d="M 756 140 q 14 -6 28 0 q 14 -6 28 0 q 14 -6 28 0" fill="none" stroke="#1A4FA3" stroke-width="1.2"/>
+          <text x="800" y="100" font-family="Inter" font-size="12" font-weight="500" fill="#0B1F3A" text-anchor="middle">DataLake</text>
+        </g>
+        <line x1="745" y1="160" x2="772" y2="142" stroke="#A3B0C5" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+        <!-- Agentic AI components header -->
+        <text x="990" y="290" font-family="JetBrains Mono, monospace" font-size="10" fill="#1A4FA3" font-weight="600" letter-spacing="2" text-anchor="middle">AGENTIC AI COMPONENTS</text>
+
+        <!-- AI Block 1: Sentiment & Priority Scoring -->
+        <g>
+          <rect x="852" y="320" width="120" height="86" rx="10" fill="url(#aiGrad)" stroke="#D7E4F7" stroke-width="1.5"/>
+          <rect x="892" y="334" width="40" height="40" rx="6" fill="#1A4FA3"/>
+          <circle cx="912" cy="346" r="2" fill="#FFFFFF"/><circle cx="906" cy="354" r="2" fill="#FFFFFF"/><circle cx="918" cy="354" r="2" fill="#FFFFFF"/><circle cx="912" cy="362" r="2" fill="#FFFFFF"/>
+          <text x="912" y="394" font-family="Inter" font-size="10.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Sentiment &amp;</text>
+          <text x="912" y="406" font-family="Inter" font-size="10.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Priority Scoring</text>
+        </g>
+
+        <!-- AI Block 2: Escalation Detection -->
+        <g>
+          <rect x="990" y="320" width="120" height="86" rx="10" fill="url(#aiGrad)" stroke="#D7E4F7" stroke-width="1.5"/>
+          <rect x="1030" y="334" width="40" height="40" rx="6" fill="#1A4FA3"/>
+          <circle cx="1050" cy="346" r="2" fill="#FFFFFF"/><circle cx="1044" cy="354" r="2" fill="#FFFFFF"/><circle cx="1056" cy="354" r="2" fill="#FFFFFF"/><circle cx="1050" cy="362" r="2" fill="#FFFFFF"/>
+          <text x="1050" y="394" font-family="Inter" font-size="10.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Escalation</text>
+          <text x="1050" y="406" font-family="Inter" font-size="10.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Detection</text>
+        </g>
+
+        <!-- AI Block 3: Conversation Summary -->
+        <g>
+          <rect x="1128" y="320" width="120" height="86" rx="10" fill="url(#aiGrad)" stroke="#D7E4F7" stroke-width="1.5"/>
+          <rect x="1168" y="334" width="40" height="40" rx="6" fill="#1A4FA3"/>
+          <circle cx="1188" cy="346" r="2" fill="#FFFFFF"/><circle cx="1182" cy="354" r="2" fill="#FFFFFF"/><circle cx="1194" cy="354" r="2" fill="#FFFFFF"/><circle cx="1188" cy="362" r="2" fill="#FFFFFF"/>
+          <text x="1188" y="394" font-family="Inter" font-size="10.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Conversation</text>
+          <text x="1188" y="406" font-family="Inter" font-size="10.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Summary</text>
+        </g>
+
+        <!-- AI Block 4: Data Validation -->
+        <g>
+          <rect x="990" y="460" width="120" height="86" rx="10" fill="url(#aiGrad)" stroke="#D7E4F7" stroke-width="1.5"/>
+          <rect x="1030" y="474" width="40" height="40" rx="6" fill="#1A4FA3"/>
+          <circle cx="1050" cy="486" r="2" fill="#FFFFFF"/><circle cx="1044" cy="494" r="2" fill="#FFFFFF"/><circle cx="1056" cy="494" r="2" fill="#FFFFFF"/><circle cx="1050" cy="502" r="2" fill="#FFFFFF"/>
+          <text x="1050" y="534" font-family="Inter" font-size="10.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Data Validation &amp;</text>
+          <text x="1050" y="546" font-family="Inter" font-size="10.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Crafting</text>
+        </g>
+
+        <!-- Connections from Data Store to AI components -->
+        <path d="M 779 200 Q 900 250 912 320" fill="none" stroke="#A3B0C5" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+        <path d="M 779 210 Q 900 280 1050 320" fill="none" stroke="#A3B0C5" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+        <path d="M 779 220 Q 950 280 1188 320" fill="none" stroke="#A3B0C5" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+        <line x1="1050" y1="406" x2="1050" y2="458" stroke="#A3B0C5" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+
+        <!-- Dashboard for Managers -->
+        <g>
+          <rect x="600" y="430" width="120" height="80" rx="10" fill="url(#nodeGrad)" stroke="#D6DDE7" stroke-width="1.5"/>
+          <rect x="618" y="448" width="84" height="44" rx="4" fill="#FFFFFF" stroke="#1A4FA3" stroke-width="1.2"/>
+          <rect x="624" y="456" width="14" height="20" fill="#1A4FA3"/>
+          <rect x="642" y="464" width="14" height="12" fill="#4A8FE0"/>
+          <rect x="660" y="452" width="14" height="24" fill="#0891B2"/>
+          <rect x="678" y="460" width="14" height="16" fill="#4A8FE0"/>
+          <text x="660" y="528" font-family="Inter" font-size="11.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Dashboard for Managers</text>
+        </g>
+
+        <!-- Leaderboard for Agents -->
+        <g>
+          <rect x="380" y="430" width="120" height="80" rx="10" fill="url(#nodeGrad)" stroke="#D6DDE7" stroke-width="1.5"/>
+          <circle cx="402" cy="455" r="3" fill="#B08D3E"/>
+          <rect x="412" y="452" width="78" height="6" rx="2" fill="#E4E9F0"/>
+          <rect x="412" y="452" width="60" height="6" rx="2" fill="#1A4FA3"/>
+          <circle cx="402" cy="471" r="3" fill="#A3B0C5"/>
+          <rect x="412" y="468" width="78" height="6" rx="2" fill="#E4E9F0"/>
+          <rect x="412" y="468" width="50" height="6" rx="2" fill="#4A8FE0"/>
+          <circle cx="402" cy="487" r="3" fill="#A3B0C5"/>
+          <rect x="412" y="484" width="78" height="6" rx="2" fill="#E4E9F0"/>
+          <rect x="412" y="484" width="40" height="6" rx="2" fill="#4A8FE0"/>
+          <text x="440" y="528" font-family="Inter" font-size="11.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Leaderboard for Agents</text>
+        </g>
+
+        <!-- Connections from AI to dashboards -->
+        <path d="M 852 380 Q 760 410 720 430" fill="none" stroke="#1A4FA3" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+        <path d="M 852 380 Q 670 410 500 430" fill="none" stroke="#1A4FA3" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+      </svg>
+    </div>
+
+    <div class="feature-row" style="margin-top:56px;">
+      <h2>Architectural Stack</h2>
+      <div class="meta">Real-time + Batch · Agentic AI · DataLake</div>
+    </div>
+
+    <div class="grid">
+      <div class="card span-6">
+        <span class="index">L·01</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+        <h3>Ingestion · Call Centre to Storage</h3>
+        <p>Call centre agent conversations recorded and pulled continuously into the pipeline. Lossless retention with bank-grade encryption at rest and in motion.</p>
+      </div>
+      <div class="card span-6">
+        <span class="index">L·02</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+        <h3>Processing · Kafka + Spark</h3>
+        <p>Kafka and Spark stream calls in real time for time-sensitive analytics. Spark and Python batch pipelines handle the full retrospective corpus.</p>
+      </div>
+      <div class="card span-6">
+        <span class="index">L·03</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v4"/></svg></div>
+        <h3>Speech-to-Text · Arabic & English</h3>
+        <p>Custom-built for the ADIB context. 90% of calls are Arabic, 10% English. Transcription accuracy reached 80% on Arabic over 4 iterations of manual validation.</p>
+      </div>
+      <div class="card span-6">
+        <span class="index">L·04</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></div>
+        <h3>Storage · Data Store + DataLake</h3>
+        <p>Operational data store powers low-latency serving. DataLake retains the full enriched corpus for retrospective analytics, audit, and model training.</p>
+      </div>
+      <div class="card span-12">
+        <span class="index">L·05</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+        <h3>Agentic AI · Four Specialised Components</h3>
+        <p>Sentiment &amp; Priority Scoring · Escalation Detection · Conversation Summary · Data Validation &amp; Crafting. Each agent is independently observable, version-controlled, and feeds the serving layer that drives the manager dashboard and agent leaderboard.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== SECTION 4: 10K CALLS PROCESSING ============== -->
+  <section class="section" id="processing">
+    <div class="hero">
+      <div class="eyebrow">Output of Study Conducted on 10K Customer Calls · 04</div>
+      <h1>9,904 calls in. <span class="accent">8,601 enriched.</span></h1>
+      <p class="sub">A full study on approximately one day's volume — randomly selected from June through August. 87% of calls were successfully processed end-to-end; 13% were intentionally skipped under PCI rules, content filters, or for low-context audio.</p>
+    </div>
+
+    <div class="processor">
+      <div class="processor-stats">
+        <div class="item">
+          <div class="v">9,904</div>
+          <div class="l">Total Calls Received</div>
+        </div>
+        <div class="item">
+          <div class="v">8,601<span class="u">87%</span></div>
+          <div class="l">Successfully Processed</div>
+        </div>
+        <div class="item">
+          <div class="v">1,303<span class="u">13%</span></div>
+          <div class="l">Skipped (PCI · Filter · Faulty)</div>
+        </div>
+        <div class="item">
+          <div class="v">90<span class="u">% AR</span></div>
+          <div class="l">Arabic · 10% English</div>
+        </div>
+      </div>
+
+      <div class="pipeline">
+        <div class="pipeline-step"><div class="num">01</div><div class="nm">Ingest</div></div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step"><div class="num">02</div><div class="nm">Transcribe</div></div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step"><div class="num">03</div><div class="nm">Enrich</div></div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step"><div class="num">04</div><div class="nm">Score</div></div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step"><div class="num">05</div><div class="nm">Serve</div></div>
+      </div>
+    </div>
+
+    <div class="feature-row" style="margin-top:56px;">
+      <h2>Skipped Calls — Breakdown</h2>
+      <div class="meta">By design · 13% of total</div>
+    </div>
+
+    <div class="grid">
+      <div class="card span-4">
+        <span class="index">·</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h3>PCI · 147 calls (1.5%)</h3>
+        <p>Calls containing payment card data deliberately excluded from AI processing to maintain PCI-DSS compliance.</p>
+      </div>
+      <div class="card span-4">
+        <span class="index">·</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+        <h3>OpenAI Content Filter · 664 calls (6.5%)</h3>
+        <p>Calls flagged by content-safety filters during model inference — automatically excluded from downstream analytics.</p>
+      </div>
+      <div class="card span-4">
+        <span class="index">·</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/></svg></div>
+        <h3>Faulty / Low Context · 492 calls (5%)</h3>
+        <p>Audio with insufficient signal — dropped lines, silent recordings, or transcripts too sparse to enrich reliably.</p>
+      </div>
+    </div>
+
+    <div class="feature-row" style="margin-top: 56px;">
+      <h2>Call Categorisation · Every Call into 4 Buckets</h2>
+      <div class="meta">From the 8,601 processed</div>
+    </div>
+
+    <div class="grid">
+      <div class="card span-3">
+        <span class="index">61%</span>
+        <div class="card-icon" style="background: #E6EEFB;"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <h3>Issues · 5.2K</h3>
+        <p>Calls where customers report problems, complaints, or service disruptions.</p>
+      </div>
+      <div class="card span-3">
+        <span class="index">31%</span>
+        <div class="card-icon" style="background: #E6EEFB;"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.38 8.38 0 0 1 3 11.5 8.5 8.5 0 0 1 11.5 3 8.38 8.38 0 0 1 21 11.5z"/></svg></div>
+        <h3>Complaints / Service · 2.6K</h3>
+        <p>Calls related to routine service requests, support, or information.</p>
+      </div>
+      <div class="card span-3">
+        <span class="index">5%</span>
+        <div class="card-icon" style="background: #E6EEFB;"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <h3>Leads · 418</h3>
+        <p>Calls where customers show interest in buying or upgrading a product or service.</p>
+      </div>
+      <div class="card span-3">
+        <span class="index">3%</span>
+        <div class="card-icon" style="background: #E6EEFB;"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <h3>Others · 310</h3>
+        <p>Calls that cannot be confidently classified due to unclear or insufficient context.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== SECTION 5: BUSINESS BENEFITS ============== -->
+  <section class="section" id="benefits">
+    <div class="hero">
+      <div class="eyebrow">Proof of Value & Business Case · 05</div>
+      <h1>3.7× return. <span class="accent">AED 7.9M annual opportunity.</span></h1>
+      <p class="sub">A grounded business case built from one day's 10K call sample, extrapolated across product lines. The economics work on cross-sell opportunity alone — every other benefit compounds on top.</p>
+    </div>
+
+    <div class="processor" style="margin-bottom: 32px;">
+      <div class="processor-stats">
+        <div class="item">
+          <div class="v">AED 7.9M<span class="u">p.a.</span></div>
+          <div class="l">Opportunity (yr 1)</div>
+        </div>
+        <div class="item">
+          <div class="v">AED 1.8M<span class="u">p.a.</span></div>
+          <div class="l">Calls Processing Cost · 0.5/call</div>
+        </div>
+        <div class="item">
+          <div class="v">AED 900K</div>
+          <div class="l">Soln. Dev Cost · 9 months</div>
+        </div>
+        <div class="item">
+          <div class="v">3.7×</div>
+          <div class="l">3-Year ROI · 4.2× excl. dev cost</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <h2>Where the Value Comes From</h2>
+      <div class="meta">Six demonstration scenarios</div>
+    </div>
+
+    <div class="grid">
+      <div class="card span-6">
+        <span class="index">01</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <h3>Cross-Sell Revenue Uplift</h3>
+        <p>418 leads identified in a single day's sample, eligible amount AED 26M. Extrapolated to 1 year of processed calls: AED 515.5M in sales, AED 7.9M in first-year revenue.</p>
+        <span class="tag">Revenue</span>
+      </div>
+      <div class="card span-6">
+        <span class="index">02</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M19 9l-5 5-4-4-3 3"/></svg></div>
+        <h3>Coaching ROI</h3>
+        <p>Continuous agent evaluation across Interaction, Productivity, AHT, and Idle metrics. Objective coaching replaces sample-based reviews.</p>
+        <span class="tag">Workforce</span>
+      </div>
+      <div class="card span-6">
+        <span class="index">03</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <h3>100% Compliance Coverage</h3>
+        <p>Every call audited against required disclosures, KYC checks, and scripted controls — replacing the 1–2% sample currently feasible by manual review.</p>
+        <span class="tag">Risk</span>
+      </div>
+      <div class="card span-6">
+        <span class="index">04</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 21s-8-4.5-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-8 11-8 11"/></svg></div>
+        <h3>High-Value Churn Early-Warning</h3>
+        <p>Negative sentiment on high-value customer calls auto-escalates to team leaders. Today, escalation depends on manual judgement or post-call complaints.</p>
+        <span class="tag">Retention</span>
+      </div>
+      <div class="card span-6">
+        <span class="index">05</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <h3>AHT & Idle Optimisation</h3>
+        <p>61% of processed calls involved idle/hold time. Top enquiry types driving idle now identified — verification, statements, transaction status — for targeted process improvement.</p>
+        <span class="tag">Efficiency</span>
+      </div>
+      <div class="card span-6">
+        <span class="index">06</span>
+        <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+        <h3>Call Search Capability</h3>
+        <p>Searchable summaries across the full call corpus mean any past enquiry, complaint, or commitment can be retrieved in seconds for investigation or quality review.</p>
+        <span class="tag">Operations</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== SECTION 6: CONVERSATIONAL QUERY UI ============== -->
+  <section class="section" id="convo">
+    <div class="hero">
+      <div class="eyebrow">Natural Language Surface · 06</div>
+      <h1>Ask ACE anything. <span class="accent">In your own words.</span></h1>
+      <p class="sub">A single conversational interface across every signal the platform produces — from agent rankings to customer themes — designed for executives, line managers, and analysts alike.</p>
+    </div>
+
+    <div class="convo-frame">
+      <div class="convo-section-label">Suggested executive queries</div>
+      <div>
+        <span class="convo-chip">Show me high-value customer calls with negative sentiment this week</span>
+        <span class="convo-chip">Top cross-sell opportunities by product in the last 7 days</span>
+        <span class="convo-chip">Which agents scored above 70 on the final performance score?</span>
+        <span class="convo-chip">Calls with hold time above 40% — what are customers asking about?</span>
+        <span class="convo-chip">Why were 664 calls flagged by the content filter yesterday?</span>
+        <span class="convo-chip">Arabic vs English transcription accuracy trend over the last 30 days</span>
+      </div>
+
+      <div class="convo-input">
+        <span class="prompt-dot"></span>
+        <input type="text" placeholder="Ask ACE about any call, agent, customer theme, or operational signal..." />
+        <button class="send">Ask ACE</button>
+      </div>
+
+      <div class="convo-section-label" style="margin-top: 28px; margin-bottom: 0;">
+        Response surface · placeholder
+      </div>
+    </div>
+
+    <div class="ribbon">
+      <div class="left"><span class="dot"></span>Conversational layer · Foundation preview</div>
+      <div class="right">ADIB · Confidential · Prepared for Executive Committee</div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  const nav = document.getElementById('nav');
+  const sections = document.querySelectorAll('.section');
+  const crumb = document.getElementById('crumbCurrent');
+
+  nav.addEventListener('click', (e) => {
+    const item = e.target.closest('.nav-item');
+    if (!item) return;
+    const target = item.dataset.target;
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    sections.forEach(s => s.classList.remove('active'));
+    const section = document.getElementById(target);
+    if (section) {
+      section.classList.add('active');
+      crumb.textContent = item.querySelector('.label').textContent;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  const sidebar = document.getElementById('sidebar');
+  document.getElementById('collapseBtn').addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+  });
+</script>
+
+</body>
+</html>

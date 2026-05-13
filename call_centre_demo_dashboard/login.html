@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aurelia · Secure Access</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #04081A;
+    --bg-2: #060D24;
+    --bg-3: #0A1733;
+    --ink-100: #F2F6FC;
+    --ink-200: #D8E2F2;
+    --ink-300: #A3B3CC;
+    --ink-400: #7A8BA8;
+    --ink-500: #5A6F92;
+    --line: rgba(180, 200, 230, 0.10);
+    --line-strong: rgba(180, 200, 230, 0.18);
+    --accent: #6DC8FF;
+    --accent-blue: #4A8FE0;
+    --accent-soft: rgba(109, 200, 255, 0.14);
+
+    --font-display: 'Fraunces', serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg-1);
+    color: var(--ink-200);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============ AMBIENT BACKDROP ============ */
+  .stage {
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(1200px 800px at 30% 20%, rgba(74, 143, 224, 0.15), transparent 60%),
+      radial-gradient(900px 600px at 80% 80%, rgba(109, 200, 255, 0.08), transparent 60%),
+      linear-gradient(180deg, #04081A 0%, #060D24 50%, #04081A 100%);
+  }
+
+  /* Subtle grid */
+  .stage::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(180, 200, 230, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(180, 200, 230, 0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse at 50% 50%, black 30%, transparent 80%);
+  }
+
+  /* Drifting signal lines */
+  .signals {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    opacity: 0.5;
+  }
+  .signal {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(109, 200, 255, 0.6), transparent);
+    width: 200px;
+    animation: drift 12s linear infinite;
+  }
+  .signal:nth-child(1) { top: 18%; animation-delay: 0s; animation-duration: 14s; }
+  .signal:nth-child(2) { top: 38%; animation-delay: 4s; animation-duration: 18s; width: 280px; }
+  .signal:nth-child(3) { top: 62%; animation-delay: 8s; animation-duration: 16s; width: 220px; }
+  .signal:nth-child(4) { top: 82%; animation-delay: 11s; animation-duration: 13s; width: 300px; }
+  @keyframes drift {
+    0% { transform: translateX(-300px); opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { transform: translateX(calc(100vw + 300px)); opacity: 0; }
+  }
+
+  /* Floating intelligence particles */
+  .particles { position: fixed; inset: 0; pointer-events: none; }
+  .particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--accent);
+    opacity: 0;
+    animation: float 8s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); opacity: 0; }
+    50% { transform: translateY(-30px); opacity: 0.8; }
+  }
+
+  /* ============ LAYOUT ============ */
+  .shell {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 520px;
+  }
+
+  /* LEFT — brand panel */
+  .left {
+    position: relative;
+    padding: 56px 64px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .brand-row {
+    display: flex; align-items: center; gap: 14px;
+  }
+  .brand-mark {
+    width: 38px; height: 38px;
+    flex-shrink: 0;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #1A4FA3 0%, #0B1F3A 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
+    position: relative;
+  }
+  .brand-mark::after {
+    content: "";
+    position: absolute;
+    inset: 11px;
+    border-radius: 3px;
+    background: linear-gradient(135deg, #E6EEFB, #B7CCEB);
+    opacity: 0.95;
+  }
+  .brand-text { line-height: 1.1; }
+  .brand-name {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 21px;
+    letter-spacing: -0.02em;
+    color: var(--ink-100);
+  }
+  .brand-tag {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    margin-top: 5px;
+    font-weight: 500;
+  }
+
+  .left-content {
+    flex: 1;
+    display: flex; flex-direction: column; justify-content: center;
+    max-width: 580px;
+    margin-top: -40px;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.28em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    padding: 6px 12px 6px 10px;
+    border: 1px solid rgba(109, 200, 255, 0.25);
+    border-radius: 100px;
+    background: rgba(109, 200, 255, 0.04);
+    width: max-content;
+    font-weight: 500;
+  }
+  .eyebrow::before {
+    content: ""; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+  .left h1 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 56px;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--ink-100);
+    margin-bottom: 20px;
+  }
+  .left h1 .it {
+    font-style: italic;
+    font-weight: 400;
+    background: linear-gradient(135deg, var(--accent), var(--accent-blue));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .left p.sub {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink-300);
+    max-width: 480px;
+    font-weight: 400;
+  }
+  .pillars {
+    margin-top: 56px;
+    padding-top: 36px;
+    border-top: 1px solid var(--line);
+    display: flex; gap: 40px;
+    max-width: 540px;
+  }
+  .pillar .v {
+    font-family: var(--font-display);
+    font-size: 28px;
+    color: var(--ink-100);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .pillar .v .u { font-size: 14px; color: var(--ink-400); margin-left: 4px; font-family: var(--font-body); font-weight: 500; }
+  .pillar .l {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    margin-top: 10px;
+    font-weight: 500;
+  }
+
+  .left-foot {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    color: var(--ink-500);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* ============ ORB ============ */
+  .orb-wrap {
+    position: absolute;
+    top: 50%; right: -180px;
+    transform: translateY(-50%);
+    width: 540px; height: 540px;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  /* ============ RIGHT — auth panel ============ */
+  .right {
+    background: linear-gradient(180deg, rgba(10, 23, 51, 0.55), rgba(6, 13, 36, 0.7));
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    border-left: 1px solid var(--line);
+    padding: 56px 56px;
+    display: flex; flex-direction: column;
+    position: relative;
+  }
+  .right::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.4;
+  }
+
+  .right-top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: auto;
+  }
+  .secure-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ink-300);
+    text-transform: uppercase;
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    background: rgba(255,255,255,0.02);
+    font-weight: 500;
+  }
+  .secure-tag svg { width: 11px; height: 11px; stroke: var(--accent); fill: none; stroke-width: 2; }
+  .back-link {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.25s;
+  }
+  .back-link:hover { color: var(--ink-200); }
+
+  .auth-content {
+    margin: auto 0;
+    width: 100%;
+  }
+  .auth-content h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 36px;
+    letter-spacing: -0.02em;
+    color: var(--ink-100);
+    margin-bottom: 10px;
+    line-height: 1.15;
+  }
+  .auth-content .desc {
+    font-size: 14px;
+    color: var(--ink-300);
+    margin-bottom: 40px;
+    line-height: 1.5;
+  }
+
+  .field { margin-bottom: 22px; }
+  .field label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .field input {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(4, 8, 26, 0.6);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--ink-100);
+    font-family: var(--font-body);
+    font-size: 14px;
+    transition: all 0.25s;
+  }
+  .field input::placeholder { color: var(--ink-500); }
+  .field input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(4, 8, 26, 0.85);
+    box-shadow: 0 0 0 3px rgba(109, 200, 255, 0.08);
+  }
+
+  .field-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 28px;
+    font-size: 12.5px;
+    color: var(--ink-300);
+  }
+  .check { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+  .check input { display: none; }
+  .check .box {
+    width: 14px; height: 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: 3px;
+    background: rgba(4, 8, 26, 0.6);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .check input:checked + .box {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .check .box::after {
+    content: "✓";
+    color: var(--bg-1);
+    font-size: 9px;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .check input:checked + .box::after { opacity: 1; }
+  .forgot {
+    color: var(--ink-300);
+    text-decoration: none;
+    font-size: 12.5px;
+    transition: color 0.25s;
+  }
+  .forgot:hover { color: var(--accent); }
+
+  .submit {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-blue) 100%);
+    color: #04081A;
+    border: none;
+    border-radius: 10px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .submit::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.25) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
+  .submit:hover { transform: translateY(-1px); box-shadow: 0 8px 24px -8px rgba(109, 200, 255, 0.4); }
+  .submit:hover::before { transform: translateX(100%); }
+  .submit:disabled { opacity: 0.6; cursor: wait; transform: none; }
+  .submit svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .auth-foot {
+    margin-top: auto;
+    padding-top: 32px;
+    border-top: 1px solid var(--line);
+  }
+  .foot-row {
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--ink-500);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .foot-row .live {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--ink-300);
+  }
+  .foot-row .live .d {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* Transition overlay */
+  .transition-overlay {
+    position: fixed; inset: 0;
+    background: var(--bg-1);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .transition-overlay.show { opacity: 1; pointer-events: all; }
+  .auth-loader {
+    width: 240px;
+    height: 2px;
+    background: rgba(180, 200, 230, 0.08);
+    border-radius: 100px;
+    overflow: hidden;
+    position: relative;
+  }
+  .auth-loader::after {
+    content: "";
+    position: absolute;
+    top: 0; left: -40%; height: 100%;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    animation: loader-slide 1.4s ease-in-out infinite;
+  }
+  @keyframes loader-slide {
+    0% { left: -40%; }
+    100% { left: 100%; }
+  }
+  .auth-status {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--ink-300);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  @media (max-width: 1024px) {
+    .shell { grid-template-columns: 1fr; }
+    .left { padding: 40px 32px; min-height: 50vh; }
+    .right { border-left: none; border-top: 1px solid var(--line); padding: 40px 32px; }
+    .orb-wrap { display: none; }
+    .left h1 { font-size: 40px; }
+  }
+
+  /* Mount animation */
+  .left > *, .right > * {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: rise 0.7s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  .left .brand-row { animation-delay: 0.1s; }
+  .left .left-content { animation-delay: 0.2s; }
+  .left .left-foot { animation-delay: 0.5s; margin-top: auto; }
+  .right .right-top { animation-delay: 0.15s; }
+  .right .auth-content { animation-delay: 0.3s; }
+  .right .auth-foot { animation-delay: 0.5s; }
+  @keyframes rise {
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage"></div>
+
+<div class="signals">
+  <div class="signal"></div>
+  <div class="signal"></div>
+  <div class="signal"></div>
+  <div class="signal"></div>
+</div>
+
+<div class="particles" id="particles"></div>
+
+<div class="shell">
+
+  <!-- ============ LEFT ============ -->
+  <div class="left">
+    <div class="brand-row">
+      <div class="brand-mark"></div>
+      <div class="brand-text">
+        <div class="brand-name">Aurelia</div>
+        <div class="brand-tag">Intelligence Console</div>
+      </div>
+    </div>
+
+    <svg class="orb-wrap" viewBox="0 0 540 540" fill="none">
+      <defs>
+        <radialGradient id="og" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#6DC8FF" stop-opacity="0.25"/>
+          <stop offset="60%" stop-color="#4A8FE0" stop-opacity="0.06"/>
+          <stop offset="100%" stop-color="#4A8FE0" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="270" cy="270" r="260" fill="url(#og)"/>
+      <circle cx="270" cy="270" r="200" stroke="rgba(109,200,255,0.08)" stroke-width="0.5" stroke-dasharray="2 4"/>
+      <circle cx="270" cy="270" r="140" stroke="rgba(109,200,255,0.14)" stroke-width="0.5"/>
+      <circle cx="270" cy="270" r="80" stroke="rgba(109,200,255,0.22)" stroke-width="0.5"/>
+      <circle cx="270" cy="270" r="6" fill="#6DC8FF"/>
+      <!-- Orbit dots -->
+      <circle cx="410" cy="270" r="3" fill="#6DC8FF" opacity="0.7"/>
+      <circle cx="200" cy="140" r="2" fill="#6DC8FF" opacity="0.5"/>
+      <circle cx="330" cy="400" r="2.5" fill="#6DC8FF" opacity="0.6"/>
+    </svg>
+
+    <div class="left-content">
+      <div class="eyebrow">Secure Access · Authorised Personnel</div>
+      <h1>The intelligence console <span class="it">behind every call.</span></h1>
+      <p class="sub">Aurelia processes every customer conversation across the bank — turning voice into structured intelligence available the moment it matters. Sign in to access the operational platform.</p>
+
+      <div class="pillars">
+        <div class="pillar">
+          <div class="v">300K<span class="u">/mo</span></div>
+          <div class="l">Calls processed</div>
+        </div>
+        <div class="pillar">
+          <div class="v">12</div>
+          <div class="l">Live modules</div>
+        </div>
+        <div class="pillar">
+          <div class="v">EN · AR</div>
+          <div class="l">Coverage</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="left-foot">Confidential · Authorised users only · ISO 27001 aligned</div>
+  </div>
+
+  <!-- ============ RIGHT ============ -->
+  <div class="right">
+    <div class="right-top">
+      <div class="secure-tag">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Encrypted Session
+      </div>
+      <a href="index.html" class="back-link">← Back to Overview</a>
+    </div>
+
+    <div class="auth-content">
+      <h2>Welcome back.</h2>
+      <p class="desc">Sign in with your bank credentials to enter the intelligence console.</p>
+
+      <form id="loginForm" autocomplete="off">
+        <div class="field">
+          <label for="email">Corporate Email</label>
+          <input type="email" id="email" placeholder="name@yourbank.ae" value="nij.aravi@yourbank.ae" required />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="••••••••••••" value="••••••••••" required />
+        </div>
+
+        <div class="field-row">
+          <label class="check">
+            <input type="checkbox" id="remember" />
+            <span class="box"></span>
+            <span>Keep me signed in</span>
+          </label>
+          <a href="#" class="forgot">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="submit" id="submitBtn">
+          <span id="submitText">Enter Intelligence Console</span>
+          <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 5 7 7-7 7"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <div class="auth-foot">
+      <div class="foot-row">
+        <span>v 1.0 · Build 26.04</span>
+        <span class="live"><span class="d"></span>All Systems Operational</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Transition overlay -->
+<div class="transition-overlay" id="overlay">
+  <div class="auth-loader"></div>
+  <div class="auth-status" id="overlayStatus">Authenticating</div>
+</div>
+
+<script>
+  // Floating particles
+  const particles = document.getElementById('particles');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.top = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 8 + 's';
+    p.style.animationDuration = (6 + Math.random() * 6) + 's';
+    particles.appendChild(p);
+  }
+
+  // Login flow
+  const form = document.getElementById('loginForm');
+  const overlay = document.getElementById('overlay');
+  const status = document.getElementById('overlayStatus');
+  const submitBtn = document.getElementById('submitBtn');
+  const submitText = document.getElementById('submitText');
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitText.textContent = 'Verifying...';
+    overlay.classList.add('show');
+
+    const steps = [
+      'Verifying credentials',
+      'Establishing secure session',
+      'Loading intelligence modules',
+      'Console ready'
+    ];
+
+    let i = 0;
+    status.textContent = steps[0];
+    const t = setInterval(() => {
+      i++;
+      if (i < steps.length) {
+        status.textContent = steps[i];
+      } else {
+        clearInterval(t);
+        setTimeout(() => { window.location.href = 'console.html'; }, 400);
+      }
+    }, 600);
+  });
+</script>
+
+</body>
+</html>
