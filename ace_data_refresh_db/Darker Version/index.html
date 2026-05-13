@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, initial-scale=1.0" />
+  <title>ACE Intelligence Platform · Data Refresh Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Animated background layers -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-scanlines" aria-hidden="true"></div>
+  <div class="bg-vignette" aria-hidden="true"></div>
+
+  <main class="dashboard" id="dashboard">
+    <!-- ───────── HEADER ───────── -->
+    <header class="header">
+      <div class="header-left">
+        <div class="brand-text">
+          <h1 class="brand-title">ACE Intelligence Platform</h1>
+          <div class="brand-subtitle">
+            <span class="live-dot" aria-hidden="true"></span>
+            <span>Data Refresh Dashboard</span>
+            <span class="brand-divider">·</span>
+            <span class="brand-tag">OPS // MISSION CONTROL</span>
+          </div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="inline-stat">
+          <span class="inline-k">BATCH</span>
+          <span class="inline-v" id="refreshDate">—</span>
+        </div>
+        <span class="inline-sep">·</span>
+        <div class="inline-stat partition">
+          <span class="inline-k">PARTITION</span>
+          <span class="inline-v" id="partitionId">—</span>
+        </div>
+        <span class="inline-sep">·</span>
+        <div class="inline-stat">
+          <span class="inline-k">NEXT SYNC IN</span>
+          <span class="inline-v" id="nextSync">—</span>
+        </div>
+        <div class="quiet-clock" id="clockTime">—</div>
+      </div>
+    </header>
+
+    <!-- ───────── KPI BAR ───────── -->
+    <section class="kpi-bar" id="kpiBar">
+      <!-- KPI cards rendered by JS -->
+    </section>
+
+    <!-- ───────── ace_consumption ───────── -->
+    <section class="zone" id="zoneConsumption">
+      <div class="zone-header">
+        <div class="zone-title-block">
+          <span class="zone-bracket">[</span>
+          <h2 class="zone-title">ace_consumption</h2>
+          <span class="zone-bracket">]</span>
+          <span class="zone-count" id="consumptionCount">— DAGs</span>
+        </div>
+        <div class="zone-progress-block">
+          <span class="zone-progress-label">ZONE COMPLETION</span>
+          <div class="zone-progress-track">
+            <div class="zone-progress-fill" id="consumptionProgress"></div>
+          </div>
+          <span class="zone-progress-pct" id="consumptionPct">0%</span>
+        </div>
+      </div>
+      <div class="dag-grid" id="consumptionGrid"></div>
+    </section>
+
+    <!-- ───────── ace_analytics ───────── -->
+    <section class="zone" id="zoneAnalytics">
+      <div class="zone-header">
+        <div class="zone-title-block">
+          <span class="zone-bracket">[</span>
+          <h2 class="zone-title">ace_analytics</h2>
+          <span class="zone-bracket">]</span>
+          <span class="zone-count" id="analyticsCount">— DAGs</span>
+        </div>
+        <div class="zone-progress-block">
+          <span class="zone-progress-label">ZONE COMPLETION</span>
+          <div class="zone-progress-track">
+            <div class="zone-progress-fill" id="analyticsProgress"></div>
+          </div>
+          <span class="zone-progress-pct" id="analyticsPct">0%</span>
+        </div>
+      </div>
+      <div class="dag-grid" id="analyticsGrid"></div>
+    </section>
+
+    <!-- ───────── CALL OUTS TICKER ───────── -->
+    <footer class="ticker">
+      <div class="ticker-label">
+        <span class="ticker-dot"></span>
+        <span>CALL OUTS</span>
+      </div>
+      <div class="ticker-track">
+        <div class="ticker-content" id="tickerContent">
+          Awaiting telemetry…
+        </div>
+      </div>
+      <div class="ticker-status">
+        <span class="ticker-status-dot"></span>
+        <span id="systemStatus">SYSTEM NOMINAL</span>
+      </div>
+    </footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
