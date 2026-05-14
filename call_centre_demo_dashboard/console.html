@@ -924,12 +924,6 @@
     font-weight: 500;
     font-size: 13px;
   }
-  table.lb-table tbody td.lb-td-lob,
-  table.lb-table tbody td.lb-td-tl {
-    color: var(--ink-600);
-    font-size: 12.5px;
-    white-space: nowrap;
-  }
   table.lb-table tbody td.lb-td-score {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
@@ -1527,10 +1521,8 @@
           <div class="lb-controls">
             <div class="lb-search">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" id="lbSearch" placeholder="Search by agent ID, name, LOB or TL…" />
+              <input type="text" id="lbSearch" placeholder="Search by agent ID or name…" />
             </div>
-            <select id="lbLobFilter" class="lb-select"><option value="">All LOBs</option></select>
-            <select id="lbTlFilter"  class="lb-select"><option value="">All TLs</option></select>
             <div class="lb-count" id="lbCount">196 agents</div>
           </div>
 
@@ -1540,8 +1532,6 @@
                 <tr>
                   <th class="lb-th-rank">Rank</th>
                   <th>Agent</th>
-                  <th>LOB</th>
-                  <th>TL</th>
                   <th class="lb-th-num" title="Interaction Score · max 45 · 45% weight">Interaction</th>
                   <th class="lb-th-num" title="Productivity Score · max 10 · 10% weight">Productivity</th>
                   <th class="lb-th-num" title="AHT Score · max 15 · 15% weight">AHT</th>
@@ -2873,21 +2863,11 @@
     rows: [],          // full dataset from Excel
     sortKey: 'Final Score',
     sortDir: 'desc',
-    search: '',
-    lob: '',
-    tl: ''
+    search: ''
   };
 
   function renderLeaderboard(data) {
     lbState.rows = data;
-
-    // Populate LOB and TL filter dropdowns once
-    const lobSel = document.getElementById('lbLobFilter');
-    const tlSel  = document.getElementById('lbTlFilter');
-    const lobs = [...new Set(data.map(r => r['LOB']).filter(Boolean))].sort();
-    const tls  = [...new Set(data.map(r => r['TL']).filter(Boolean))].sort();
-    lobSel.innerHTML = '<option value="">All LOBs</option>' + lobs.map(v => `<option value="${v}">${v}</option>`).join('');
-    tlSel.innerHTML  = '<option value="">All TLs</option>'  + tls.map(v  => `<option value="${v}">TL ${v}</option>`).join('');
 
     // Wire filter inputs (once)
     if (!lbState.wired) {
@@ -2896,8 +2876,6 @@
         lbState.search = e.target.value.toLowerCase().trim();
         paintLeaderboard();
       });
-      lobSel.addEventListener('change', (e) => { lbState.lob = e.target.value; paintLeaderboard(); });
-      tlSel.addEventListener('change',  (e) => { lbState.tl  = e.target.value; paintLeaderboard(); });
 
       // Click headers to sort. data-sort attribute = column key.
       document.querySelectorAll('table.lb-table thead th').forEach((th, idx) => {
@@ -2905,7 +2883,6 @@
         const sortKeys = [
           'Rank',            // computed
           'Name',            // Agent column → sort by name
-          'LOB', 'TL',
           'Interaction Score', 'Productivity Score', 'AHT Score',
           'Hold Ratio Score', 'Hold Duration Score', 'Hold Frequency Score',
           'Final Score', 'Delta'
@@ -2942,10 +2919,8 @@
     // 2. Apply filters
     const s = lbState.search;
     const filtered = ranked.filter(r => {
-      if (lbState.lob && r['LOB'] !== lbState.lob) return false;
-      if (lbState.tl  && r['TL']  !== lbState.tl)  return false;
       if (s) {
-        const hay = `${r['Agent ID']} ${r['Name']} ${r['LOB']} ${r['TL']}`.toLowerCase();
+        const hay = `${r['Agent ID']} ${r['Name']}`.toLowerCase();
         if (!hay.includes(s)) return false;
       }
       return true;
@@ -2978,7 +2953,7 @@
 
     // 6. Render rows
     if (filtered.length === 0) {
-      tbody.innerHTML = '<tr class="row-empty"><td colspan="12">No agents match the current filters.</td></tr>';
+      tbody.innerHTML = '<tr class="row-empty"><td colspan="10">No agents match your search.</td></tr>';
       return;
     }
     const fmt = (v) => v == null ? '—' : Number(v).toFixed(1);
@@ -2994,8 +2969,6 @@
           <div class="lb-agent-id">${r['Agent ID']}</div>
           <div class="lb-agent-name">${r['Name'] ?? ''}</div>
         </td>
-        <td class="lb-td-lob">${r['LOB'] ?? ''}</td>
-        <td class="lb-td-tl">TL ${r['TL'] ?? ''}</td>
         <td class="lb-td-score">${fmt(r['Interaction Score'])}</td>
         <td class="lb-td-score">${fmt(r['Productivity Score'])}</td>
         <td class="lb-td-score">${fmt(r['AHT Score'])}</td>
