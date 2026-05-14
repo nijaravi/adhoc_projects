@@ -796,9 +796,905 @@
   #opportunity .card p { font-size: 13px; line-height: 1.55; }
   #opportunity .card .index { top: 16px; right: 16px; font-size: 10px; }
 
+  /* ============ USE CASES · OUTCOMES BOARD (compact) ============ */
+  #usecases .hero { margin-bottom: 26px; max-width: 1280px; }
+  #usecases .hero .eyebrow { margin-bottom: 14px; padding: 5px 11px 5px 9px; font-size: 10px; }
+  #usecases .hero h1 {
+    font-size: clamp(28px, 3.4vw, 40px);
+    line-height: 1.08;
+    margin-bottom: 12px;
+    max-width: 920px;
+  }
+  #usecases .hero p.sub { font-size: 14.5px; line-height: 1.55; max-width: 760px; }
+
+  .outcomes-board {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 18px;
+    align-items: stretch;
+  }
+
+  /* Spotlight panel (left) */
+  .spotlight {
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 32px 34px 28px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    min-height: 540px;
+  }
+  .spotlight::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+    opacity: 0.9;
+  }
+
+  .spotlight-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+  .spotlight-icon {
+    width: 54px; height: 54px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, #0B1F3A 0%, #1A4FA3 100%);
+    display: flex; align-items: center; justify-content: center;
+    color: #F2F6FC;
+    flex-shrink: 0;
+    box-shadow: 0 6px 16px -8px rgba(11, 31, 58, 0.4);
+    position: relative;
+  }
+  .spotlight-icon::after {
+    content: "";
+    position: absolute;
+    bottom: -3px; right: -3px;
+    width: 12px; height: 12px;
+    background: #6DC8FF;
+    border: 2.5px solid var(--bg-elevated);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(109, 200, 255, 0.55);
+  }
+  .spotlight-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+  .spotlight-tags {
+    display: flex; gap: 8px;
+    margin-left: auto;
+    flex-wrap: wrap;
+  }
+  .spotlight-tag {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    padding: 5px 11px;
+    border-radius: 100px;
+    border: 1px solid var(--line-strong);
+    background: var(--bg-warm);
+    color: var(--ink-700);
+    text-transform: uppercase;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .spotlight-tag.tag-hero {
+    background: linear-gradient(135deg, #F5EFE0 0%, #EBE0BF 100%);
+    border-color: #DDC68A;
+    color: #6B5520;
+  }
+  .spotlight-tag.tag-hero::before {
+    content: "";
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #B08D3E;
+  }
+  .spotlight-tag.tag-problem {
+    background: var(--accent-blue-soft);
+    border-color: #D7E4F7;
+    color: var(--accent-blue);
+  }
+
+  .spotlight-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1.08;
+    letter-spacing: -0.022em;
+    color: var(--ink-900);
+    margin-bottom: 12px;
+  }
+  .spotlight-lead {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-600);
+    margin-bottom: 22px;
+    max-width: 680px;
+  }
+
+  .spotlight-metric {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 18px;
+    padding: 18px 22px;
+    background: linear-gradient(135deg, #0B1F3A 0%, #123A72 100%);
+    border-radius: 12px;
+    margin-bottom: 22px;
+    color: #F2F6FC;
+    position: relative;
+    overflow: hidden;
+    align-self: flex-start;
+  }
+  .spotlight-metric::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(280px 200px at 100% 0%, rgba(109, 200, 255, 0.18), transparent 60%);
+    pointer-events: none;
+  }
+  .metric-v {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 36px;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    position: relative; z-index: 1;
+  }
+  .metric-v .metric-u {
+    font-family: var(--font-body);
+    font-size: 16px;
+    margin-left: 4px;
+    color: rgba(230, 238, 251, 0.7);
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  .metric-l {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: rgba(230, 238, 251, 0.72);
+    text-transform: uppercase;
+    font-weight: 500;
+    line-height: 1.5;
+    max-width: 220px;
+    position: relative; z-index: 1;
+  }
+
+  .spotlight-outcomes { margin-bottom: auto; }
+  .outcomes-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .outcomes-grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 22px;
+    padding: 0; margin: 0;
+  }
+  .outcomes-grid li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13.5px;
+    color: var(--ink-600);
+    line-height: 1.5;
+  }
+  .outcomes-grid li::before {
+    content: "";
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+
+  .spotlight-footer {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .footer-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .footer-label {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .agent-chip {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    padding: 3px 9px;
+    border: 1px solid #D7E4F7;
+    border-radius: 100px;
+    background: var(--accent-blue-soft);
+    color: var(--accent-blue);
+    font-weight: 600;
+  }
+  .problem-chip {
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--ink-700);
+    padding: 4px 11px;
+    border-radius: 100px;
+    background: var(--bg-warm);
+    border: 1px solid var(--line-strong);
+    font-weight: 500;
+  }
+
+  /* Use case list (right) */
+  .usecase-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .usecase-tile {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 13px 15px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+    text-align: left;
+    font-family: var(--font-body);
+    width: 100%;
+    position: relative;
+  }
+  .usecase-tile:hover {
+    border-color: var(--line-strong);
+    transform: translateX(2px);
+    box-shadow: var(--shadow-sm);
+  }
+  .usecase-tile.active {
+    background: linear-gradient(165deg, #0B1F3A 0%, #123A72 100%);
+    border-color: var(--ink-900);
+    box-shadow: var(--shadow-md);
+    transform: translateX(0);
+  }
+  .usecase-tile.active::before {
+    content: "";
+    position: absolute;
+    left: -1px; top: 14px; bottom: 14px;
+    width: 3px;
+    background: #6DC8FF;
+    border-radius: 0 2px 2px 0;
+    box-shadow: 0 0 8px rgba(109, 200, 255, 0.6);
+  }
+  .tile-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--accent-blue-soft);
+    border: 1px solid #D7E4F7;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent-blue);
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+  .usecase-tile.active .tile-icon {
+    background: rgba(109, 200, 255, 0.12);
+    border-color: rgba(109, 200, 255, 0.35);
+    color: #6DC8FF;
+  }
+  .tile-icon svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .tile-body { flex: 1; min-width: 0; }
+  .tile-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-900);
+    letter-spacing: -0.005em;
+    line-height: 1.25;
+  }
+  .usecase-tile.active .tile-name { color: #F2F6FC; }
+  .tile-sub {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    color: var(--ink-400);
+    margin-top: 4px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .usecase-tile.active .tile-sub { color: #6DC8FF; }
+  .tile-flag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--accent-gold);
+    letter-spacing: 0.18em;
+    flex-shrink: 0;
+    font-weight: 600;
+    padding: 2px 6px;
+    background: var(--accent-gold-soft);
+    border-radius: 4px;
+    border: 1px solid #E5D6AC;
+  }
+  .usecase-tile.active .tile-flag {
+    color: #F5EFE0;
+    background: rgba(176, 141, 62, 0.25);
+    border-color: rgba(176, 141, 62, 0.4);
+  }
+
+  /* ============ AI COMPONENTS · CAROUSEL (compact) ============ */
+  #modules .hero { margin-bottom: 26px; max-width: 1280px; }
+  #modules .hero .eyebrow { margin-bottom: 14px; padding: 5px 11px 5px 9px; font-size: 10px; }
+  #modules .hero h1 {
+    font-size: clamp(28px, 3.4vw, 40px);
+    line-height: 1.08;
+    margin-bottom: 12px;
+    max-width: 920px;
+  }
+  #modules .hero p.sub { font-size: 14.5px; line-height: 1.55; max-width: 760px; }
+
+  .carousel { max-width: 1280px; margin: 0 auto; }
+  .carousel-frame {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+
+  .carousel-info {
+    padding: 32px 28px 26px;
+    background: linear-gradient(165deg, #0B1F3A 0%, #123A72 100%);
+    color: #E6EEFB;
+    display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+  }
+  .carousel-info::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(420px 320px at 100% 0%, rgba(26, 79, 163, 0.45), transparent 60%),
+      radial-gradient(320px 240px at 0% 100%, rgba(109, 200, 255, 0.08), transparent 60%);
+    pointer-events: none;
+  }
+  .carousel-info::after {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(230, 238, 251, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(230, 238, 251, 0.025) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(ellipse at 50% 50%, black 30%, transparent 80%);
+    pointer-events: none;
+  }
+  .carousel-counter {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    color: rgba(230, 238, 251, 0.55);
+    margin-bottom: 22px;
+    display: flex; align-items: baseline; gap: 6px;
+    position: relative; z-index: 1;
+  }
+  .carousel-counter .current {
+    font-family: var(--font-display);
+    font-size: 30px; color: #F2F6FC;
+    letter-spacing: -0.02em; font-weight: 500; line-height: 1;
+  }
+  .carousel-counter .sep { color: rgba(230, 238, 251, 0.3); margin: 0 4px; font-size: 18px; }
+  .carousel-counter .total { font-size: 12px; }
+
+  .carousel-label {
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 0.22em;
+    color: #6DC8FF; text-transform: uppercase;
+    margin-bottom: 10px; font-weight: 500;
+    position: relative; z-index: 1;
+  }
+  .carousel-title {
+    font-family: var(--font-display);
+    font-weight: 500; font-size: 28px;
+    line-height: 1.1; letter-spacing: -0.022em;
+    color: #F2F6FC; margin-bottom: 14px;
+    position: relative; z-index: 1;
+  }
+  .carousel-desc {
+    font-size: 13.5px; line-height: 1.6;
+    color: rgba(230, 238, 251, 0.78);
+    margin-bottom: auto;
+    position: relative; z-index: 1;
+  }
+  .carousel-stat {
+    margin-top: 16px;
+    display: flex; align-items: baseline; gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 0.16em;
+    color: rgba(230, 238, 251, 0.5);
+    text-transform: uppercase;
+    position: relative; z-index: 1;
+  }
+  .carousel-stat .count {
+    font-family: var(--font-display);
+    font-size: 17px; color: #F2F6FC;
+    letter-spacing: -0.01em; font-weight: 500;
+  }
+
+  .carousel-controls {
+    display: flex; align-items: center; gap: 14px;
+    padding-top: 20px; margin-top: 20px;
+    border-top: 1px solid rgba(230, 238, 251, 0.12);
+    position: relative; z-index: 1;
+  }
+  .carousel-btn {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(230, 238, 251, 0.18);
+    color: #E6EEFB; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.25s; flex-shrink: 0;
+  }
+  .carousel-btn:hover {
+    background: rgba(109, 200, 255, 0.15);
+    border-color: rgba(109, 200, 255, 0.55);
+    color: #6DC8FF;
+    transform: translateY(-1px);
+  }
+  .carousel-btn svg { width: 13px; height: 13px; }
+  .carousel-dots { display: flex; align-items: center; gap: 8px; flex: 1; justify-content: center; }
+  .carousel-dots .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(230, 238, 251, 0.22);
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(.2,.8,.2,1);
+  }
+  .carousel-dots .dot:hover { background: rgba(230, 238, 251, 0.45); }
+  .carousel-dots .dot.active {
+    width: 24px; border-radius: 100px; background: #6DC8FF;
+    box-shadow: 0 0 10px rgba(109, 200, 255, 0.45);
+  }
+
+  .carousel-track-container { position: relative; overflow: hidden; background: var(--bg-section); }
+  .carousel-track { display: flex; transition: transform 0.55s cubic-bezier(.2, .8, .2, 1); height: 100%; }
+  .carousel-slide {
+    min-width: 100%;
+    padding: 26px 24px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+
+  .agent-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .carousel-slide[data-cards="2"] .agent-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .agent-card {
+    position: relative;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 18px 22px;
+    display: flex; flex-direction: column;
+    transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+    overflow: hidden;
+  }
+  .agent-card::before {
+    content: ""; position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s cubic-bezier(.2,.8,.2,1);
+  }
+  .agent-card:hover {
+    border-color: var(--line-strong);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .agent-card:hover::before { transform: scaleX(1); }
+
+  .agent-icon-wrap {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: linear-gradient(135deg, #E6EEFB 0%, #D7E4F7 100%);
+    border: 1px solid #C7D8EF;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+    color: var(--accent-blue);
+    position: relative; flex-shrink: 0;
+    transition: all 0.35s cubic-bezier(.2,.8,.2,1);
+  }
+  .agent-icon-wrap::after {
+    content: ""; position: absolute;
+    bottom: -2px; right: -2px;
+    width: 8px; height: 8px;
+    background: #6DC8FF;
+    border: 1.5px solid var(--bg-elevated);
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(109, 200, 255, 0.55);
+  }
+  .agent-card:hover .agent-icon-wrap {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--ink-800) 100%);
+    border-color: var(--ink-800); color: #F2F6FC;
+  }
+  .agent-icon-wrap svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .agent-meta {
+    font-family: var(--font-mono);
+    font-size: 9.5px; letter-spacing: 0.22em;
+    color: var(--ink-400); text-transform: uppercase;
+    font-weight: 500; margin-bottom: 6px;
+  }
+  .agent-card h3 {
+    font-family: var(--font-display);
+    font-weight: 500; font-size: 15.5px;
+    line-height: 1.25; letter-spacing: -0.012em;
+    color: var(--ink-900); margin-bottom: 8px;
+  }
+  .agent-card p { font-size: 12.5px; line-height: 1.5; color: var(--ink-500); }
+  .agent-sub {
+    margin-top: 10px; padding-top: 10px;
+    border-top: 1px dashed var(--line);
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 0.04em;
+    color: var(--ink-400); line-height: 1.5;
+  }
+  .agent-sub strong { color: var(--ink-700); font-weight: 600; }
+
+  /* Group nav strip (bottom) */
+  .carousel-tabs {
+    display: flex; gap: 8px;
+    max-width: 1280px; margin: 14px auto 0;
+  }
+  .carousel-tab {
+    flex: 1; padding: 12px 16px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 10px; cursor: pointer;
+    transition: all 0.3s;
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--font-body); font-weight: 500;
+    color: var(--ink-600); text-align: left;
+  }
+  .carousel-tab:hover { border-color: var(--line-strong); color: var(--ink-900); }
+  .carousel-tab.active {
+    background: var(--ink-900); border-color: var(--ink-900);
+    color: #F2F6FC; box-shadow: var(--shadow-sm);
+  }
+  .carousel-tab .tab-num {
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 0.16em;
+    color: var(--ink-400); font-weight: 600;
+  }
+  .carousel-tab.active .tab-num { color: #6DC8FF; }
+  .carousel-tab .tab-name { font-size: 13px; letter-spacing: -0.005em; }
+  .carousel-tab .tab-count {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 10px; color: var(--ink-400); letter-spacing: 0.1em;
+  }
+  .carousel-tab.active .tab-count { color: rgba(230, 238, 251, 0.55); }
+
+  /* ============ ARCHITECTURE · LIVE PIPELINE DIAGRAM ============ */
+  #architecture .hero { margin-bottom: 24px; max-width: 1280px; }
+  #architecture .hero .eyebrow { margin-bottom: 14px; padding: 5px 11px 5px 9px; font-size: 10px; }
+  #architecture .hero h1 {
+    font-size: clamp(28px, 3.4vw, 40px);
+    line-height: 1.08;
+    margin-bottom: 12px;
+    max-width: 920px;
+  }
+  #architecture .hero p.sub { font-size: 14.5px; line-height: 1.55; max-width: 940px; }
+  #architecture { padding-top: 44px; padding-bottom: 50px; }
+
+  .pipeline-canvas {
+    max-width: 1280px;
+    margin: 0 auto;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1240 / 720;
+    background: linear-gradient(160deg, #061226 0%, #0B1F3A 50%, #123A72 100%);
+    border: 1px solid #0B1F3A;
+    border-radius: 18px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  .pipeline-canvas::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(600px 400px at 100% 0%, rgba(109, 200, 255, 0.16), transparent 60%),
+      radial-gradient(500px 350px at 0% 100%, rgba(26, 79, 163, 0.35), transparent 60%);
+    pointer-events: none;
+  }
+  .pipeline-canvas::after {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(230, 238, 251, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(230, 238, 251, 0.03) 1px, transparent 1px);
+    background-size: 36px 36px;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 35%, transparent 85%);
+    mask-image: radial-gradient(ellipse at 50% 50%, black 35%, transparent 85%);
+    pointer-events: none;
+  }
+
+  .pipeline-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .pipeline-svg .flow-line {
+    stroke: rgba(109, 200, 255, 0.5);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 5 6;
+    animation: pipelineDash 22s linear infinite;
+    filter: drop-shadow(0 0 4px rgba(109, 200, 255, 0.45));
+  }
+  @keyframes pipelineDash {
+    to { stroke-dashoffset: -700; }
+  }
+  .pipeline-svg .flow-line.flow-primary {
+    stroke: rgba(109, 200, 255, 0.72);
+    stroke-width: 2;
+  }
+  .pipeline-svg .flow-line.flow-faint {
+    stroke: rgba(109, 200, 255, 0.26);
+    stroke-width: 1.2;
+  }
+  .pipeline-svg .pulse-dot {
+    fill: #6DC8FF;
+    filter: drop-shadow(0 0 6px #6DC8FF) drop-shadow(0 0 12px rgba(109, 200, 255, 0.6));
+  }
+  .pipeline-svg .glow-ring {
+    fill: rgba(109, 200, 255, 0.08);
+    stroke: rgba(109, 200, 255, 0.4);
+    stroke-width: 1;
+    animation: glowRing 3s ease-in-out infinite;
+  }
+  @keyframes glowRing {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(1.15); }
+  }
+
+  /* Lane labels */
+  .pipeline-lane {
+    position: absolute;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    color: rgba(230, 238, 251, 0.55);
+    text-transform: uppercase;
+    font-weight: 500;
+    z-index: 2;
+    white-space: nowrap;
+  }
+  .pipeline-lane.lane-top { top: 3%; }
+  .pipeline-lane .lane-num { color: #6DC8FF; margin-right: 6px; font-weight: 600; }
+  .pipeline-lane.lane-divider {
+    top: 59%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: #6DC8FF;
+    font-weight: 600;
+  }
+  .pipeline-lane.lane-divider::before,
+  .pipeline-lane.lane-divider::after {
+    content: "";
+    width: 56px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(109, 200, 255, 0.45), transparent);
+  }
+
+  /* Node cards (positioned absolute over the canvas) */
+  .pnode {
+    position: absolute;
+    width: 16.94%;
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(230, 238, 251, 0.13);
+    border-radius: 12px;
+    padding: 10px 12px 12px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.4s cubic-bezier(.2,.8,.2,1);
+    z-index: 3;
+    overflow: hidden;
+  }
+  .pnode::before {
+    content: ""; position: absolute;
+    top: 0; left: 0; right: 0; height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent);
+    pointer-events: none;
+    border-radius: 12px 12px 0 0;
+  }
+  .pnode:hover {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(109, 200, 255, 0.55);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.55), 0 0 24px rgba(109, 200, 255, 0.2);
+  }
+  .pnode:hover .pnode-icon {
+    background: rgba(109, 200, 255, 0.22);
+    border-color: rgba(109, 200, 255, 0.6);
+    transform: scale(1.05);
+  }
+
+  .pnode-header {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 7px;
+  }
+  .pnode-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: rgba(109, 200, 255, 0.12);
+    border: 1px solid rgba(109, 200, 255, 0.28);
+    display: flex; align-items: center; justify-content: center;
+    color: #6DC8FF;
+    flex-shrink: 0;
+    transition: all 0.4s cubic-bezier(.2,.8,.2,1);
+  }
+  .pnode-icon svg {
+    width: 14px; height: 14px;
+    fill: none; stroke: currentColor; stroke-width: 1.7;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .pnode-tag-mono {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(109, 200, 255, 0.12);
+    color: #6DC8FF;
+    border: 1px solid rgba(109, 200, 255, 0.25);
+    font-weight: 600;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .pnode-title {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: #F2F6FC;
+    line-height: 1.2;
+    margin-bottom: 3px;
+  }
+  .pnode-sub {
+    font-size: 10.5px;
+    color: rgba(230, 238, 251, 0.65);
+    line-height: 1.4;
+  }
+  .pnode-list {
+    list-style: none;
+    padding: 0;
+    margin: 7px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .pnode-list li {
+    font-size: 10px;
+    line-height: 1.55;
+    color: rgba(230, 238, 251, 0.62);
+    padding-left: 9px;
+    position: relative;
+  }
+  .pnode-list li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 7px;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: rgba(109, 200, 255, 0.55);
+  }
+
+  /* Variants */
+  .pnode.var-source .pnode-icon {
+    background: linear-gradient(135deg, rgba(176, 141, 62, 0.35), rgba(176, 141, 62, 0.15));
+    border-color: rgba(176, 141, 62, 0.45);
+    color: #DDC68A;
+  }
+  .pnode.var-source .pnode-tag-mono {
+    background: rgba(176, 141, 62, 0.15);
+    color: #DDC68A;
+    border-color: rgba(176, 141, 62, 0.3);
+  }
+  .pnode.var-store {
+    background: rgba(109, 200, 255, 0.055);
+    border-color: rgba(109, 200, 255, 0.22);
+  }
+  .pnode.var-store .pnode-icon {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08));
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #F2F6FC;
+  }
+  .pnode.var-store .pnode-tag-mono {
+    background: rgba(255, 255, 255, 0.1);
+    color: #F2F6FC;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  .pnode.var-agent .pnode-icon {
+    background: linear-gradient(135deg, rgba(109, 200, 255, 0.22), rgba(109, 200, 255, 0.08));
+    border-color: rgba(109, 200, 255, 0.4);
+  }
+
+  /* Positions (% based; matches viewBox 1240 x 720) */
+  .pos-audio    { left: 2.42%;  top: 8%; }
+  .pos-langdet  { left: 21.77%; top: 8%; }
+  .pos-trnscr   { left: 41.13%; top: 8%; }
+  .pos-diariz   { left: 21.77%; top: 33%; }
+  .pos-trnscpt  { left: 60.48%; top: 33%; }
+  .pos-segments { left: 79.84%; top: 33%; }
+  .pos-score    { left: 2.42%;  top: 68%; }
+  .pos-sntmt    { left: 21.77%; top: 68%; }
+  .pos-smmry    { left: 41.13%; top: 68%; }
+  .pos-insgts   { left: 60.48%; top: 68%; }
+  .pos-hold     { left: 79.84%; top: 68%; }
+
+  /* "Live" pulse indicator for each agent card → conveys autonomous activity */
+  .pnode.var-agent .agent-pulse {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #6DC8FF;
+    box-shadow: 0 0 0 0 rgba(109, 200, 255, 0.7);
+    animation: agentLive 2.4s cubic-bezier(.2,.8,.2,1) infinite;
+    z-index: 4;
+  }
+  @keyframes agentLive {
+    0%, 100% { opacity: 0.55; box-shadow: 0 0 0 0 rgba(109, 200, 255, 0.65); }
+    50%      { opacity: 1;    box-shadow: 0 0 0 5px rgba(109, 200, 255, 0); }
+  }
+  /* Stagger the pulses so the five agents feel autonomous, not synchronised */
+  .pos-score   .agent-pulse { animation-delay: 0s;    }
+  .pos-sntmt   .agent-pulse { animation-delay: 0.45s; }
+  .pos-smmry   .agent-pulse { animation-delay: 0.9s;  }
+  .pos-insgts  .agent-pulse { animation-delay: 1.35s; }
+  .pos-hold    .agent-pulse { animation-delay: 1.8s;  }
+
+  /* Lane label positions */
+  .lane-ingest  { left: 4.0%; }
+  .lane-detect  { left: 24.5%; }
+  .lane-trsc    { left: 43.8%; }
+  .lane-store   { left: 67.5%; }
+
   /* ============ RESPONSIVE ============ */
   @media (max-width: 1200px) {
     #opportunity .card.span-3 { grid-column: span 6; }
+  }
+  @media (max-width: 1100px) {
+    .carousel-frame { grid-template-columns: 1fr; }
+    .carousel-info { padding: 24px 24px 20px; }
+    .agent-grid { grid-template-columns: repeat(2, 1fr); }
+    .carousel-slide[data-cards="2"] .agent-grid { grid-template-columns: repeat(2, 1fr); }
+    .carousel-tabs { flex-wrap: wrap; }
+    .outcomes-board { grid-template-columns: 1fr; }
+    .spotlight { min-height: auto; }
+    .pipeline-canvas { aspect-ratio: 1240 / 720; }
+    .pnode-title { font-size: 12px; }
+    .pnode-sub { font-size: 10px; }
+    .pnode-list li { font-size: 9.5px; }
   }
   @media (max-width: 900px) {
     .sidebar { width: var(--nav-w-collapsed); }
@@ -811,6 +1707,10 @@
     .hero-mark { display: none; }
     .processor-stats { grid-template-columns: repeat(2, 1fr); }
     .processor, .convo-frame { padding: 28px; }
+    .agent-grid, .carousel-slide[data-cards="2"] .agent-grid { grid-template-columns: 1fr; }
+    .outcomes-grid { grid-template-columns: 1fr; }
+    .spotlight { padding: 24px; }
+    .spotlight-title { font-size: 26px; }
   }
 
   /* ============ STAGGER ANIMATIONS ============ */
@@ -857,9 +1757,13 @@
       <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
       <span class="label">Problem Statement</span>
     </li>
+    <li class="nav-item" data-target="usecases">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>
+      <span class="label">Use Cases</span>
+    </li>
     <li class="nav-item" data-target="modules">
       <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-      <span class="label">AI Solution Modules</span>
+      <span class="label">AI Components</span>
     </li>
     <li class="nav-item" data-target="architecture">
       <svg class="icon" viewBox="0 0 24 24"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>
@@ -968,99 +1872,276 @@
     </div>
   </section>
 
-  <!-- ============== SECTION 2: AI SOLUTION MODULES ============== -->
+  <!-- ============== SECTION 2: USE CASES ============== -->
+  <section class="section" id="usecases">
+    <div class="hero">
+      <div class="eyebrow">Use Cases · 02</div>
+      <h1>Each problem, <span class="accent">a measurable outcome.</span></h1>
+      <p class="sub">Seven business applications running on the same agent stack — from full-coverage quality audits to cross-sell revenue uplift, agent coaching, and high-value sentiment monitoring. Click any tile to bring it into focus.</p>
+    </div>
+
+    <div class="outcomes-board" id="outcomesBoard">
+      <!-- Spotlight (left) -->
+      <article class="spotlight">
+        <div class="spotlight-row">
+          <div class="spotlight-icon" data-spotlight-icon>
+            <svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9.5-9 11-5.5-1.5-9-6-9-11V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg>
+          </div>
+          <div class="spotlight-tags">
+            <span class="spotlight-tag tag-hero" data-spotlight-hero>Flagship</span>
+            <span class="spotlight-tag tag-problem" data-spotlight-problem>Solves · P02</span>
+          </div>
+        </div>
+
+        <h2 class="spotlight-title" data-spotlight-title>100% AI-Driven Quality Audits</h2>
+        <p class="spotlight-lead" data-spotlight-lead>Every call audited automatically. Sample-based QA — historically limited to 1–2% of calls — is replaced by comprehensive, consistent, real-time assessment across all conversations.</p>
+
+        <div class="spotlight-metric">
+          <div class="metric-v" data-spotlight-metric-v>100<span class="metric-u">%</span></div>
+          <div class="metric-l" data-spotlight-metric-l>Call coverage vs 1–2% manual sample</div>
+        </div>
+
+        <div class="spotlight-outcomes">
+          <div class="outcomes-label">Key Outcomes</div>
+          <ul class="outcomes-grid" data-spotlight-outcomes>
+            <li>Full corpus audited — no sample bias</li>
+            <li>Consistent scoring rubric, no auditor drift</li>
+            <li>Near real-time signal for supervisors</li>
+            <li>Audit trail ready for regulators</li>
+          </ul>
+        </div>
+
+        <div class="spotlight-footer">
+          <div class="footer-group">
+            <span class="footer-label">Powered by</span>
+            <span class="agent-chip-group" data-spotlight-agents>
+              <span class="agent-chip">A·04</span>
+              <span class="agent-chip">A·05</span>
+              <span class="agent-chip">A·06</span>
+              <span class="agent-chip">A·07</span>
+            </span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Tile list (right) -->
+      <div class="usecase-list" id="usecaseList">
+        <button class="usecase-tile active" data-uc="0">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9.5-9 11-5.5-1.5-9-6-9-11V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg></div>
+          <div class="tile-body">
+            <div class="tile-name">100% Quality Audits</div>
+            <div class="tile-sub">Every call · No sampling</div>
+          </div>
+          <span class="tile-flag">Flagship</span>
+        </button>
+
+        <button class="usecase-tile" data-uc="1">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
+          <div class="tile-body">
+            <div class="tile-name">Powering Cross-Sell</div>
+            <div class="tile-sub">AED 7.9M opportunity</div>
+          </div>
+        </button>
+
+        <button class="usecase-tile" data-uc="2">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="5"/><rect x="12" y="9" width="3" height="9"/><rect x="17" y="5" width="3" height="13"/></svg></div>
+          <div class="tile-body">
+            <div class="tile-name">Agent Performance Analytics</div>
+            <div class="tile-sub">Continuous · Objective</div>
+          </div>
+        </button>
+
+        <button class="usecase-tile" data-uc="3">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="tile-body">
+            <div class="tile-name">AI Coaching for Agents</div>
+            <div class="tile-sub">Personalised · Self-serve</div>
+          </div>
+        </button>
+
+        <button class="usecase-tile" data-uc="4">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M12 21s-8-4.5-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-8 11-8 11"/><line x1="12" y1="9" x2="12" y2="12"/><line x1="12" y1="15" x2="12.01" y2="15"/></svg></div>
+          <div class="tile-body">
+            <div class="tile-name">Sentiment Management</div>
+            <div class="tile-sub">HVC · Real-time escalation</div>
+          </div>
+        </button>
+
+        <button class="usecase-tile" data-uc="5">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l8 4"/><path d="M12 12L4.5 8"/></svg></div>
+          <div class="tile-body">
+            <div class="tile-name">Insights into Calls</div>
+            <div class="tile-sub">Volumes · Themes · Products</div>
+          </div>
+        </button>
+
+        <button class="usecase-tile" data-uc="6">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><circle cx="11.5" cy="14.5" r="2.5"/><line x1="13.5" y1="16.5" x2="15.5" y2="18.5"/></svg></div>
+          <div class="tile-body">
+            <div class="tile-name">Call Search</div>
+            <div class="tile-sub">Any call · In seconds</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== SECTION 3: AI COMPONENTS ============== -->
   <section class="section" id="modules">
     <div class="hero">
-      <div class="eyebrow">Features & Use Cases · 02</div>
-      <h1>Five AI components. <span class="accent">Seven business outcomes.</span></h1>
-      <p class="sub">A focused stack of agentic AI components powers every downstream use case — from quality audits to cross-sell. Independently observable, jointly composable, built for the ADIB context.</p>
+      <div class="eyebrow">AI Components · 03</div>
+      <h1>Eight specialised agents. <span class="accent">Three intelligence layers.</span></h1>
+      <p class="sub">A focused stack of agentic AI components working as a pipeline — <em>listening</em> to the raw audio, <em>understanding</em> the conversation, and <em>evaluating</em> agent performance. Each agent is independently observable and version-controlled.</p>
     </div>
 
-    <div class="feature-row">
-      <h2>AI Components</h2>
-      <div class="meta">Core building blocks</div>
-    </div>
+    <div class="carousel" id="agentCarousel">
+      <div class="carousel-frame">
+        <!-- Left info panel -->
+        <aside class="carousel-info">
+          <div class="carousel-counter">
+            <span class="current" data-counter>01</span>
+            <span class="sep">/</span>
+            <span class="total">03</span>
+          </div>
+          <div class="carousel-label" data-label>Listen &amp; Transcribe</div>
+          <h2 class="carousel-title" data-title>Audio Intelligence</h2>
+          <p class="carousel-desc" data-desc>Agents that work directly on the raw audio signal — identifying the spoken language, distinguishing customer from agent, and converting speech into searchable text. The foundation every other component depends on.</p>
 
-    <div class="grid">
-      <div class="card span-4">
-        <span class="index">AI·01</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M5 8h14M5 12h14M5 16h10"/><circle cx="19" cy="16" r="2"/></svg></div>
-        <h3>Language Identification & Transcripts</h3>
-        <p>Whisper-based transcription tuned for ADIB's call mix: 90% Arabic, 10% English. Transcripts power every downstream module.</p>
-      </div>
-      <div class="card span-4">
-        <span class="index">AI·02</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><circle cx="17" cy="7" r="3"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg></div>
-        <h3>Speaker Diarization</h3>
-        <p>Distinguishes agent from customer turn-by-turn. Foundation for interaction scoring, sentiment, and hold analytics.</p>
-      </div>
-      <div class="card span-4">
-        <span class="index">AI·03</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 21s-8-4.5-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-8 11-8 11"/></svg></div>
-        <h3>Sentiment Identification</h3>
-        <p>Turn-by-turn emotional trajectory for customer and agent. Surfaces escalation risk and satisfaction signals.</p>
-      </div>
-      <div class="card span-4">
-        <span class="index">AI·04</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg></div>
-        <h3>Call Topics & Summary</h3>
-        <p>Concise call narratives ready for case files, supervisor review, and follow-up routing. Searchable across the full corpus.</p>
-      </div>
-      <div class="card span-4">
-        <span class="index">AI·05</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15 8 22 9 17 14 18 21 12 18 6 21 7 14 2 9 9 8 12 2"/></svg></div>
-        <h3>Key Conversation Highlights</h3>
-        <p>Structured metrics extracted from every conversation: priority, escalation flags, intent, eligibility, and quality indicators.</p>
-      </div>
-      <div class="card span-4" style="background: linear-gradient(160deg, #0B1F3A, #123A72); border-color: #0B1F3A;">
-        <span class="index" style="color: rgba(255,255,255,0.4);">·</span>
-        <div class="card-icon" style="background: rgba(230, 238, 251, 0.12); border-color: rgba(230, 238, 251, 0.18); color: #B7CCEB;"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-        <h3 style="color: #F2F6FC;">100% AI-Driven Quality Audits</h3>
-        <p style="color: #C5D3E5;">Every call audited automatically. Sample-based QA replaced by comprehensive, consistent, real-time assessment across all conversations.</p>
-      </div>
-    </div>
+          <div class="carousel-stat">
+            <span class="count" data-count>3</span>
+            <span>Agents in this layer</span>
+          </div>
 
-    <div class="feature-row" style="margin-top: 56px;">
-      <h2>Use Cases</h2>
-      <div class="meta">Six business applications</div>
-    </div>
+          <div class="carousel-controls">
+            <button class="carousel-btn" data-prev aria-label="Previous group">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="carousel-dots">
+              <span class="dot active" data-slide="0"></span>
+              <span class="dot" data-slide="1"></span>
+              <span class="dot" data-slide="2"></span>
+            </div>
+            <button class="carousel-btn" data-next aria-label="Next group">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </aside>
 
-    <div class="grid">
-      <div class="card span-4">
-        <span class="index">UC·01</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
-        <h3>Insights into Calls</h3>
-        <p>100% view into the types and volumes of enquiries across all products and services of the bank.</p>
+        <!-- Right slides -->
+        <div class="carousel-track-container">
+          <div class="carousel-track" id="carouselTrack">
+
+            <!-- Slide 1 · Audio Intelligence -->
+            <div class="carousel-slide" data-cards="3">
+              <div class="agent-grid">
+                <article class="agent-card">
+                  <div class="agent-icon-wrap">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+                  </div>
+                  <div class="agent-meta">A·01 · Audio Layer</div>
+                  <h3>Language Detection</h3>
+                  <p>Identifies Arabic vs English directly from the audio signal — routes each call to the right transcription model.</p>
+                </article>
+
+                <article class="agent-card">
+                  <div class="agent-icon-wrap">
+                    <svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3.2"/><circle cx="16" cy="8" r="2.6"/><path d="M3 19v-1a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v1"/><path d="M14 19v-1a3 3 0 0 1 3-3h1a3 3 0 0 1 3 3v1"/></svg>
+                  </div>
+                  <div class="agent-meta">A·02 · Audio Layer</div>
+                  <h3>Speaker Diarization</h3>
+                  <p>Distinguishes the customer from the agent turn-by-turn — the foundation for every downstream analysis.</p>
+                </article>
+
+                <article class="agent-card">
+                  <div class="agent-icon-wrap">
+                    <svg viewBox="0 0 24 24"><path d="M4 12h2M8 8v8M12 5v14M16 8v8M20 12h-2"/></svg>
+                  </div>
+                  <div class="agent-meta">A·03 · Audio Layer</div>
+                  <h3>Audio Transcription</h3>
+                  <p>Whisper-based transcription tuned for the ADIB call mix — Arabic and English, dialect-aware, 80% accuracy on Arabic.</p>
+                </article>
+              </div>
+            </div>
+
+            <!-- Slide 2 · Conversation Understanding -->
+            <div class="carousel-slide" data-cards="3">
+              <div class="agent-grid">
+                <article class="agent-card">
+                  <div class="agent-icon-wrap">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg>
+                  </div>
+                  <div class="agent-meta">A·04 · Comprehension</div>
+                  <h3>Call Summary</h3>
+                  <p>Concise call narratives ready for case files, supervisor review, and search across the full corpus.</p>
+                </article>
+
+                <article class="agent-card">
+                  <div class="agent-icon-wrap">
+                    <svg viewBox="0 0 24 24"><polygon points="12 2 14.5 8.5 21 9.3 16.2 13.8 17.5 20 12 16.8 6.5 20 7.8 13.8 3 9.3 9.5 8.5 12 2"/></svg>
+                  </div>
+                  <div class="agent-meta">A·05 · Comprehension</div>
+                  <h3>Key Insights</h3>
+                  <p>Structured extraction from every conversation — what the customer shared, what the agent shared, the product discussed.</p>
+                  <div class="agent-sub"><strong>+ NTB Classification</strong> · flags every caller as a new-to-bank prospect or existing customer.</div>
+                </article>
+
+                <article class="agent-card">
+                  <div class="agent-icon-wrap">
+                    <svg viewBox="0 0 24 24"><path d="M3 12h3l2-5 4 10 2-5 2 3h5"/></svg>
+                  </div>
+                  <div class="agent-meta">A·06 · Comprehension</div>
+                  <h3>Sentiment Identification</h3>
+                  <p>Turn-by-turn emotional trajectory for customer and agent from the transcript — surfaces escalation risk.</p>
+                </article>
+              </div>
+            </div>
+
+            <!-- Slide 3 · Performance Analytics -->
+            <div class="carousel-slide" data-cards="2">
+              <div class="agent-grid">
+                <article class="agent-card">
+                  <div class="agent-icon-wrap">
+                    <svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.1 6.6.9-4.8 4.7 1.2 6.6L12 17.3 6.1 20.3l1.2-6.6L2.5 9l6.6-.9L12 2z"/></svg>
+                  </div>
+                  <div class="agent-meta">A·07 · Evaluation Layer</div>
+                  <h3>Agent Interaction Scoring</h3>
+                  <p>Rates every conversation on a 1-to-5 scale using the transcript — covering tone, resolution, compliance, and clarity. Feeds the agent leaderboard.</p>
+                  <div class="agent-sub"><strong>Output:</strong> Score · Reasoning · Coaching cues</div>
+                </article>
+
+                <article class="agent-card">
+                  <div class="agent-icon-wrap">
+                    <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+                  </div>
+                  <div class="agent-meta">A·08 · Evaluation Layer</div>
+                  <h3>Idle Time Analytics</h3>
+                  <p>Detects every non-speech segment longer than 8 seconds — counts occurrences across the call and summarises the likely reason for each pause.</p>
+                  <div class="agent-sub"><strong>Output:</strong> Idle segments · Frequency · Root cause</div>
+                </article>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </div>
-      <div class="card span-4">
-        <span class="index">UC·02</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/></svg></div>
-        <h3>Agent Performance Analytics</h3>
-        <p>Continuously evaluates agent performance based on all their customer conversations. Delivers quantitative and qualitative insights to support coaching and training.</p>
-      </div>
-      <div class="card span-4">
-        <span class="index">UC·03</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg></div>
-        <h3>AI Coaching for Agents</h3>
-        <p>AI assistant offering actionable improvement suggestions for agents — personalised, grounded in their own conversations.</p>
-      </div>
-      <div class="card span-4">
-        <span class="index">UC·04</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.38 8.38 0 0 1 3 11.5 8.5 8.5 0 0 1 11.5 3 8.38 8.38 0 0 1 21 11.5z"/><circle cx="12" cy="11.5" r="2"/></svg></div>
-        <h3>Sentiment Management</h3>
-        <p>Negative sentiment calls with high-performing or profitable clients will be escalated to team leaders for better handling of the situation.</p>
-      </div>
-      <div class="card span-4">
-        <span class="index">UC·05</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-        <h3>Powering Cross-Sell</h3>
-        <p>Ability to track and re-engage customers who have made enquiries to take banking products in the future. AED 7.9M annual opportunity identified.</p>
-      </div>
-      <div class="card span-4">
-        <span class="index">UC·06</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></div>
-        <h3>Call Search Capability</h3>
-        <p>Leverage the call summarisation content to search for calls pertaining to any particular type of enquiry or issue for further investigation.</p>
+
+      <!-- Group tabs -->
+      <div class="carousel-tabs">
+        <button class="carousel-tab active" data-slide="0">
+          <span class="tab-num">01</span>
+          <span class="tab-name">Audio Intelligence</span>
+          <span class="tab-count">3 AGENTS</span>
+        </button>
+        <button class="carousel-tab" data-slide="1">
+          <span class="tab-num">02</span>
+          <span class="tab-name">Conversation Understanding</span>
+          <span class="tab-count">3 AGENTS</span>
+        </button>
+        <button class="carousel-tab" data-slide="2">
+          <span class="tab-num">03</span>
+          <span class="tab-name">Performance Analytics</span>
+          <span class="tab-count">2 AGENTS</span>
+        </button>
       </div>
     </div>
   </section>
@@ -1068,216 +2149,213 @@
   <!-- ============== SECTION 3: ARCHITECTURE ============== -->
   <section class="section" id="architecture">
     <div class="hero">
-      <div class="eyebrow">Solution Architecture · 03</div>
+      <div class="eyebrow">Solution Architecture · 04</div>
       <h1>From recorded call to <span class="accent">manager dashboard.</span></h1>
-      <p class="sub">A Kafka-Spark streaming pipeline with batch backup handles every call. Agentic AI components enrich each conversation with sentiment, escalation signals, and structured summaries — flowing into the data lake and surfacing on dashboards and leaderboards.</p>
+      <p class="sub">A multi-agent AI pipeline — language routing, bilingual transcription, parallel data streams feeding five downstream agents that enrich every call.</p>
     </div>
 
-    <div class="arch-canvas" style="aspect-ratio: 16/8;">
-      <svg viewBox="0 0 1280 640" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" style="position:absolute; inset:0; width:100%; height:100%;">
-        <defs>
-          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="#A3B0C5"/>
-          </marker>
-          <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="#1A4FA3"/>
-          </marker>
-          <linearGradient id="nodeGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#FFFFFF"/>
-            <stop offset="100%" stop-color="#F7F8FA"/>
-          </linearGradient>
-          <linearGradient id="aiGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#E6EEFB"/>
-            <stop offset="100%" stop-color="#D7E4F7"/>
-          </linearGradient>
-        </defs>
+    <div class="pipeline-canvas" aria-label="AI Call Analytics Pipeline Architecture">
+      <!-- Lane labels (top) -->
+      <div class="pipeline-lane lane-top lane-ingest"><span class="lane-num">01</span>Ingest</div>
+      <div class="pipeline-lane lane-top lane-detect"><span class="lane-num">02</span>Detect</div>
+      <div class="pipeline-lane lane-top lane-trsc"><span class="lane-num">03</span>Transcribe</div>
+      <div class="pipeline-lane lane-top lane-store"><span class="lane-num">04</span>Structured Data</div>
 
-        <!-- Lane labels -->
-        <text x="40" y="40" font-family="JetBrains Mono, monospace" font-size="11" fill="#7A8BA8" letter-spacing="2">INGEST</text>
-        <text x="320" y="40" font-family="JetBrains Mono, monospace" font-size="11" fill="#7A8BA8" letter-spacing="2">PROCESS</text>
-        <text x="680" y="40" font-family="JetBrains Mono, monospace" font-size="11" fill="#7A8BA8" letter-spacing="2">STORE</text>
-        <text x="900" y="40" font-family="JetBrains Mono, monospace" font-size="11" fill="#7A8BA8" letter-spacing="2">ENRICH (AGENTIC AI)</text>
-        <text x="1140" y="40" font-family="JetBrains Mono, monospace" font-size="11" fill="#7A8BA8" letter-spacing="2">SERVE</text>
+      <!-- Divider for the agentic row -->
+      <div class="pipeline-lane lane-divider"><span class="lane-num">05</span>Agentic AI Enrichment</div>
 
-        <!-- Call Centre Agent -->
-        <g>
-          <circle cx="100" cy="200" r="46" fill="url(#nodeGrad)" stroke="#D6DDE7" stroke-width="1.5"/>
-          <path d="M 100 178 a 16 16 0 1 1 0 32 a 16 16 0 1 1 0 -32 M 76 222 a 24 18 0 0 1 48 0" fill="none" stroke="#1A4FA3" stroke-width="1.5"/>
-          <text x="100" y="276" font-family="Inter" font-size="12" font-weight="500" fill="#0B1F3A" text-anchor="middle">Call Centre</text>
-          <text x="100" y="292" font-family="Inter" font-size="12" font-weight="500" fill="#0B1F3A" text-anchor="middle">Agent</text>
-        </g>
+      <!-- SVG: animated flow lines + pulse dots (viewBox 1240 x 720) -->
+      <svg class="pipeline-svg" viewBox="0 0 1240 720" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <!-- Primary horizontal flow: Audio → Lang Det → Transcription -->
+        <path class="flow-line flow-primary" d="M 240 98 L 270 98"/>
+        <path class="flow-line flow-primary" d="M 480 98 L 510 98"/>
 
-        <!-- Recorded Calls -->
-        <g>
-          <rect x="220" y="166" width="74" height="68" rx="10" fill="url(#nodeGrad)" stroke="#D6DDE7" stroke-width="1.5"/>
-          <path d="M 244 196 v 8 M 250 192 v 16 M 256 188 v 24 M 262 192 v 16 M 268 196 v 8" stroke="#1A4FA3" stroke-width="1.5" stroke-linecap="round"/>
-          <text x="257" y="262" font-family="Inter" font-size="12" font-weight="500" fill="#0B1F3A" text-anchor="middle">Recorded</text>
-          <text x="257" y="278" font-family="Inter" font-size="12" font-weight="500" fill="#0B1F3A" text-anchor="middle">Calls</text>
-        </g>
-        <line x1="146" y1="200" x2="218" y2="200" stroke="#A3B0C5" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <!-- Whisper Transcription → Diarization (curve down-left) -->
+        <path class="flow-line flow-primary" d="M 570 138 C 480 175, 420 215, 375 238"/>
 
-        <!-- Kafka + Spark Realtime -->
-        <g>
-          <rect x="340" y="130" width="220" height="60" rx="10" fill="url(#nodeGrad)" stroke="#D6DDE7" stroke-width="1.5"/>
-          <text x="450" y="158" font-family="Fraunces" font-size="14" font-weight="500" fill="#0B1F3A" text-anchor="middle">Kafka → Spark</text>
-          <text x="450" y="176" font-family="JetBrains Mono, monospace" font-size="10" fill="#7A8BA8" text-anchor="middle" letter-spacing="1">REALTIME STREAM</text>
-        </g>
+        <!-- Transcription → Transcripts (curve, stays above row 2) -->
+        <path class="flow-line" d="M 660 138 C 730 158, 790 198, 855 238"/>
+        <!-- Transcription → Speech Segments (long curve, arcs over) -->
+        <path class="flow-line" d="M 690 138 C 870 138, 990 178, 1095 238"/>
 
-        <!-- Spark / Python Batch -->
-        <g>
-          <rect x="340" y="210" width="220" height="60" rx="10" fill="url(#nodeGrad)" stroke="#D6DDE7" stroke-width="1.5"/>
-          <text x="450" y="238" font-family="Fraunces" font-size="14" font-weight="500" fill="#0B1F3A" text-anchor="middle">Spark / Python</text>
-          <text x="450" y="256" font-family="JetBrains Mono, monospace" font-size="10" fill="#7A8BA8" text-anchor="middle" letter-spacing="1">BATCH PROCESSING</text>
-        </g>
-        <line x1="294" y1="190" x2="338" y2="160" stroke="#A3B0C5" stroke-width="1.5" marker-end="url(#arrow)"/>
-        <line x1="294" y1="210" x2="338" y2="240" stroke="#A3B0C5" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <!-- Transcripts → Insights (clean vertical primary) -->
+        <path class="flow-line flow-primary" d="M 855 353 L 855 490"/>
+        <!-- Transcripts → Summary (curve in divider zone) -->
+        <path class="flow-line" d="M 820 353 C 770 395, 690 445, 615 490"/>
+        <!-- Transcripts → Sentiment (longer curve in divider zone) -->
+        <path class="flow-line" d="M 790 353 C 660 405, 480 460, 375 490"/>
+        <!-- Transcripts → Score (long arc, faint) -->
+        <path class="flow-line flow-faint" d="M 755 353 C 540 415, 280 465, 135 490"/>
 
-        <!-- STT -->
-        <g>
-          <rect x="600" y="170" width="90" height="60" rx="10" fill="url(#nodeGrad)" stroke="#D6DDE7" stroke-width="1.5"/>
-          <text x="645" y="198" font-family="Fraunces" font-size="13" font-weight="500" fill="#0B1F3A" text-anchor="middle">Speech-To</text>
-          <text x="645" y="214" font-family="Fraunces" font-size="13" font-weight="500" fill="#0B1F3A" text-anchor="middle">Text Engine</text>
-        </g>
-        <line x1="560" y1="160" x2="598" y2="190" stroke="#A3B0C5" stroke-width="1.5" marker-end="url(#arrow)"/>
-        <line x1="560" y1="240" x2="598" y2="210" stroke="#A3B0C5" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <!-- Diarization → Score (curve) -->
+        <path class="flow-line" d="M 375 353 C 375 405, 230 460, 135 490"/>
 
-        <!-- Data Store -->
-        <g>
-          <ellipse cx="745" cy="180" rx="34" ry="10" fill="#FFFFFF" stroke="#D6DDE7" stroke-width="1.5"/>
-          <path d="M 711 180 v 36 a 34 10 0 0 0 68 0 v -36" fill="url(#nodeGrad)" stroke="#D6DDE7" stroke-width="1.5"/>
-          <path d="M 711 198 a 34 10 0 0 0 68 0" fill="none" stroke="#D6DDE7" stroke-width="1.2"/>
-          <text x="745" y="248" font-family="Inter" font-size="12" font-weight="500" fill="#0B1F3A" text-anchor="middle">Data Store</text>
-        </g>
-        <line x1="690" y1="200" x2="711" y2="200" stroke="#A3B0C5" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <!-- Speech Segments → Hold (clean vertical primary) -->
+        <path class="flow-line flow-primary" d="M 1095 353 L 1095 490"/>
 
-        <!-- DataLake -->
-        <g>
-          <path d="M 822 120 q -10 -10 -22 0 q -8 -12 -22 0 q -8 -10 -22 0" fill="none" stroke="#1A4FA3" stroke-width="1.5"/>
-          <path d="M 756 140 q 14 -6 28 0 q 14 -6 28 0 q 14 -6 28 0" fill="none" stroke="#1A4FA3" stroke-width="1.2"/>
-          <text x="800" y="100" font-family="Inter" font-size="12" font-weight="500" fill="#0B1F3A" text-anchor="middle">DataLake</text>
-        </g>
-        <line x1="745" y1="160" x2="772" y2="142" stroke="#A3B0C5" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <!-- Glow ring around the central data hub -->
+        <circle class="glow-ring" cx="855" cy="295" r="14"/>
 
-        <!-- Agentic AI components header -->
-        <text x="990" y="290" font-family="JetBrains Mono, monospace" font-size="10" fill="#1A4FA3" font-weight="600" letter-spacing="2" text-anchor="middle">AGENTIC AI COMPONENTS</text>
-
-        <!-- AI Block 1: Sentiment & Priority Scoring -->
-        <g>
-          <rect x="852" y="320" width="120" height="86" rx="10" fill="url(#aiGrad)" stroke="#D7E4F7" stroke-width="1.5"/>
-          <rect x="892" y="334" width="40" height="40" rx="6" fill="#1A4FA3"/>
-          <circle cx="912" cy="346" r="2" fill="#FFFFFF"/><circle cx="906" cy="354" r="2" fill="#FFFFFF"/><circle cx="918" cy="354" r="2" fill="#FFFFFF"/><circle cx="912" cy="362" r="2" fill="#FFFFFF"/>
-          <text x="912" y="394" font-family="Inter" font-size="10.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Sentiment &amp;</text>
-          <text x="912" y="406" font-family="Inter" font-size="10.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Priority Scoring</text>
-        </g>
-
-        <!-- AI Block 2: Escalation Detection -->
-        <g>
-          <rect x="990" y="320" width="120" height="86" rx="10" fill="url(#aiGrad)" stroke="#D7E4F7" stroke-width="1.5"/>
-          <rect x="1030" y="334" width="40" height="40" rx="6" fill="#1A4FA3"/>
-          <circle cx="1050" cy="346" r="2" fill="#FFFFFF"/><circle cx="1044" cy="354" r="2" fill="#FFFFFF"/><circle cx="1056" cy="354" r="2" fill="#FFFFFF"/><circle cx="1050" cy="362" r="2" fill="#FFFFFF"/>
-          <text x="1050" y="394" font-family="Inter" font-size="10.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Escalation</text>
-          <text x="1050" y="406" font-family="Inter" font-size="10.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Detection</text>
-        </g>
-
-        <!-- AI Block 3: Conversation Summary -->
-        <g>
-          <rect x="1128" y="320" width="120" height="86" rx="10" fill="url(#aiGrad)" stroke="#D7E4F7" stroke-width="1.5"/>
-          <rect x="1168" y="334" width="40" height="40" rx="6" fill="#1A4FA3"/>
-          <circle cx="1188" cy="346" r="2" fill="#FFFFFF"/><circle cx="1182" cy="354" r="2" fill="#FFFFFF"/><circle cx="1194" cy="354" r="2" fill="#FFFFFF"/><circle cx="1188" cy="362" r="2" fill="#FFFFFF"/>
-          <text x="1188" y="394" font-family="Inter" font-size="10.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Conversation</text>
-          <text x="1188" y="406" font-family="Inter" font-size="10.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Summary</text>
-        </g>
-
-        <!-- AI Block 4: Data Validation -->
-        <g>
-          <rect x="990" y="460" width="120" height="86" rx="10" fill="url(#aiGrad)" stroke="#D7E4F7" stroke-width="1.5"/>
-          <rect x="1030" y="474" width="40" height="40" rx="6" fill="#1A4FA3"/>
-          <circle cx="1050" cy="486" r="2" fill="#FFFFFF"/><circle cx="1044" cy="494" r="2" fill="#FFFFFF"/><circle cx="1056" cy="494" r="2" fill="#FFFFFF"/><circle cx="1050" cy="502" r="2" fill="#FFFFFF"/>
-          <text x="1050" y="534" font-family="Inter" font-size="10.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Data Validation &amp;</text>
-          <text x="1050" y="546" font-family="Inter" font-size="10.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Crafting</text>
-        </g>
-
-        <!-- Connections from Data Store to AI components -->
-        <path d="M 779 200 Q 900 250 912 320" fill="none" stroke="#A3B0C5" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
-        <path d="M 779 210 Q 900 280 1050 320" fill="none" stroke="#A3B0C5" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
-        <path d="M 779 220 Q 950 280 1188 320" fill="none" stroke="#A3B0C5" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
-        <line x1="1050" y1="406" x2="1050" y2="458" stroke="#A3B0C5" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
-
-        <!-- Dashboard for Managers -->
-        <g>
-          <rect x="600" y="430" width="120" height="80" rx="10" fill="url(#nodeGrad)" stroke="#D6DDE7" stroke-width="1.5"/>
-          <rect x="618" y="448" width="84" height="44" rx="4" fill="#FFFFFF" stroke="#1A4FA3" stroke-width="1.2"/>
-          <rect x="624" y="456" width="14" height="20" fill="#1A4FA3"/>
-          <rect x="642" y="464" width="14" height="12" fill="#4A8FE0"/>
-          <rect x="660" y="452" width="14" height="24" fill="#0891B2"/>
-          <rect x="678" y="460" width="14" height="16" fill="#4A8FE0"/>
-          <text x="660" y="528" font-family="Inter" font-size="11.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Dashboard for Managers</text>
-        </g>
-
-        <!-- Leaderboard for Agents -->
-        <g>
-          <rect x="380" y="430" width="120" height="80" rx="10" fill="url(#nodeGrad)" stroke="#D6DDE7" stroke-width="1.5"/>
-          <circle cx="402" cy="455" r="3" fill="#B08D3E"/>
-          <rect x="412" y="452" width="78" height="6" rx="2" fill="#E4E9F0"/>
-          <rect x="412" y="452" width="60" height="6" rx="2" fill="#1A4FA3"/>
-          <circle cx="402" cy="471" r="3" fill="#A3B0C5"/>
-          <rect x="412" y="468" width="78" height="6" rx="2" fill="#E4E9F0"/>
-          <rect x="412" y="468" width="50" height="6" rx="2" fill="#4A8FE0"/>
-          <circle cx="402" cy="487" r="3" fill="#A3B0C5"/>
-          <rect x="412" y="484" width="78" height="6" rx="2" fill="#E4E9F0"/>
-          <rect x="412" y="484" width="40" height="6" rx="2" fill="#4A8FE0"/>
-          <text x="440" y="528" font-family="Inter" font-size="11.5" font-weight="500" fill="#0B1F3A" text-anchor="middle">Leaderboard for Agents</text>
-        </g>
-
-        <!-- Connections from AI to dashboards -->
-        <path d="M 852 380 Q 760 410 720 430" fill="none" stroke="#1A4FA3" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
-        <path d="M 852 380 Q 670 410 500 430" fill="none" stroke="#1A4FA3" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+        <!-- Pulse dots (data packets travelling autonomously) -->
+        <circle class="pulse-dot" r="3.5">
+          <animateMotion dur="8s" repeatCount="indefinite"
+            path="M 240 98 L 480 98 L 615 98 L 660 138 L 855 238 L 855 490"/>
+        </circle>
+        <circle class="pulse-dot" r="3.5">
+          <animateMotion dur="6.5s" repeatCount="indefinite" begin="1.5s"
+            path="M 570 138 C 480 175, 420 215, 375 238 L 375 295 L 375 353 C 375 405, 230 460, 135 490"/>
+        </circle>
+        <circle class="pulse-dot" r="3.5">
+          <animateMotion dur="9s" repeatCount="indefinite" begin="3s"
+            path="M 690 138 L 1095 238 L 1095 353 L 1095 490"/>
+        </circle>
       </svg>
-    </div>
 
-    <div class="feature-row" style="margin-top:56px;">
-      <h2>Architectural Stack</h2>
-      <div class="meta">Real-time + Batch · Agentic AI · DataLake</div>
-    </div>
+      <!-- =============== Row 1: PIPELINE =============== -->
+      <article class="pnode var-source pos-audio">
+        <div class="pnode-header">
+          <div class="pnode-icon"><svg viewBox="0 0 24 24"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><path d="M21 14v3a2 2 0 0 1-2 2h-1v-7h3z"/><path d="M3 14v3a2 2 0 0 0 2 2h1v-7H3z"/></svg></div>
+          <span class="pnode-tag-mono">Source</span>
+        </div>
+        <div class="pnode-title">Audio Files</div>
+        <div class="pnode-sub">Daily batch of customer calls</div>
+      </article>
 
-    <div class="grid">
-      <div class="card span-6">
-        <span class="index">L·01</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
-        <h3>Ingestion · Call Centre to Storage</h3>
-        <p>Call centre agent conversations recorded and pulled continuously into the pipeline. Lossless retention with bank-grade encryption at rest and in motion.</p>
-      </div>
-      <div class="card span-6">
-        <span class="index">L·02</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
-        <h3>Processing · Kafka + Spark</h3>
-        <p>Kafka and Spark stream calls in real time for time-sensitive analytics. Spark and Python batch pipelines handle the full retrospective corpus.</p>
-      </div>
-      <div class="card span-6">
-        <span class="index">L·03</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v4"/></svg></div>
-        <h3>Speech-to-Text · Arabic & English</h3>
-        <p>Custom-built for the ADIB context. 90% of calls are Arabic, 10% English. Transcription accuracy reached 80% on Arabic over 4 iterations of manual validation.</p>
-      </div>
-      <div class="card span-6">
-        <span class="index">L·04</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></div>
-        <h3>Storage · Data Store + DataLake</h3>
-        <p>Operational data store powers low-latency serving. DataLake retains the full enriched corpus for retrospective analytics, audit, and model training.</p>
-      </div>
-      <div class="card span-12">
-        <span class="index">L·05</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
-        <h3>Agentic AI · Four Specialised Components</h3>
-        <p>Sentiment &amp; Priority Scoring · Escalation Detection · Conversation Summary · Data Validation &amp; Crafting. Each agent is independently observable, version-controlled, and feeds the serving layer that drives the manager dashboard and agent leaderboard.</p>
-      </div>
+      <article class="pnode pos-langdet">
+        <div class="pnode-header">
+          <div class="pnode-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18"/><path d="M12 3a14 14 0 0 0 0 18"/></svg></div>
+          <span class="pnode-tag-mono">A·01</span>
+        </div>
+        <div class="pnode-title">Language Detection</div>
+        <div class="pnode-sub">Arabic vs English routing</div>
+      </article>
+
+      <article class="pnode pos-trnscr">
+        <div class="pnode-header">
+          <div class="pnode-icon"><svg viewBox="0 0 24 24"><path d="M4 12h2M8 8v8M12 5v14M16 8v8M20 12h-2"/></svg></div>
+          <span class="pnode-tag-mono">A·03</span>
+        </div>
+        <div class="pnode-title">Whisper Transcription</div>
+        <div class="pnode-sub">Bilingual speech-to-text</div>
+      </article>
+
+      <!-- =============== Row 2: PARALLEL DATA =============== -->
+      <article class="pnode pos-diariz">
+        <div class="pnode-header">
+          <div class="pnode-icon"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3.2"/><circle cx="16" cy="8" r="2.6"/><path d="M3 19v-1a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v1"/><path d="M14 19v-1a3 3 0 0 1 3-3h1a3 3 0 0 1 3 3v1"/></svg></div>
+          <span class="pnode-tag-mono">A·02</span>
+        </div>
+        <div class="pnode-title">Speaker Diarization</div>
+        <div class="pnode-sub">Customer / agent turns</div>
+        <ul class="pnode-list">
+          <li>Speaker segments</li>
+          <li>Turn-level labels</li>
+        </ul>
+      </article>
+
+      <article class="pnode var-store pos-trnscpt">
+        <div class="pnode-header">
+          <div class="pnode-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+          <span class="pnode-tag-mono">Core Dataset</span>
+        </div>
+        <div class="pnode-title">Call Transcripts</div>
+        <div class="pnode-sub">Conversation corpus</div>
+        <ul class="pnode-list">
+          <li>Turn-level utterances</li>
+          <li>Retained in DataLake</li>
+        </ul>
+      </article>
+
+      <article class="pnode var-store pos-segments">
+        <div class="pnode-header">
+          <div class="pnode-icon"><svg viewBox="0 0 24 24"><rect x="3" y="9" width="2" height="6"/><rect x="7" y="6" width="2" height="12"/><rect x="11" y="3" width="2" height="18"/><rect x="15" y="6" width="2" height="12"/><rect x="19" y="9" width="2" height="6"/></svg></div>
+          <span class="pnode-tag-mono">Core Dataset</span>
+        </div>
+        <div class="pnode-title">Speech Segments</div>
+        <div class="pnode-sub">Voice activity blocks</div>
+        <ul class="pnode-list">
+          <li>Timestamps · durations</li>
+          <li>Silence detection</li>
+        </ul>
+      </article>
+
+      <!-- =============== Row 3: AGENTIC AI ENRICHMENT =============== -->
+      <article class="pnode var-agent pos-score">
+        <span class="agent-pulse"></span>
+        <div class="pnode-header">
+          <div class="pnode-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 14.5 8.5 21 9.3 16.2 13.8 17.5 20 12 16.8 6.5 20 7.8 13.8 3 9.3 9.5 8.5 12 2"/></svg></div>
+          <span class="pnode-tag-mono">A·07</span>
+        </div>
+        <div class="pnode-title">Agent Scoring</div>
+        <div class="pnode-sub">Conversation quality 1–5</div>
+        <ul class="pnode-list">
+          <li>Compliance check</li>
+          <li>Coaching cues</li>
+        </ul>
+      </article>
+
+      <article class="pnode var-agent pos-sntmt">
+        <span class="agent-pulse"></span>
+        <div class="pnode-header">
+          <div class="pnode-icon"><svg viewBox="0 0 24 24"><path d="M3 12h3l2-5 4 10 2-5 2 3h5"/></svg></div>
+          <span class="pnode-tag-mono">A·06</span>
+        </div>
+        <div class="pnode-title">Sentiment Agent</div>
+        <div class="pnode-sub">Turn-by-turn emotion</div>
+        <ul class="pnode-list">
+          <li>Frustration signals</li>
+          <li>Escalation flags</li>
+        </ul>
+      </article>
+
+      <article class="pnode var-agent pos-smmry">
+        <span class="agent-pulse"></span>
+        <div class="pnode-header">
+          <div class="pnode-icon"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg></div>
+          <span class="pnode-tag-mono">A·04</span>
+        </div>
+        <div class="pnode-title">Call Summary</div>
+        <div class="pnode-sub">Structured narrative</div>
+        <ul class="pnode-list">
+          <li>Resolution status</li>
+          <li>Action items</li>
+        </ul>
+      </article>
+
+      <article class="pnode var-agent pos-insgts">
+        <span class="agent-pulse"></span>
+        <div class="pnode-header">
+          <div class="pnode-icon"><svg viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c1 .8 1.5 2 1.5 3.5h5c0-1.5.5-2.7 1.5-3.5A6 6 0 0 0 12 3z"/></svg></div>
+          <span class="pnode-tag-mono">A·05</span>
+        </div>
+        <div class="pnode-title">Key Insights</div>
+        <div class="pnode-sub">Business intelligence</div>
+        <ul class="pnode-list">
+          <li>Product · NTB tag</li>
+          <li>Customer info</li>
+        </ul>
+      </article>
+
+      <article class="pnode var-agent pos-hold">
+        <span class="agent-pulse"></span>
+        <div class="pnode-header">
+          <div class="pnode-icon"><svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg></div>
+          <span class="pnode-tag-mono">A·08</span>
+        </div>
+        <div class="pnode-title">Hold Analytics</div>
+        <div class="pnode-sub">Non-speech detection</div>
+        <ul class="pnode-list">
+          <li>Pauses &gt; 8 seconds</li>
+          <li>Reason summary</li>
+        </ul>
+      </article>
     </div>
   </section>
 
   <!-- ============== SECTION 4: 10K CALLS PROCESSING ============== -->
   <section class="section" id="processing">
     <div class="hero">
-      <div class="eyebrow">Output of Study Conducted on 10K Customer Calls · 04</div>
+      <div class="eyebrow">Output of Study Conducted on 10K Customer Calls · 05</div>
       <h1>9,904 calls in. <span class="accent">8,601 enriched.</span></h1>
       <p class="sub">A full study on approximately one day's volume — randomly selected from June through August. 87% of calls were successfully processed end-to-end; 13% were intentionally skipped under PCI rules, content filters, or for low-context audio.</p>
     </div>
@@ -1377,7 +2455,7 @@
   <!-- ============== SECTION 5: BUSINESS BENEFITS ============== -->
   <section class="section" id="benefits">
     <div class="hero">
-      <div class="eyebrow">Proof of Value & Business Case · 05</div>
+      <div class="eyebrow">Proof of Value & Business Case · 06</div>
       <h1>3.7× return. <span class="accent">AED 7.9M annual opportunity.</span></h1>
       <p class="sub">A grounded business case built from one day's 10K call sample, extrapolated across product lines. The economics work on cross-sell opportunity alone — every other benefit compounds on top.</p>
     </div>
@@ -1457,7 +2535,7 @@
   <!-- ============== SECTION 6: CONVERSATIONAL QUERY UI ============== -->
   <section class="section" id="convo">
     <div class="hero">
-      <div class="eyebrow">Natural Language Surface · 06</div>
+      <div class="eyebrow">Natural Language Surface · 07</div>
       <h1>Ask ACE anything. <span class="accent">In your own words.</span></h1>
       <p class="sub">A single conversational interface across every signal the platform produces — from agent rankings to customer themes — designed for executives, line managers, and analysts alike.</p>
     </div>
@@ -1509,6 +2587,235 @@
   document.getElementById('collapseBtn').addEventListener('click', () => {
     sidebar.classList.toggle('collapsed');
   });
+
+  // ============ AI COMPONENTS CAROUSEL ============
+  (function () {
+    const carousel = document.getElementById('agentCarousel');
+    if (!carousel) return;
+
+    const track = document.getElementById('carouselTrack');
+    const dots = carousel.querySelectorAll('.carousel-dots .dot');
+    const tabs = carousel.querySelectorAll('.carousel-tab');
+    const prevBtn = carousel.querySelector('[data-prev]');
+    const nextBtn = carousel.querySelector('[data-next]');
+    const counterEl = carousel.querySelector('[data-counter]');
+    const labelEl = carousel.querySelector('[data-label]');
+    const titleEl = carousel.querySelector('[data-title]');
+    const descEl = carousel.querySelector('[data-desc]');
+    const countEl = carousel.querySelector('[data-count]');
+
+    const slides = [
+      {
+        label: 'Listen & Transcribe',
+        title: 'Audio Intelligence',
+        desc: 'Agents that work directly on the raw audio signal — identifying the spoken language, distinguishing customer from agent, and converting speech into searchable text. The foundation every other component depends on.',
+        count: '3'
+      },
+      {
+        label: 'Understand the Conversation',
+        title: 'Conversation Understanding',
+        desc: 'Agents that read the transcript and extract structured meaning — what the call was about, what was said by whom, and how the customer felt. Powers search, case files, and escalation logic.',
+        count: '3'
+      },
+      {
+        label: 'Evaluate & Coach',
+        title: 'Performance Analytics',
+        desc: 'Agents that turn each conversation into measurable signals — interaction quality scores and operational efficiency metrics. The inputs to the agent leaderboard and coaching engine.',
+        count: '2'
+      }
+    ];
+
+    let current = 0;
+    const total = slides.length;
+
+    function go(idx) {
+      current = ((idx % total) + total) % total;
+      track.style.transform = `translateX(-${current * 100}%)`;
+
+      dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      tabs.forEach((t, i) => t.classList.toggle('active', i === current));
+
+      const s = slides[current];
+      counterEl.textContent = String(current + 1).padStart(2, '0');
+      labelEl.textContent = s.label;
+      titleEl.textContent = s.title;
+      descEl.textContent = s.desc;
+      countEl.textContent = s.count;
+    }
+
+    prevBtn.addEventListener('click', () => go(current - 1));
+    nextBtn.addEventListener('click', () => go(current + 1));
+    dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
+    tabs.forEach((t, i) => t.addEventListener('click', () => go(i)));
+
+    // Keyboard navigation when modules section is active
+    document.addEventListener('keydown', (e) => {
+      const modules = document.getElementById('modules');
+      if (!modules || !modules.classList.contains('active')) return;
+      if (e.key === 'ArrowLeft') go(current - 1);
+      if (e.key === 'ArrowRight') go(current + 1);
+    });
+  })();
+
+  // ============ USE CASES · OUTCOMES BOARD ============
+  (function () {
+    const board = document.getElementById('outcomesBoard');
+    if (!board) return;
+
+    const tiles = board.querySelectorAll('.usecase-tile');
+    const iconEl = board.querySelector('[data-spotlight-icon]');
+    const heroEl = board.querySelector('[data-spotlight-hero]');
+    const problemEl = board.querySelector('[data-spotlight-problem]');
+    const titleEl = board.querySelector('[data-spotlight-title]');
+    const leadEl = board.querySelector('[data-spotlight-lead]');
+    const metricVEl = board.querySelector('[data-spotlight-metric-v]');
+    const metricLEl = board.querySelector('[data-spotlight-metric-l]');
+    const outcomesEl = board.querySelector('[data-spotlight-outcomes]');
+    const agentsEl = board.querySelector('[data-spotlight-agents]');
+
+    const useCases = [
+      {
+        icon: '<svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9.5-9 11-5.5-1.5-9-6-9-11V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg>',
+        isHero: true,
+        problem: 'Solves · P02',
+        title: '100% AI-Driven Quality Audits',
+        lead: 'Every call audited automatically. Sample-based QA — historically limited to 1–2% of calls — is replaced by comprehensive, consistent, real-time assessment across all conversations.',
+        metricV: '100<span class="metric-u">%</span>',
+        metricL: 'Call coverage vs 1–2% manual sample',
+        outcomes: [
+          'Full corpus audited — no sample bias',
+          'Consistent scoring rubric, no auditor drift',
+          'Near real-time signal for supervisors',
+          'Audit trail ready for regulators'
+        ],
+        agents: ['A·04', 'A·05', 'A·06', 'A·07']
+      },
+      {
+        icon: '<svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>',
+        problem: 'Solves · Revenue gap on existing customers',
+        title: 'Powering Cross-Sell',
+        lead: 'Identify and re-engage customers who made product enquiries during their service calls. Every qualified lead surfaces to the right team within the day — closing the revenue gap that sat invisible inside voice data.',
+        metricV: 'AED 7.9M<span class="metric-u">p.a.</span>',
+        metricL: 'First-year revenue opportunity identified',
+        outcomes: [
+          '418 leads identified in one day of calls',
+          'AED 26M eligible amount per day of sample',
+          'Extrapolates to AED 515M annual sales',
+          'Re-engages existing-customer demand'
+        ],
+        agents: ['A·05', 'A·06', 'A·04']
+      },
+      {
+        icon: '<svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="5"/><rect x="12" y="9" width="3" height="9"/><rect x="17" y="5" width="3" height="13"/></svg>',
+        problem: 'Solves · P04',
+        title: 'Agent Performance Analytics',
+        lead: 'Continuously evaluates every agent across every conversation. Quantitative and qualitative insights replace random sampling — feeding the leaderboard, coaching workflows, and supervisor reviews.',
+        metricV: '100<span class="metric-u">%</span>',
+        metricL: 'Of agent calls scored — every shift, every agent',
+        outcomes: [
+          'Every call scored, every agent ranked',
+          'Coaching grounded in actual conversations',
+          'Leaderboard updated near real-time',
+          'Eliminates supervisor sampling bias'
+        ],
+        agents: ['A·07', 'A·08', 'A·06']
+      },
+      {
+        icon: '<svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg>',
+        problem: 'Solves · P04',
+        title: 'AI Coaching for Agents',
+        lead: 'An AI assistant offering actionable improvement suggestions — personalised to each agent, grounded in their own conversations, with specific call and turn references attached to every recommendation.',
+        metricV: '24/7',
+        metricL: 'Self-serve coaching available to every agent',
+        outcomes: [
+          'Coaching tied to specific calls and turns',
+          'Agents practise improvements at their own pace',
+          'Manager workload reduced on routine coaching',
+          'Faster new-hire ramp to productive scoring'
+        ],
+        agents: ['A·04', 'A·07']
+      },
+      {
+        icon: '<svg viewBox="0 0 24 24"><path d="M12 21s-8-4.5-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-8 11-8 11"/><line x1="12" y1="9" x2="12" y2="12"/><line x1="12" y1="15" x2="12.01" y2="15"/></svg>',
+        problem: 'Solves · P03',
+        title: 'Sentiment Management',
+        lead: 'Negative sentiment on high-value customer calls auto-escalates to team leaders for immediate handling — no waiting on a post-call complaint, no reliance on manual judgement.',
+        metricV: '25<span class="metric-u">%</span>',
+        metricL: 'High-value customers continuously monitored',
+        outcomes: [
+          'Auto-escalation on negative HVC sentiment',
+          'Team leader intervention within the day',
+          'Pre-empts complaints and attrition',
+          'Sentiment trajectory tracked turn-by-turn'
+        ],
+        agents: ['A·06', 'A·02']
+      },
+      {
+        icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l8 4"/><path d="M12 12L4.5 8"/></svg>',
+        problem: 'Solves · P01 & P02',
+        title: 'Insights into Calls',
+        lead: '100% view into the types and volumes of enquiries across all products and services of the bank — turning unstructured voice into a steerable operating dashboard for the executive team.',
+        metricV: '8,601<span class="metric-u">calls/day</span>',
+        metricL: 'Structured across products, themes, and intents',
+        outcomes: [
+          'Volume by product and enquiry type',
+          'Emerging themes detected as they trend',
+          'Operations and capacity planning input',
+          'Replaces survey-based assumptions'
+        ],
+        agents: ['A·04', 'A·05']
+      },
+      {
+        icon: '<svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><circle cx="11.5" cy="14.5" r="2.5"/><line x1="13.5" y1="16.5" x2="15.5" y2="18.5"/></svg>',
+        problem: 'Solves · P02',
+        title: 'Call Search Capability',
+        lead: 'Searchable summaries across the full call corpus — any past enquiry, complaint, or commitment can be retrieved in seconds for investigation, regulatory response, or quality review.',
+        metricV: '< 5s',
+        metricL: 'Retrieval time across the full enriched corpus',
+        outcomes: [
+          'Natural-language search across all calls',
+          'Audit and investigation ready',
+          'Cross-references customer interactions',
+          'Underpins regulatory response time'
+        ],
+        agents: ['A·04', 'A·05']
+      }
+    ];
+
+    function selectUseCase(idx) {
+      const uc = useCases[idx];
+      if (!uc) return;
+
+      tiles.forEach((t, i) => t.classList.toggle('active', i === idx));
+
+      iconEl.innerHTML = uc.icon;
+      heroEl.style.display = uc.isHero ? '' : 'none';
+      problemEl.textContent = uc.problem;
+      titleEl.textContent = uc.title;
+      leadEl.textContent = uc.lead;
+      metricVEl.innerHTML = uc.metricV;
+      metricLEl.textContent = uc.metricL;
+      outcomesEl.innerHTML = uc.outcomes.map(o => '<li>' + o + '</li>').join('');
+      agentsEl.innerHTML = uc.agents.map(a => '<span class="agent-chip">' + a + '</span>').join('');
+    }
+
+    tiles.forEach((t, i) => t.addEventListener('click', () => selectUseCase(i)));
+
+    // Keyboard navigation when usecases section is active
+    document.addEventListener('keydown', (e) => {
+      const sect = document.getElementById('usecases');
+      if (!sect || !sect.classList.contains('active')) return;
+      const currentIdx = Array.from(tiles).findIndex(t => t.classList.contains('active'));
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        selectUseCase((currentIdx + 1) % useCases.length);
+      }
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        selectUseCase((currentIdx - 1 + useCases.length) % useCases.length);
+      }
+    });
+  })();
 </script>
 
 </body>
