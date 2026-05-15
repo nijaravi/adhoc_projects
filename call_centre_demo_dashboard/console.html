@@ -2847,7 +2847,13 @@
           ...baseOpts,
           scales: {
             x: { ...baseScale.x, min: 2.5, max: 8.5, title: { display: true, text: 'AHT (min) →  lower is better', color: '#7A8BA8', font: { size: 11 } } },
-            y: { ...baseScale.y, min: 0, max: 100, title: { display: true, text: '↑ Interaction Score (0-100)', color: '#7A8BA8', font: { size: 11 } } }
+            y: {
+              ...baseScale.y,
+              min: 40,
+              max: 80,
+              ticks: { ...baseScale.y.ticks, stepSize: 5 },
+              title: { display: true, text: '↑ Interaction Score (40-80)', color: '#7A8BA8', font: { size: 11 } }
+            }
           }
         }
       });
