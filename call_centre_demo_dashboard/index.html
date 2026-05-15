@@ -1818,15 +1818,18 @@
 
   /* ===== SLIDE 1 · CALL CATEGORISATION INTELLIGENCE ===== */
   .cat-head {
-    display: grid;
-    grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr);
-    gap: 32px;
-    align-items: start;
-    margin-bottom: 32px;
+    margin-bottom: 36px;
   }
-  .cat-head-text { max-width: 720px; }
-  .cat-head-text .pov-slide-title { margin-bottom: 12px; }
-  .cat-head-text .pov-slide-sub { font-size: 14.5px; line-height: 1.6; }
+  .cat-head-text { max-width: 980px; }
+  .cat-head-text .pov-slide-title {
+    margin-bottom: 16px;
+    font-size: clamp(34px, 4vw, 50px);
+  }
+  .cat-head-text .pov-slide-sub {
+    font-size: 16px;
+    line-height: 1.62;
+    max-width: 860px;
+  }
 
   .cat-ai-badge {
     display: grid;
@@ -2074,43 +2077,18 @@
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 175px;
+    width: 190px;
     text-align: center;
     pointer-events: none;
   }
-  .cct-eyebrow {
+  .cct-title {
     font-family: var(--font-display);
-    font-size: 13px;
-    font-weight: 500;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 26px;
     color: var(--ink-900);
-    letter-spacing: -0.01em;
-    line-height: 1.2;
-    margin-bottom: 6px;
-  }
-  .cct-desc {
-    font-size: 10.5px;
-    line-height: 1.4;
-    color: var(--ink-500);
-    margin-bottom: 12px;
-    padding: 0 4px;
-  }
-  .cct-num {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 30px;
-    color: var(--accent-blue);
-    letter-spacing: -0.03em;
-    line-height: 1;
-    margin-bottom: 6px;
-  }
-  .cct-lbl {
-    font-family: var(--font-mono);
-    font-size: 8.5px;
-    letter-spacing: 0.18em;
-    color: var(--ink-500);
-    text-transform: uppercase;
-    font-weight: 500;
-    line-height: 1.4;
+    letter-spacing: -0.025em;
+    line-height: 1.08;
   }
 
   /* Accuracy strip */
@@ -2855,14 +2833,13 @@
     font-weight: 500;
   }
 
-  /* 2-col board */
+  /* Stacked full-width board */
   .ar-board {
     max-width: 1280px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1.05fr 1fr;
-    gap: 20px;
-    align-items: stretch;
+    grid-template-columns: 1fr;
+    gap: 18px;
   }
 
   /* Before/After sample (left) */
@@ -2987,11 +2964,10 @@
     background: var(--bg-warm);
     border: 1px solid var(--line);
     border-radius: 10px;
-    padding: 16px 18px;
+    padding: 14px 18px;
     margin-bottom: 12px;
-    max-height: 200px;
+    max-height: 140px;
     overflow-y: auto;
-    flex: 1;
   }
   .ar-text.is-broken {
     color: rgba(139, 47, 37, 0.72);
@@ -3049,8 +3025,8 @@
   }
   .tech-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
     flex: 1;
   }
   .tech-card {
@@ -3199,6 +3175,7 @@
     .pnode-list li { font-size: 9.5px; }
     .ar-board { grid-template-columns: 1fr; }
     .ar-stats { grid-template-columns: repeat(2, 1fr); gap: 16px 0; }
+    .tech-grid { grid-template-columns: repeat(2, 1fr); }
     .ar-footer { flex-direction: column; align-items: flex-start; }
     .ar-footer-tags { max-width: 100%; justify-content: flex-start; }
   }
@@ -3885,7 +3862,7 @@
         <div class="l">Engineering iterations</div>
       </div>
       <div class="ar-stat">
-        <div class="v">9</div>
+        <div class="v">8</div>
         <div class="l">Custom enhancements</div>
       </div>
     </div>
@@ -3905,7 +3882,6 @@
         <div class="sample-panel" data-panel="before">
           <div class="panel-meta">
             <span class="panel-badge bad">Hallucinated</span>
-            <span class="panel-acc"><strong>50%</strong> accuracy · baseline Whisper</span>
           </div>
           <p class="ar-text is-broken" dir="rtl">السلام عليكم ورحمة الله وبركاته انا حمد الله وبركاته السلام عليكم ورحمة الله وبركاته انا حمد الله وبركاته السلام عليكم ورحمة الله وبركاته انا حمد الله وبركاته السلام عليكم ورحمة الله وبركاته انا حمد الله وبركاته السلام عليكم ورحمة الله وبركاته انا حمد الله وبركاته</p>
           <div class="panel-note">The model gets stuck on the opening greeting and repeats it for the entire 4-minute call. Every downstream agent fails.</div>
@@ -3921,10 +3897,10 @@
         </div>
       </div>
 
-      <!-- RIGHT: Techniques grid -->
+      <!-- Techniques grid (full width) -->
       <div class="ar-techniques">
         <div class="techniques-header">
-          <h2 class="techniques-title">Nine engineering enhancements</h2>
+          <h2 class="techniques-title">Eight engineering enhancements</h2>
           <div class="techniques-meta">Across audio · decoding · pipeline · prompting</div>
         </div>
         <div class="tech-grid">
@@ -3952,11 +3928,6 @@
             <span class="tech-cat cat-decode">Decoding</span>
             <div class="tech-name">Beam search tuning</div>
             <div class="tech-desc">Stable output under noisy call-centre audio conditions.</div>
-          </div>
-          <div class="tech-card">
-            <span class="tech-cat cat-decode">Decoding</span>
-            <div class="tech-name">Threshold optimisation</div>
-            <div class="tech-desc">Compression ratio · log-probability · no-speech tuned to ADIB calls.</div>
           </div>
           <div class="tech-card">
             <span class="tech-cat cat-pipeline">Pipeline</span>
@@ -4037,21 +4008,8 @@
             <div class="cat-head-text">
               <div class="pov-slide-eyebrow">Slide 01 · AI Categorisation Intelligence</div>
               <h2 class="pov-slide-title">Call Categorisation <em>Intelligence</em></h2>
-              <p class="pov-slide-sub">ACE AI automatically classifies every customer conversation into intelligent business buckets — helping the bank identify operational pain points, automate routine service interactions, and uncover hidden revenue moments hiding inside everyday calls.</p>
+              <p class="pov-slide-sub">ACE AI automatically classifies every customer conversation into intelligent business buckets — helping the bank identify operational pain points, automate routine service interactions, and uncover hidden revenue moments hiding inside everyday calls. Continuous learning from every interaction sharpens classification accuracy over time, surfacing the patterns that matter to the business.</p>
             </div>
-            <a href="#" class="cat-ai-badge" onclick="return false;">
-              <div class="cat-ai-badge-icon">
-                <svg viewBox="0 0 24 24"><path d="M12 2.5l1.85 5.55L19.5 10l-5.65 1.95L12 17.5l-1.85-5.55L4.5 10l5.65-1.95z" fill="currentColor" opacity=".9"/><circle cx="12" cy="10" r="1.4" fill="#fff"/></svg>
-              </div>
-              <div class="cat-ai-badge-body">
-                <div class="cat-ai-badge-title">AI-Powered Insights</div>
-                <div class="cat-ai-badge-meta">Real-time classification · Pattern detection · Opportunity ID</div>
-                <div class="cat-ai-badge-sub">Continuous learning from every customer interaction.</div>
-              </div>
-              <div class="cat-ai-badge-arrow">
-                <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
-              </div>
-            </a>
           </div>
 
           <!-- Main quadrant canvas -->
@@ -4116,10 +4074,7 @@
                       font-family="Fraunces, serif" font-size="24" font-weight="500" letter-spacing="-0.5">3%</text>
               </svg>
               <div class="cat-center-text">
-                <div class="cct-eyebrow">AI Call Categorisation</div>
-                <div class="cct-desc">Real-time classification of customer conversations</div>
-                <div class="cct-num">8,601</div>
-                <div class="cct-lbl">Calls Analysed · One-Day Sample</div>
+                <div class="cct-title">AI Call<br/>Categorisation</div>
               </div>
             </div>
 
