@@ -1321,7 +1321,7 @@
     <!-- Tab 3: Idle Time -->
     <div class="tab-panel" id="panel-idle">
       <div class="grid g-12">
-        <div class="panel span-4">
+        <div class="panel span-6">
           <div class="panel-head">
             <div>
               <div class="panel-title">Idle by Call Type</div>
@@ -1331,21 +1331,11 @@
           <div class="chart-wrap"><canvas id="chIdleByType"></canvas></div>
         </div>
 
-        <div class="panel span-4">
+        <div class="panel span-6">
           <div class="panel-head">
             <div>
-              <div class="panel-title">Liability-based Idle</div>
-              <div class="panel-sub">Avg idle by liability tier</div>
-            </div>
-          </div>
-          <div class="chart-wrap"><canvas id="chIdleByLiab"></canvas></div>
-        </div>
-
-        <div class="panel span-4">
-          <div class="panel-head">
-            <div>
-              <div class="panel-title">Staff Idle Distribution</div>
-              <div class="panel-sub">Histogram across agents</div>
+              <div class="panel-title">Call Idle Distribution</div>
+              <div class="panel-sub">Histogram across calls</div>
             </div>
           </div>
           <div class="chart-wrap"><canvas id="chStaffIdle"></canvas></div>
@@ -2560,19 +2550,9 @@
       });
     }
 
-    // ---- Chart 11: Liability-based Idle (bar, % values) ----
-    {
-      const { labels, cols, seriesKeys } = readSheet(workbook, 'Liability-based Idle');
-      const [valKey] = seriesKeys;
-      if (callIntelCharts.idleByLiab) callIntelCharts.idleByLiab.destroy();
-      callIntelCharts.idleByLiab = new Chart(document.getElementById('chIdleByLiab'), {
-        type: 'bar',
-        data: { labels, datasets: [{ label: valKey, data: cols[valKey], backgroundColor: hexA(BLUE, 0.75), borderRadius: 4 }] },
-        options: { ...baseOpts, plugins: { ...baseOpts.plugins, legend: { display: false } }, scales: { x: baseScale.x, y: { ...baseScale.y, ticks: { ...baseScale.y.ticks, callback: v => v + '%' } } } }
-      });
-    }
-
-    // ---- Chart 12: Staff Idle Distribution (histogram bar) ----
+    // ---- Chart 11: Call Idle Distribution (histogram bar) ----
+    // UI title was renamed from "Staff Idle Distribution" → "Call Idle Distribution",
+    // but the underlying workbook sheet name is unchanged so existing data files keep working.
     {
       const { labels, cols, seriesKeys } = readSheet(workbook, 'Staff Idle Distribution');
       const [valKey] = seriesKeys;
