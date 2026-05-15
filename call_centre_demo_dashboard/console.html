@@ -133,19 +133,20 @@
     min-width: 0;
   }
   .brand-mark {
-    /* Sized to the new ACE logo's natural aspect (510×296 ≈ 1.70:1).
-       Plate removed so the logo's own colours show through; rounded corners
-       and a soft outline/shadow are kept for visual containment. */
-    width: 68px; height: 40px; flex-shrink: 0;
+    /* Matches ace-atlas-logo.png aspect (~1024×815 ≈ 1.26:1). */
+    width: 50px;
+    height: 40px;
+    flex-shrink: 0;
     border-radius: 9px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 6px 16px -6px rgba(0,0,0,0.45);
     overflow: hidden;
     display: block;
+    transition: width 0.35s, height 0.35s, border-radius 0.35s;
   }
   .brand-mark img {
     width: 100%; height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
   }
   .brand-name {
@@ -181,13 +182,9 @@
     justify-content: flex-start;
   }
   .sidebar.collapsed .brand-mark {
-    width: 44px;
-    height: 26px;
+    width: 40px;
+    height: 32px;
     border-radius: 6px;
-    transition: width 0.35s, height 0.35s, border-radius 0.35s;
-  }
-  .brand-mark {
-    transition: width 0.35s, height 0.35s, border-radius 0.35s;
   }
 
   .nav-label {

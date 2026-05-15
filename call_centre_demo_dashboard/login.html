@@ -125,12 +125,11 @@
     width: max-content;
   }
   .brand-mark {
-    /* Sized to the new ACE logo's natural aspect (510×296 ≈ 1.67:1).
-       Plate removed so the logo's own colours show through; rounded corners
-       and a soft outline/shadow are kept for visual containment. */
+    /* Matches ace-atlas-logo.png aspect (~1024×815 ≈ 1.26:1). */
     grid-column: 1;
     grid-row: 1;
-    width: 60px; height: 36px;
+    width: 50px;
+    height: 40px;
     flex-shrink: 0;
     border-radius: 9px;
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -142,7 +141,7 @@
   }
   .brand-mark img {
     width: 100%; height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
   }
   .brand-name {

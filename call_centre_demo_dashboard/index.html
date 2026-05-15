@@ -128,10 +128,10 @@
     min-width: 0;
   }
   .brand-mark {
-    /* Sized to the new ACE logo's natural aspect (510×296 ≈ 1.72:1).
-       Plate removed so the logo's own colours show through; rounded corners
-       and a soft outline/shadow are kept for visual containment. */
-    width: 78px; height: 46px;
+    /* Matches ace-atlas-logo.png aspect (~1024×815 ≈ 1.26:1). Rounded plate +
+       border only — artwork carries its own background. */
+    width: 58px;
+    height: 46px;
     flex-shrink: 0;
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -140,11 +140,12 @@
       0 6px 18px -6px rgba(0, 0, 0, 0.45);
     overflow: hidden;
     display: block;
+    transition: width 0.35s, height 0.35s, border-radius 0.35s;
   }
   .brand-mark img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
   }
   .brand-name {
@@ -193,12 +194,8 @@
   }
   .sidebar.collapsed .brand-mark {
     width: 48px;
-    height: 28px;
+    height: 38px;
     border-radius: 7px;
-    transition: width 0.35s, height 0.35s, border-radius 0.35s;
-  }
-  .brand-mark {
-    transition: width 0.35s, height 0.35s, border-radius 0.35s;
   }
   .brand-tag::before {
     content: "";
@@ -4120,29 +4117,29 @@
       <article class="spotlight">
         <div class="spotlight-row">
           <div class="spotlight-icon" data-spotlight-icon>
-            <svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9.5-9 11-5.5-1.5-9-6-9-11V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg>
+            <svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
           </div>
           <div class="spotlight-tags">
             <span class="spotlight-tag tag-hero" data-spotlight-hero>Flagship</span>
-            <span class="spotlight-tag tag-problem" data-spotlight-problem>Solves · P02</span>
+            <span class="spotlight-tag tag-problem" data-spotlight-problem>Solves · Revenue gap on existing customers</span>
           </div>
         </div>
 
-        <h2 class="spotlight-title" data-spotlight-title>100% AI-Driven Quality Audits</h2>
-        <p class="spotlight-lead" data-spotlight-lead>Every call audited automatically. Sample-based QA — historically limited to 1–2% of calls — is replaced by comprehensive, consistent, real-time assessment across all conversations.</p>
+        <h2 class="spotlight-title" data-spotlight-title>Powering Cross-Sell</h2>
+        <p class="spotlight-lead" data-spotlight-lead>Identify and re-engage customers who made product enquiries during their service calls. Every qualified lead surfaces to the right team within the day — closing the revenue gap that sat invisible inside voice data.</p>
 
         <div class="spotlight-metric">
-          <div class="metric-v" data-spotlight-metric-v>100<span class="metric-u">%</span></div>
-          <div class="metric-l" data-spotlight-metric-l>Call coverage vs 1–2% manual sample</div>
+          <div class="metric-v" data-spotlight-metric-v>AED 7.9M<span class="metric-u">p.a.</span></div>
+          <div class="metric-l" data-spotlight-metric-l>First-year revenue opportunity identified</div>
         </div>
 
         <div class="spotlight-outcomes">
           <div class="outcomes-label">Key Outcomes</div>
           <ul class="outcomes-grid" data-spotlight-outcomes>
-            <li>Full corpus audited — no sample bias</li>
-            <li>Consistent scoring rubric, no auditor drift</li>
-            <li>Near real-time signal for supervisors</li>
-            <li>Audit trail ready for regulators</li>
+            <li>418 leads identified in one day of calls</li>
+            <li>AED 26M eligible amount per day of sample</li>
+            <li>Extrapolates to AED 515M annual sales</li>
+            <li>Re-engages existing-customer demand</li>
           </ul>
         </div>
 
@@ -4150,51 +4147,27 @@
           <div class="footer-group">
             <span class="footer-label">Powered by</span>
             <span class="agent-chip-group" data-spotlight-agents>
-              <span class="agent-chip">A·04</span>
               <span class="agent-chip">A·05</span>
               <span class="agent-chip">A·06</span>
-              <span class="agent-chip">A·07</span>
+              <span class="agent-chip">A·04</span>
             </span>
           </div>
         </div>
       </article>
 
-      <!-- Tile list (right) -->
+      <!-- Tile list (right). DOM order MUST match the `useCases` array order
+           in the JS below (the selector logic indexes by DOM position). -->
       <div class="usecase-list" id="usecaseList">
         <button class="usecase-tile active" data-uc="0">
-          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9.5-9 11-5.5-1.5-9-6-9-11V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg></div>
-          <div class="tile-body">
-            <div class="tile-name">100% Quality Audits</div>
-            <div class="tile-sub">Every call · No sampling</div>
-          </div>
-          <span class="tile-flag">Flagship</span>
-        </button>
-
-        <button class="usecase-tile" data-uc="1">
           <div class="tile-icon"><svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
           <div class="tile-body">
             <div class="tile-name">Powering Cross-Sell</div>
             <div class="tile-sub">AED 7.9M opportunity</div>
           </div>
+          <span class="tile-flag">Flagship</span>
         </button>
 
-        <button class="usecase-tile" data-uc="2">
-          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="5"/><rect x="12" y="9" width="3" height="9"/><rect x="17" y="5" width="3" height="13"/></svg></div>
-          <div class="tile-body">
-            <div class="tile-name">Agent Performance Analytics</div>
-            <div class="tile-sub">Continuous · Objective</div>
-          </div>
-        </button>
-
-        <button class="usecase-tile" data-uc="3">
-          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg></div>
-          <div class="tile-body">
-            <div class="tile-name">AI Coaching for Agents</div>
-            <div class="tile-sub">Personalised · Self-serve</div>
-          </div>
-        </button>
-
-        <button class="usecase-tile" data-uc="4">
+        <button class="usecase-tile" data-uc="1">
           <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M12 21s-8-4.5-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-8 11-8 11"/><line x1="12" y1="9" x2="12" y2="12"/><line x1="12" y1="15" x2="12.01" y2="15"/></svg></div>
           <div class="tile-body">
             <div class="tile-name">Sentiment Management</div>
@@ -4202,7 +4175,7 @@
           </div>
         </button>
 
-        <button class="usecase-tile" data-uc="5">
+        <button class="usecase-tile" data-uc="2">
           <div class="tile-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l8 4"/><path d="M12 12L4.5 8"/></svg></div>
           <div class="tile-body">
             <div class="tile-name">Insights into Calls</div>
@@ -4210,11 +4183,35 @@
           </div>
         </button>
 
-        <button class="usecase-tile" data-uc="6">
+        <button class="usecase-tile" data-uc="3">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="5"/><rect x="12" y="9" width="3" height="9"/><rect x="17" y="5" width="3" height="13"/></svg></div>
+          <div class="tile-body">
+            <div class="tile-name">Agent Performance Analytics</div>
+            <div class="tile-sub">Continuous · Objective</div>
+          </div>
+        </button>
+
+        <button class="usecase-tile" data-uc="4">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="tile-body">
+            <div class="tile-name">AI Coaching for Agents</div>
+            <div class="tile-sub">Personalised · Self-serve</div>
+          </div>
+        </button>
+
+        <button class="usecase-tile" data-uc="5">
           <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><circle cx="11.5" cy="14.5" r="2.5"/><line x1="13.5" y1="16.5" x2="15.5" y2="18.5"/></svg></div>
           <div class="tile-body">
             <div class="tile-name">Call Search</div>
             <div class="tile-sub">Any call · In seconds</div>
+          </div>
+        </button>
+
+        <button class="usecase-tile" data-uc="6">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9.5-9 11-5.5-1.5-9-6-9-11V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg></div>
+          <div class="tile-body">
+            <div class="tile-name">100% Quality Audits</div>
+            <div class="tile-sub">Every call · No sampling</div>
           </div>
         </button>
       </div>
@@ -5557,25 +5554,12 @@
     const outcomesEl = board.querySelector('[data-spotlight-outcomes]');
     const agentsEl = board.querySelector('[data-spotlight-agents]');
 
+    // Order MUST match the DOM order of `.usecase-tile` buttons above —
+    // selectUseCase indexes by tile position, not data-uc attribute.
     const useCases = [
       {
-        icon: '<svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9.5-9 11-5.5-1.5-9-6-9-11V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg>',
-        isHero: true,
-        problem: 'Solves · P02',
-        title: '100% AI-Driven Quality Audits',
-        lead: 'Every call audited automatically. Sample-based QA — historically limited to 1–2% of calls — is replaced by comprehensive, consistent, real-time assessment across all conversations.',
-        metricV: '100<span class="metric-u">%</span>',
-        metricL: 'Call coverage vs 1–2% manual sample',
-        outcomes: [
-          'Full corpus audited — no sample bias',
-          'Consistent scoring rubric, no auditor drift',
-          'Near real-time signal for supervisors',
-          'Audit trail ready for regulators'
-        ],
-        agents: ['A·04', 'A·05', 'A·06', 'A·07']
-      },
-      {
         icon: '<svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>',
+        isHero: true,
         problem: 'Solves · Revenue gap on existing customers',
         title: 'Powering Cross-Sell',
         lead: 'Identify and re-engage customers who made product enquiries during their service calls. Every qualified lead surfaces to the right team within the day — closing the revenue gap that sat invisible inside voice data.',
@@ -5588,36 +5572,6 @@
           'Re-engages existing-customer demand'
         ],
         agents: ['A·05', 'A·06', 'A·04']
-      },
-      {
-        icon: '<svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="5"/><rect x="12" y="9" width="3" height="9"/><rect x="17" y="5" width="3" height="13"/></svg>',
-        problem: 'Solves · P04',
-        title: 'Agent Performance Analytics',
-        lead: 'Continuously evaluates every agent across every conversation. Quantitative and qualitative insights replace random sampling — feeding the leaderboard, coaching workflows, and supervisor reviews.',
-        metricV: '100<span class="metric-u">%</span>',
-        metricL: 'Of agent calls scored — every shift, every agent',
-        outcomes: [
-          'Every call scored, every agent ranked',
-          'Coaching grounded in actual conversations',
-          'Leaderboard updated near real-time',
-          'Eliminates supervisor sampling bias'
-        ],
-        agents: ['A·07', 'A·08', 'A·06']
-      },
-      {
-        icon: '<svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg>',
-        problem: 'Solves · P04',
-        title: 'AI Coaching for Agents',
-        lead: 'An AI assistant offering actionable improvement suggestions — personalised to each agent, grounded in their own conversations, with specific call and turn references attached to every recommendation.',
-        metricV: '24/7',
-        metricL: 'Self-serve coaching available to every agent',
-        outcomes: [
-          'Coaching tied to specific calls and turns',
-          'Agents practise improvements at their own pace',
-          'Manager workload reduced on routine coaching',
-          'Faster new-hire ramp to productive scoring'
-        ],
-        agents: ['A·04', 'A·07']
       },
       {
         icon: '<svg viewBox="0 0 24 24"><path d="M12 21s-8-4.5-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-8 11-8 11"/><line x1="12" y1="9" x2="12" y2="12"/><line x1="12" y1="15" x2="12.01" y2="15"/></svg>',
@@ -5650,6 +5604,36 @@
         agents: ['A·04', 'A·05']
       },
       {
+        icon: '<svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="5"/><rect x="12" y="9" width="3" height="9"/><rect x="17" y="5" width="3" height="13"/></svg>',
+        problem: 'Solves · P04',
+        title: 'Agent Performance Analytics',
+        lead: 'Continuously evaluates every agent across every conversation. Quantitative and qualitative insights replace random sampling — feeding the leaderboard, coaching workflows, and supervisor reviews.',
+        metricV: '100<span class="metric-u">%</span>',
+        metricL: 'Of agent calls scored — every shift, every agent',
+        outcomes: [
+          'Every call scored, every agent ranked',
+          'Coaching grounded in actual conversations',
+          'Leaderboard updated near real-time',
+          'Eliminates supervisor sampling bias'
+        ],
+        agents: ['A·07', 'A·08', 'A·06']
+      },
+      {
+        icon: '<svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg>',
+        problem: 'Solves · P04',
+        title: 'AI Coaching for Agents',
+        lead: 'An AI assistant offering actionable improvement suggestions — personalised to each agent, grounded in their own conversations, with specific call and turn references attached to every recommendation.',
+        metricV: '24/7',
+        metricL: 'Self-serve coaching available to every agent',
+        outcomes: [
+          'Coaching tied to specific calls and turns',
+          'Agents practise improvements at their own pace',
+          'Manager workload reduced on routine coaching',
+          'Faster new-hire ramp to productive scoring'
+        ],
+        agents: ['A·04', 'A·07']
+      },
+      {
         icon: '<svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><circle cx="11.5" cy="14.5" r="2.5"/><line x1="13.5" y1="16.5" x2="15.5" y2="18.5"/></svg>',
         problem: 'Solves · P02',
         title: 'Call Search Capability',
@@ -5663,6 +5647,21 @@
           'Underpins regulatory response time'
         ],
         agents: ['A·04', 'A·05']
+      },
+      {
+        icon: '<svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9.5-9 11-5.5-1.5-9-6-9-11V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg>',
+        problem: 'Solves · P02',
+        title: '100% AI-Driven Quality Audits',
+        lead: 'Every call audited automatically. Sample-based QA — historically limited to 1–2% of calls — is replaced by comprehensive, consistent, real-time assessment across all conversations.',
+        metricV: '100<span class="metric-u">%</span>',
+        metricL: 'Call coverage vs 1–2% manual sample',
+        outcomes: [
+          'Full corpus audited — no sample bias',
+          'Consistent scoring rubric, no auditor drift',
+          'Near real-time signal for supervisors',
+          'Audit trail ready for regulators'
+        ],
+        agents: ['A·04', 'A·05', 'A·06', 'A·07']
       }
     ];
 
