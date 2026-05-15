@@ -2044,9 +2044,52 @@
   const callIntelCharts = {}; // keeps Chart instances so re-loads can destroy + redraw
 
   // ---- format Excel Date cell -> "MMM d" label matching the existing UI ----
+  // Handles three encodings Excel can emit for the same-looking date column:
+  //   1) JS Date object (cellDates:true succeeded — recognised date format)
+  //   2) Excel serial number (no date format applied, e.g. value typed/pasted as number)
+  //   3) String (date typed as text, copy-pasted from elsewhere, or stored as text)
+  // Without this, edited/pasted cells render as raw numbers ("45839") or raw strings
+  // because cellDates:true only converts cells whose number format is a date format.
   const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function _fmt(d) { return `${MONTHS[d.getMonth()]} ${d.getDate()}`; }
+  function _fmtUTC(d) { return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`; }
+
   function formatDateLabel(v) {
-    if (v instanceof Date && !isNaN(v)) return `${MONTHS[v.getMonth()]} ${v.getDate()}`;
+    // 1) Proper Date object
+    if (v instanceof Date && !isNaN(v)) return _fmt(v);
+
+    // 2) Excel serial number (days since 1899-12-30; sanity-bound to 1970..2118)
+    if (typeof v === 'number' && isFinite(v) && v > 25569 && v < 80000) {
+      const ms = Math.round((v - 25569) * 86400 * 1000);
+      const d = new Date(ms);
+      if (!isNaN(d)) return _fmtUTC(d);
+    }
+
+    // 3) String — try SheetJS' own date parser first (handles Excel display formats),
+    //    then fall back to the native Date constructor.
+    if (typeof v === 'string') {
+      const s = v.trim();
+      if (!s) return '';
+      // Try day-first formats like "1-Jul", "1/7", "01/07/2025" before native parser
+      // since native Date() is ambiguous on dd/mm/yyyy.
+      const dmy = s.match(/^(\d{1,2})[\/\-\s.](\d{1,2}|[A-Za-z]{3,9})[\/\-\s.]?(\d{2,4})?$/);
+      if (dmy) {
+        const day = parseInt(dmy[1], 10);
+        let monthIdx = -1;
+        if (/^\d+$/.test(dmy[2])) {
+          monthIdx = parseInt(dmy[2], 10) - 1;
+        } else {
+          monthIdx = MONTHS.findIndex(m => m.toLowerCase() === dmy[2].slice(0,3).toLowerCase());
+        }
+        if (day >= 1 && day <= 31 && monthIdx >= 0 && monthIdx <= 11) {
+          return `${MONTHS[monthIdx]} ${day}`;
+        }
+      }
+      const d = new Date(s);
+      if (!isNaN(d)) return _fmt(d);
+      return s;
+    }
+
     return String(v);
   }
 
