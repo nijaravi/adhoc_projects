@@ -1279,17 +1279,6 @@
           <div class="chart-wrap"><canvas id="chSentByProduct"></canvas></div>
         </div>
 
-        <div class="panel span-6" id="panelSentByCategory">
-          <div class="panel-head">
-            <div>
-              <div class="panel-title">Sentiment by Call Category</div>
-              <div class="panel-sub" id="subSentByCategory">Top categories</div>
-            </div>
-            <div class="panel-meta"><span class="v" id="metaCategoriesCount">8</span>Categories tracked</div>
-          </div>
-          <div class="chart-wrap"><canvas id="chSentByCategory"></canvas></div>
-        </div>
-
         <div class="panel span-6" id="panelSentDist">
           <div class="panel-head">
             <div>
@@ -1312,7 +1301,7 @@
           <div class="chart-wrap"><canvas id="chAgentSent"></canvas></div>
         </div>
 
-        <div class="ai-panel span-12">
+        <div class="ai-panel span-6">
           <div class="ai-panel-head">
             <div class="ai-tag"><span class="ai-dot"></span>AI Sentiment Brief</div>
             <div class="ai-time">Generated 11 min ago</div>
@@ -2065,15 +2054,19 @@
       if (!isNaN(d)) return _fmtUTC(d);
     }
 
-    // 3) String — try SheetJS' own date parser first (handles Excel display formats),
-    //    then fall back to the native Date constructor.
+    // 3) String — only treat the value as a date if it actually *looks* date-shaped.
+    //    Plain numeric strings like "0", "-0.5", "+0.5" (used as histogram bin labels
+    //    on the sentiment tab) must NOT round-trip through `new Date()` because the
+    //    native parser can turn them into "Jan 1" / "May 1" on some engines.
     if (typeof v === 'string') {
       const s = v.trim();
       if (!s) return '';
-      // Try day-first formats like "1-Jul", "1/7", "01/07/2025" before native parser
-      // since native Date() is ambiguous on dd/mm/yyyy.
-      const dmy = s.match(/^(\d{1,2})[\/\-\s.](\d{1,2}|[A-Za-z]{3,9})[\/\-\s.]?(\d{2,4})?$/);
-      if (dmy) {
+      // 3a) Day-first formats like "1-Jul", "1/7", "01/07/2025".
+      //     Requires the 2nd token to be a month name OR a 1-2 digit number,
+      //     AND requires either a year part or a month name (rules out "1-2"
+      //     style pseudo-matches that aren't actually dates).
+      const dmy = s.match(/^(\d{1,2})[\/\-\s.](\d{1,2}|[A-Za-z]{3,9})(?:[\/\-\s.](\d{2,4}))?$/);
+      if (dmy && (dmy[3] || /^[A-Za-z]{3,9}$/.test(dmy[2]))) {
         const day = parseInt(dmy[1], 10);
         let monthIdx = -1;
         if (/^\d+$/.test(dmy[2])) {
@@ -2085,8 +2078,13 @@
           return `${MONTHS[monthIdx]} ${day}`;
         }
       }
-      const d = new Date(s);
-      if (!isNaN(d)) return _fmt(d);
+      // 3b) ISO-like "2025-07-01" or "2025/07/01".
+      if (/^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}/.test(s)) {
+        const d = new Date(s);
+        if (!isNaN(d)) return _fmt(d);
+      }
+      // Any other string (product names, category names, agent names, numeric
+      // bin labels) — return unchanged.
       return s;
     }
 
@@ -2415,20 +2413,6 @@
         }
       });
 
-      // Chart 7: Sentiment by Call Category
-      if (callIntelCharts.sentByCategory) callIntelCharts.sentByCategory.destroy();
-      callIntelCharts.sentByCategory = new Chart(document.getElementById('chSentByCategory'), {
-        type: 'bar',
-        data: {
-          labels: categories,
-          datasets: [
-            { label: cPosK, data: catPos.slice(), backgroundColor: hexA(POS, 0.75), borderRadius: 4 },
-            { label: cNegK, data: catNeg.slice(), backgroundColor: hexA(NEG, 0.70), borderRadius: 4 }
-          ]
-        },
-        options: { ...baseOpts, scales: { x: baseScale.x, y: { ...baseScale.y, ticks: { ...baseScale.y.ticks, callback: v => v + '%' } } } }
-      });
-
       // Chart 8: Sentiment Score Distribution
       if (callIntelCharts.sentDist) callIntelCharts.sentDist.destroy();
       callIntelCharts.sentDist = new Chart(document.getElementById('chSentDist'), {
@@ -2442,7 +2426,19 @@
       callIntelCharts.agentSent = new Chart(document.getElementById('chAgentSent'), {
         type: 'bar',
         data: { labels: agents.slice(), datasets: [{ label: sa.seriesKeys[0], data: agentScores.slice(), backgroundColor: hexA(BLUE, 0.75), borderRadius: 4 }] },
-        options: { ...baseOpts, plugins: { ...baseOpts.plugins, legend: { display: false } }, scales: { x: baseScale.x, y: { ...baseScale.y, min: 0, max: 1 } } }
+        options: {
+          ...baseOpts,
+          plugins: { ...baseOpts.plugins, legend: { display: false } },
+          scales: {
+            x: baseScale.x,
+            y: {
+              ...baseScale.y,
+              min: 40,
+              max: 80,
+              ticks: { ...baseScale.y.ticks, stepSize: 5 }
+            }
+          }
+        }
       });
 
       // -------- Drill-down state + handlers --------
@@ -2473,15 +2469,6 @@
         c6.data.datasets[2].pointBackgroundColor = products.map((_, i) => i === idx ? BLUE : hexA(BLUE, 0.25));
         c6.update('none');
         document.getElementById('panelSentByProduct').classList.add('is-drill-source');
-
-        // Chart 7: per-product category sentiment
-        const cat = categoryByProduct[product];
-        const c7 = callIntelCharts.sentByCategory;
-        c7.data.datasets[0].data = cat.pos;
-        c7.data.datasets[1].data = cat.neg;
-        c7.update();
-        document.getElementById('panelSentByCategory').classList.add('is-drill-target');
-        document.getElementById('subSentByCategory').textContent = `${product} · positive vs negative %`;
 
         // Chart 8: per-product score distribution
         const dist = distByProduct[product];
@@ -2524,13 +2511,6 @@
         c6.data.datasets[2].pointBackgroundColor = BLUE;
         c6.update('none');
         document.getElementById('panelSentByProduct').classList.remove('is-drill-source');
-
-        const c7 = callIntelCharts.sentByCategory;
-        c7.data.datasets[0].data = catPos.slice();
-        c7.data.datasets[1].data = catNeg.slice();
-        c7.update();
-        document.getElementById('panelSentByCategory').classList.remove('is-drill-target');
-        document.getElementById('subSentByCategory').textContent = 'Top categories';
 
         const c8 = callIntelCharts.sentDist;
         c8.data.datasets[0].data = distCounts.slice();
