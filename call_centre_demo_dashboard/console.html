@@ -119,33 +119,74 @@
   }
 
   .brand {
-    padding: 22px 22px;
-    display: flex; align-items: center; gap: 12px;
+    /* Two stacked sections: top row = logo + "ATLAS"; bottom = full-width tag. */
+    padding: 18px 22px 16px;
+    display: flex; flex-direction: column; gap: 10px;
     border-bottom: 1px solid var(--nav-line);
     min-height: 76px;
     position: relative; z-index: 1;
   }
+  .brand-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
   .brand-mark {
-    width: 44px; height: 44px; flex-shrink: 0;
-    border-radius: 10px;
-    background:
-      radial-gradient(120% 120% at 20% 10%, rgba(94, 142, 220, 0.22), transparent 55%),
-      linear-gradient(160deg, #0F2A52 0%, #06122A 100%);
+    /* Sized to the new ACE logo's natural aspect (510×296 ≈ 1.70:1).
+       Plate removed so the logo's own colours show through; rounded corners
+       and a soft outline/shadow are kept for visual containment. */
+    width: 68px; height: 40px; flex-shrink: 0;
+    border-radius: 9px;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 6px 16px -6px rgba(0,0,0,0.55);
-    display: grid; place-items: center;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 6px 16px -6px rgba(0,0,0,0.45);
     overflow: hidden;
+    display: block;
   }
   .brand-mark img {
     width: 100%; height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     display: block;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
   }
-  .brand-text { line-height: 1.1; opacity: 1; transition: opacity 0.25s; white-space: nowrap; }
-  .sidebar.collapsed .brand-text { opacity: 0; pointer-events: none; }
-  .brand-name { font-family: var(--font-display); font-weight: 500; font-size: 18px; letter-spacing: -0.02em; color: #F2F6FC; }
-  .brand-tag { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.22em; color: var(--nav-text-muted); text-transform: uppercase; margin-top: 4px; font-weight: 500; }
+  .brand-name {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 20px; letter-spacing: 0;
+    color: #F2F6FC; line-height: 1;
+    white-space: nowrap;
+    opacity: 1; transition: opacity 0.25s;
+  }
+  .brand-tag {
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.22em;
+    color: var(--nav-text-muted); text-transform: uppercase; font-weight: 500;
+    line-height: 1.5;
+    white-space: nowrap;
+    opacity: 1; transition: opacity 0.25s;
+  }
+  .sidebar.collapsed .brand-name,
+  .sidebar.collapsed .brand-tag {
+    opacity: 0;
+    pointer-events: none;
+  }
+  /* When the sidebar is collapsed (72px wide), the full-width brand mark
+     would clip against the rail. Shrink the logo and tighten the brand
+     padding so it sits comfortably aligned to the left of the icon rail. */
+  .sidebar.collapsed .brand {
+    padding: 12px 8px 10px;
+    align-items: flex-start;
+  }
+  .sidebar.collapsed .brand-top {
+    gap: 0;
+    justify-content: flex-start;
+  }
+  .sidebar.collapsed .brand-mark {
+    width: 44px;
+    height: 26px;
+    border-radius: 6px;
+    transition: width 0.35s, height 0.35s, border-radius 0.35s;
+  }
+  .brand-mark {
+    transition: width 0.35s, height 0.35s, border-radius 0.35s;
+  }
 
   .nav-label {
     padding: 22px 24px 10px;
@@ -1063,13 +1104,13 @@
 <!-- ============ SIDEBAR ============ -->
 <aside class="sidebar" id="sidebar">
   <div class="brand">
-    <div class="brand-mark">
-      <img src="assets/ace-atlas-logo.png" alt="ACE ATLAS" />
+    <div class="brand-top">
+      <div class="brand-mark">
+        <img src="assets/ace-atlas-logo.png" alt="ACE ATLAS" />
+      </div>
+      <div class="brand-name">ATLAS</div>
     </div>
-    <div class="brand-text">
-      <div class="brand-name">ACE ATLAS</div>
-      <div class="brand-tag">Intelligence Console</div>
-    </div>
+    <div class="brand-tag">Intelligence Console</div>
   </div>
 
   <button class="collapse-btn" id="collapseBtn">
@@ -1098,10 +1139,10 @@
   </ul>
 
   <div class="nav-footer">
-    <div class="avatar">N</div>
+    <div class="avatar">T</div>
     <div class="who">
-      <div class="name">Nij Aravi</div>
-      <div class="role">Analytics & AI Lead</div>
+      <div class="name">Team Leader</div>
+      <div class="role">Call Centre Operations</div>
     </div>
   </div>
 </aside>
@@ -1713,25 +1754,20 @@
   <!-- ============ PAGE 4: CROSS SELL INTELLIGENCE ============ -->
   <section class="page" id="page-cross">
     <div class="grid g-12" style="margin-bottom: 16px;">
-      <div class="kpi" data-kpi="cs-lead-calls" style="grid-column: span 3;">
+      <div class="kpi" data-kpi="cs-lead-calls" style="grid-column: span 4;">
         <div class="label"><svg class="ico" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.5 19.5 0 0 1 3 5.18 2 2 0 0 1 5 3h3"/></svg>Lead Calls</div>
         <div class="value">418</div>
         <div class="sub"><span class="trend up">▲ 5%</span><span>of 8,601 processed</span></div>
       </div>
-      <div class="kpi" data-kpi="cs-eligible-opps" style="grid-column: span 3;">
+      <div class="kpi" data-kpi="cs-eligible-opps" style="grid-column: span 4;">
         <div class="label"><svg class="ico" viewBox="0 0 24 24"><polygon points="12 2 15 8 22 9 17 14 18 21 12 18 6 21 7 14 2 9 9 8 12 2"/></svg>Eligible Opportunities</div>
         <div class="value">131</div>
         <div class="sub"><span class="trend up">▲ 9.1%</span><span>conversion ready</span></div>
       </div>
-      <div class="kpi" data-kpi="cs-eligible-amt" style="grid-column: span 3;">
+      <div class="kpi" data-kpi="cs-eligible-amt" style="grid-column: span 4;">
         <div class="label"><svg class="ico" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Eligible Amount</div>
         <div class="value">AED 26M</div>
         <div class="sub"><span class="trend up">▲ 18.2%</span><span>pipeline · 1-day sample</span></div>
-      </div>
-      <div class="kpi" data-kpi="cs-missed-opps" style="grid-column: span 3;">
-        <div class="label"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>Missed Opportunities</div>
-        <div class="value">152</div>
-        <div class="sub"><span class="trend down">▲ 6.4%</span><span>unrouted leads</span></div>
       </div>
     </div>
 

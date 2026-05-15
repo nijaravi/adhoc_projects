@@ -125,27 +125,25 @@
     width: max-content;
   }
   .brand-mark {
+    /* Sized to the new ACE logo's natural aspect (510×296 ≈ 1.67:1).
+       Plate removed so the logo's own colours show through; rounded corners
+       and a soft outline/shadow are kept for visual containment. */
     grid-column: 1;
     grid-row: 1;
-    width: 40px; height: 40px;
+    width: 60px; height: 36px;
     flex-shrink: 0;
-    border-radius: 10px;
-    background:
-      radial-gradient(120% 120% at 20% 10%, rgba(94, 142, 220, 0.22), transparent 55%),
-      linear-gradient(160deg, #0F2A52 0%, #06122A 100%);
+    border-radius: 9px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.08),
-      0 6px 14px -6px rgba(0, 0, 0, 0.55);
-    position: relative;
-    display: grid; place-items: center;
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 6px 14px -6px rgba(0, 0, 0, 0.45);
     overflow: hidden;
+    display: block;
   }
   .brand-mark img {
     width: 100%; height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     display: block;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
   }
   .brand-name {
     grid-column: 2;

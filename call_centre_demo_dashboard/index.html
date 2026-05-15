@@ -110,65 +110,93 @@
   }
 
   .brand {
-    padding: 22px 22px 22px;
-    display: flex; align-items: center; gap: 14px;
+    /* Stacks two sections vertically:
+         Row 1 (.brand-top)  : logo + "ATLAS" side-by-side
+         Row 2 (.brand-tag)  : tag line on its own, spanning full sidebar width
+           so "AUDITED TRANSCRIPT" / "LISTENING & SENTIMENT" fit on two lines. */
+    padding: 20px 22px 18px;
+    display: flex; flex-direction: column; gap: 12px;
     border-bottom: 1px solid var(--nav-line);
     min-height: 96px;
     position: relative;
     z-index: 1;
   }
+  .brand-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+  }
   .brand-mark {
-    width: 52px; height: 52px;
+    /* Sized to the new ACE logo's natural aspect (510×296 ≈ 1.72:1).
+       Plate removed so the logo's own colours show through; rounded corners
+       and a soft outline/shadow are kept for visual containment. */
+    width: 78px; height: 46px;
     flex-shrink: 0;
-    border-radius: 12px;
-    background:
-      radial-gradient(120% 120% at 20% 10%, rgba(94, 142, 220, 0.22), transparent 55%),
-      linear-gradient(160deg, #0F2A52 0%, #06122A 100%);
+    border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.08),
-      0 6px 18px -6px rgba(0, 0, 0, 0.55);
-    position: relative;
-    display: grid;
-    place-items: center;
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 6px 18px -6px rgba(0, 0, 0, 0.45);
     overflow: hidden;
+    display: block;
   }
   .brand-mark img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     display: block;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
   }
-  .brand-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1;
-    opacity: 1;
-    transition: opacity .25s;
-    min-width: 0;
-  }
-  .sidebar.collapsed .brand-text { opacity: 0; pointer-events: none; }
   .brand-name {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 22px;
-    letter-spacing: -0.005em;
+    font-size: 24px;
+    letter-spacing: 0.005em;
     color: #F2F6FC;
     white-space: nowrap;
     line-height: 1;
+    opacity: 1;
+    transition: opacity .25s;
   }
   .brand-tag {
     font-family: var(--font-mono);
-    font-size: 8.5px;
-    letter-spacing: 0.22em;
+    font-size: 9px;
+    letter-spacing: 0.20em;
     color: var(--nav-text-muted);
     text-transform: uppercase;
-    margin-top: 9px;
     font-weight: 500;
-    line-height: 1.5;
+    line-height: 1.6;
     position: relative;
-    padding-top: 8px;
+    padding-top: 10px;
+    opacity: 1;
+    transition: opacity .25s;
+    /* Full sidebar width so each tag line fits without wrapping further. */
+    white-space: nowrap;
+  }
+  .sidebar.collapsed .brand-name,
+  .sidebar.collapsed .brand-tag {
+    opacity: 0;
+    pointer-events: none;
+  }
+  /* When the sidebar is collapsed (78px wide), the full-width brand mark
+     would clip against the rail. Shrink the logo and tighten the brand
+     padding so it sits comfortably aligned to the left of the icon rail. */
+  .sidebar.collapsed .brand {
+    padding: 14px 8px 12px;
+    align-items: flex-start;
+  }
+  .sidebar.collapsed .brand-top {
+    gap: 0;
+    justify-content: flex-start;
+  }
+  .sidebar.collapsed .brand-mark {
+    width: 48px;
+    height: 28px;
+    border-radius: 7px;
+    transition: width 0.35s, height 0.35s, border-radius 0.35s;
+  }
+  .brand-mark {
+    transition: width 0.35s, height 0.35s, border-radius 0.35s;
   }
   .brand-tag::before {
     content: "";
@@ -294,8 +322,8 @@
 
   /* ============ SIDEBAR LAUNCH CTA ============ */
   .nav-cta-wrap {
-    margin: 14px 16px 4px;
-    padding-top: 18px;
+    margin: 10px 16px 4px;
+    padding-top: 12px;
     border-top: 1px solid var(--nav-line);
     position: relative; z-index: 1;
   }
@@ -306,15 +334,15 @@
     color: var(--nav-text-quiet);
     text-transform: uppercase;
     font-weight: 500;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     padding-left: 4px;
     opacity: 1;
     transition: opacity .25s;
   }
   .sidebar.collapsed .nav-cta-label { opacity: 0; }
   .nav-launch {
-    display: flex; align-items: center; gap: 10px;
-    padding: 12px 14px;
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
     background: linear-gradient(135deg, #123A72 0%, #1A4FA3 100%);
     color: #F2F6FC;
     border: 1px solid rgba(109, 200, 255, 0.25);
@@ -329,6 +357,8 @@
     position: relative;
     overflow: hidden;
     white-space: nowrap;
+    width: max-content;
+    max-width: 100%;
   }
   .nav-launch::before {
     content: "";
@@ -350,7 +380,7 @@
     flex-shrink: 0;
   }
   .nav-launch .cta-text {
-    flex: 1;
+    flex: 0 1 auto;
     opacity: 1;
     transition: opacity .25s;
   }
@@ -3932,6 +3962,7 @@
     from { opacity: 0; transform: translateY(14px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
 </style>
 </head>
 <body>
@@ -3939,13 +3970,13 @@
 <!-- ============== SIDEBAR ============== -->
 <aside class="sidebar" id="sidebar">
   <div class="brand">
-    <div class="brand-mark">
-      <img src="assets/ace-atlas-logo.png" alt="ACE ATLAS" />
+    <div class="brand-top">
+      <div class="brand-mark">
+        <img src="assets/ace-atlas-logo.png" alt="ACE ATLAS" />
+      </div>
+      <div class="brand-name">ATLAS</div>
     </div>
-    <div class="brand-text">
-      <div class="brand-name">ACE ATLAS</div>
-      <div class="brand-tag">Audited Transcript<br/>Listening &amp; Sentiment</div>
-    </div>
+    <div class="brand-tag">Audited Transcript<br/>Listening &amp; Sentiment</div>
   </div>
 
   <button class="collapse-btn" id="collapseBtn" aria-label="Toggle navigation">
@@ -3989,16 +4020,16 @@
     <div class="nav-cta-label">Console Access</div>
     <a href="login.html" class="nav-launch">
       <span class="cta-dot"></span>
-      <span class="cta-text">Launch Intelligence Console</span>
+      <span class="cta-text">Intelligence Console</span>
       <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 5 7 7-7 7"/></svg>
     </a>
   </div>
 
   <div class="nav-footer">
-    <div class="avatar">N</div>
+    <div class="avatar">T</div>
     <div class="who">
-      <div class="name">Nijanthan</div>
-      <div class="role">Data &amp; AI Lead</div>
+      <div class="name">Team Leader</div>
+      <div class="role">Call Centre Operations</div>
     </div>
   </div>
 </aside>
@@ -6153,7 +6184,7 @@
     function seedConversation() {
       // Welcome message
       stream.appendChild(makeMsg('bot', `
-        <p>Good morning, Nijanthan. I've indexed <strong>8,601 calls</strong> from today across English and Arabic. Ask me anything about issues, sentiment, agents, leads, or specific conversations — or pick one of the suggested questions on the left.</p>
+        <p>Good morning. I've indexed <strong>8,601 calls</strong> from today across English and Arabic. Ask me anything about issues, sentiment, agents, leads, or specific conversations — or pick one of the suggested questions on the left.</p>
       `));
       // Auto-trigger the first suggested question after a short pause
       setTimeout(() => handleQuestion('top-issues'), 600);
