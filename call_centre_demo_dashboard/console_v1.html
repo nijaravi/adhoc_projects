@@ -2044,7 +2044,7 @@
   };
 
   // ============ PAGE 1: CALL INTELLIGENCE — TRENDS (data from Excel) ============
-  // Source workbook: ACE_ATLAS_Console_Data.xlsx (single combined file — place next to this HTML)
+  // Source workbook: Call_intelligence_time_series_trends.xlsx (place next to this HTML)
   // 5 tabs power 5 charts on this page. Edit Excel + refresh = charts update.
   //   Tab "Daily Calls by Product"   -> chCallsByProduct
   //   Tab "Daily Calls by Category"  -> chCallsByCategory
@@ -2054,11 +2054,7 @@
   // Each tab: row 1 = note (ignored), row 2 = headers, col A = Date, remaining cols = series.
   // Column headers in Excel become the chart legend labels (1:1 mapping).
 
-  // ===== SINGLE COMBINED WORKBOOK =====
-  const COMBINED_XLSX = 'ACE_ATLAS_Console_Data.xlsx';
-  let masterWorkbook = null; // loaded once, shared across all sections
-
-  const CALL_INTEL_XLSX = COMBINED_XLSX; // backward-compat alias
+  const CALL_INTEL_XLSX = 'Call_intelligence_time_series_trends.xlsx';
   const callIntelCharts = {}; // keeps Chart instances so re-loads can destroy + redraw
 
   // ---- format Excel Date cell -> "MMM d" label matching the existing UI ----
@@ -2683,25 +2679,22 @@
     }
   }
 
-  // ---- All sections: load single combined workbook + render all ----
-  (async function initAllFromExcel() {
-    masterWorkbook = await loadWorkbook(COMBINED_XLSX);
-    renderCallIntelTrends(masterWorkbook);
-    renderAgentPerformance(masterWorkbook);
-    renderMyPerformance(masterWorkbook);
-    renderCrossSell(masterWorkbook);
+  // ---- Call Intelligence: load + render ----
+  (async function initCallIntelFromExcel() {
+    const wb = await loadWorkbook(CALL_INTEL_XLSX);
+    renderCallIntelTrends(wb);
   })();
 
   // ============ PAGE 2: AGENT PERFORMANCE (data from Excel) ============
-  // Source workbook: ACE_ATLAS_Console_Data.xlsx (combined)
-  //   Tab "KPI Cards - Agent"           -> 5 KPI tiles above the page
-  //   Tab "Performance Trends"          -> chAgentTrends (multi-line, 12 weeks)
-  //   Tab "Call Sentiment Distribution" -> chAgentSentMix (doughnut)
-  //   Tab "Agent Classification"        -> chMixTrend (line) + static mix-bar above it
-  //   Tab "Performance Quadrant"        -> chQuadrant (scatter, 196 agents auto-classified)
-  //   Tab "Agent Leaderboard"           -> Top 8 card on Agents tab + full sortable table on Leaderboard tab
+  // Source workbook: Agent_performance_analytics.xlsx (place next to this HTML)
+  //   Tab "KPI Cards"                  -> 5 KPI tiles above the page
+  //   Tab "Performance Trends"         -> chAgentTrends (multi-line, 12 weeks)
+  //   Tab "Call Sentiment Distribution"-> chAgentSentMix (doughnut)
+  //   Tab "Agent Classification"       -> chMixTrend (line) + static mix-bar above it
+  //   Tab "Performance Quadrant"       -> chQuadrant (scatter, 196 agents auto-classified)
+  //   Tab "Agent Leaderboard"          -> Top 8 card on Agents tab + full sortable table on Leaderboard tab
 
-  const AGENT_PERF_XLSX = COMBINED_XLSX; // backward-compat alias
+  const AGENT_PERF_XLSX = 'Agent_performance_analytics.xlsx';
   const agentPerfCharts = {};
 
   // ---- KPI card updater: replaces label text, value, unit, sub/trend safely ----
@@ -2742,8 +2735,8 @@
   function renderAgentPerformance(workbook) {
     // ---- KPI tiles ----
     {
-      const ws = workbook.Sheets['KPI Cards - Agent'];
-      if (!ws) throw new Error('Missing sheet: KPI Cards - Agent');
+      const ws = workbook.Sheets['KPI Cards'];
+      if (!ws) throw new Error('Missing sheet: KPI Cards');
       const rows = XLSX.utils.sheet_to_json(ws, { range: 1, raw: true, defval: null });
       rows.forEach(r => updateKpiCard(r['KPI Key'], {
         label:     r['Label'],
@@ -3038,16 +3031,20 @@
     tbody.innerHTML = html;
   }
 
-  // (Agent Performance loaded by initAllFromExcel above)
+  // ---- Agent Performance: load + render ----
+  (async function initAgentPerfFromExcel() {
+    const wb = await loadWorkbook(AGENT_PERF_XLSX);
+    renderAgentPerformance(wb);
+  })();
 
   // ============ PAGE 3: MY PERFORMANCE (data from Excel) ============
-  // Source workbook: ACE_ATLAS_Console_Data.xlsx (combined)
-  //   Tab "KPI Cards - MyPerf"        -> 4 KPI tiles at top of page
-  //   Tab "My Performance Trends"     -> chMyTrends (line, 12 weeks)
-  //   Tab "My Sentiment Distribution" -> chMySent (doughnut)
-  //   Tab "Recent Calls"              -> Recent Calls table rows
+  // Source workbook: My_Performance.xlsx (place next to this HTML)
+  //   Tab "KPI Cards"                -> 4 KPI tiles at top of page
+  //   Tab "My Performance Trends"    -> chMyTrends (line, 12 weeks)
+  //   Tab "My Sentiment Distribution"-> chMySent (doughnut)
+  //   Tab "Recent Calls"             -> Recent Calls table rows
 
-  const MY_PERF_XLSX = COMBINED_XLSX; // backward-compat alias
+  const MY_PERF_XLSX = 'My_Performance.xlsx';
   const myPerfCharts = {};
 
   // Map sentiment text -> pill class
@@ -3066,8 +3063,8 @@
   function renderMyPerformance(workbook) {
     // ---- KPI tiles (reuses updateKpiCard from Agent Performance section) ----
     {
-      const ws = workbook.Sheets['KPI Cards - MyPerf'];
-      if (!ws) throw new Error('Missing sheet: KPI Cards - MyPerf');
+      const ws = workbook.Sheets['KPI Cards'];
+      if (!ws) throw new Error('Missing sheet: KPI Cards');
       const rows = XLSX.utils.sheet_to_json(ws, { range: 1, raw: true, defval: null });
       rows.forEach(r => updateKpiCard(r['KPI Key'], {
         label:     r['Label'],
@@ -3133,17 +3130,21 @@
     }
   }
 
-  // (My Performance loaded by initAllFromExcel above)
+  // ---- My Performance: load + render ----
+  (async function initMyPerfFromExcel() {
+    const wb = await loadWorkbook(MY_PERF_XLSX);
+    renderMyPerformance(wb);
+  })();
 
   // ============ PAGE 4: CROSS SELL INTELLIGENCE (data from Excel) ============
-  // Source workbook: ACE_ATLAS_Console_Data.xlsx (combined)
-  //   Tab "KPI Cards - CrossSell"       -> 4 KPI tiles at top of page
-  //   Tab "Opportunities by Product"    -> chOppByProduct (combo: 2 bars + line)
-  //   Tab "Vintage-based Analysis"      -> chVintage (single bar)
-  //   Tab "Propensity Distribution"     -> chPropMix (stacked) + 3 static summary cards
-  //   Tab "Live Opportunity Pipeline"   -> Live Pipeline table rows
+  // Source workbook: Cross_Sell_Intelligence.xlsx (place next to this HTML)
+  //   Tab "KPI Cards"                  -> 4 KPI tiles at top of page
+  //   Tab "Opportunities by Product"   -> chOppByProduct (combo: 2 bars + line)
+  //   Tab "Vintage-based Analysis"     -> chVintage (single bar)
+  //   Tab "Propensity Distribution"    -> chPropMix (stacked) + 3 static summary cards
+  //   Tab "Live Opportunity Pipeline"  -> Live Pipeline table rows
 
-  const CS_XLSX = COMBINED_XLSX; // backward-compat alias
+  const CS_XLSX = 'Cross_Sell_Intelligence.xlsx';
   const csCharts = {};
 
   // Map propensity tier -> pill class
@@ -3157,8 +3158,8 @@
   function renderCrossSell(workbook) {
     // ---- KPI tiles (reuses updateKpiCard) ----
     {
-      const ws = workbook.Sheets['KPI Cards - CrossSell'];
-      if (!ws) throw new Error('Missing sheet: KPI Cards - CrossSell');
+      const ws = workbook.Sheets['KPI Cards'];
+      if (!ws) throw new Error('Missing sheet: KPI Cards');
       const rows = XLSX.utils.sheet_to_json(ws, { range: 1, raw: true, defval: null });
       rows.forEach(r => updateKpiCard(r['KPI Key'], {
         label:     r['Label'],
@@ -3281,7 +3282,11 @@
     }
   }
 
-  // (Cross Sell loaded by initAllFromExcel above)
+  // ---- Cross Sell Intelligence: load + render ----
+  (async function initCrossSellFromExcel() {
+    const wb = await loadWorkbook(CS_XLSX);
+    renderCrossSell(wb);
+  })();
 </script>
 
 </body>
