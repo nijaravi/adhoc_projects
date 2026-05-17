@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ACE · Transforming Contact Centers with Gen-AI · ADIB</title>
+<title>ACE ATLAS · Audited Transcript, Listening & Sentiment · ADIB</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -110,47 +110,99 @@
   }
 
   .brand {
-    padding: 28px 26px 26px;
-    display: flex; align-items: center; gap: 14px;
+    /* Stacks two sections vertically:
+         Row 1 (.brand-top)  : logo + "ATLAS" side-by-side
+         Row 2 (.brand-tag)  : tag line on its own, spanning full sidebar width
+           so "AUDITED TRANSCRIPT" / "LISTENING & SENTIMENT" fit on two lines. */
+    padding: 20px 22px 18px;
+    display: flex; flex-direction: column; gap: 12px;
     border-bottom: 1px solid var(--nav-line);
     min-height: 96px;
     position: relative;
     z-index: 1;
   }
+  .brand-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+  }
   .brand-mark {
-    width: 38px; height: 38px;
+    /* Matches ace-atlas-logo.png aspect (~1024×815 ≈ 1.26:1). Rounded plate +
+       border only — artwork carries its own background. */
+    width: 58px;
+    height: 46px;
     flex-shrink: 0;
-    border-radius: 9px;
-    background: linear-gradient(135deg, #1A4FA3 0%, #0B1F3A 100%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
-    position: relative;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 6px 18px -6px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    display: block;
+    transition: width 0.35s, height 0.35s, border-radius 0.35s;
   }
-  .brand-mark::after {
-    content: "";
-    position: absolute;
-    inset: 11px;
-    border-radius: 3px;
-    background: linear-gradient(135deg, #E6EEFB, #B7CCEB);
-    opacity: 0.95;
+  .brand-mark img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
   }
-  .brand-text { display: flex; flex-direction: column; line-height: 1.1; opacity: 1; transition: opacity .25s; white-space: nowrap; }
-  .sidebar.collapsed .brand-text { opacity: 0; pointer-events: none; }
   .brand-name {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 22px;
-    letter-spacing: -0.02em;
+    /* Sized to match the brand-mark height (46px) so the wordmark
+       feels balanced beside the logo rather than dominated by it. */
+    font-size: 36px;
+    letter-spacing: 0.005em;
     color: #F2F6FC;
+    white-space: nowrap;
+    line-height: 1;
+    opacity: 1;
+    transition: opacity .25s;
   }
   .brand-tag {
     font-family: var(--font-mono);
-    font-size: 9.5px;
-    letter-spacing: 0.22em;
+    font-size: 9px;
+    letter-spacing: 0.20em;
     color: var(--nav-text-muted);
     text-transform: uppercase;
-    margin-top: 5px;
     font-weight: 500;
+    line-height: 1.6;
+    position: relative;
+    padding-top: 10px;
+    opacity: 1;
+    transition: opacity .25s;
+    /* Full sidebar width so each tag line fits without wrapping further. */
+    white-space: nowrap;
+  }
+  .sidebar.collapsed .brand-name,
+  .sidebar.collapsed .brand-tag {
+    opacity: 0;
+    pointer-events: none;
+  }
+  /* When the sidebar is collapsed (78px wide), the full-width brand mark
+     would clip against the rail. Shrink the logo and tighten the brand
+     padding so it sits comfortably aligned to the left of the icon rail. */
+  .sidebar.collapsed .brand {
+    padding: 14px 8px 12px;
+    align-items: flex-start;
+  }
+  .sidebar.collapsed .brand-top {
+    gap: 0;
+    justify-content: flex-start;
+  }
+  .sidebar.collapsed .brand-mark {
+    width: 48px;
+    height: 38px;
+    border-radius: 7px;
+  }
+  .brand-tag::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 22px; height: 1px;
+    background: linear-gradient(90deg, rgba(143, 168, 204, 0.55), rgba(143, 168, 204, 0));
   }
 
   .nav-label {
@@ -269,8 +321,8 @@
 
   /* ============ SIDEBAR LAUNCH CTA ============ */
   .nav-cta-wrap {
-    margin: 14px 16px 4px;
-    padding-top: 18px;
+    margin: 10px 16px 4px;
+    padding-top: 12px;
     border-top: 1px solid var(--nav-line);
     position: relative; z-index: 1;
   }
@@ -281,15 +333,15 @@
     color: var(--nav-text-quiet);
     text-transform: uppercase;
     font-weight: 500;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     padding-left: 4px;
     opacity: 1;
     transition: opacity .25s;
   }
   .sidebar.collapsed .nav-cta-label { opacity: 0; }
   .nav-launch {
-    display: flex; align-items: center; gap: 10px;
-    padding: 12px 14px;
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
     background: linear-gradient(135deg, #123A72 0%, #1A4FA3 100%);
     color: #F2F6FC;
     border: 1px solid rgba(109, 200, 255, 0.25);
@@ -304,6 +356,8 @@
     position: relative;
     overflow: hidden;
     white-space: nowrap;
+    width: max-content;
+    max-width: 100%;
   }
   .nav-launch::before {
     content: "";
@@ -325,7 +379,7 @@
     flex-shrink: 0;
   }
   .nav-launch .cta-text {
-    flex: 1;
+    flex: 0 1 auto;
     opacity: 1;
     transition: opacity .25s;
   }
@@ -545,87 +599,423 @@
     font-weight: 500;
   }
 
-  /* ============ CONVERSATIONAL UI ============ */
-  .convo-frame {
-    max-width: 1100px;
+  /* ============ COPILOT SHELL (Section 6) ============ */
+  .copilot-shell {
+    max-width: 1280px;
     margin: 0 auto;
     background: var(--bg-elevated);
     border: 1px solid var(--line);
     border-radius: 16px;
-    padding: 44px;
     box-shadow: var(--shadow-lg);
+    display: grid;
+    grid-template-columns: 248px 1fr;
+    height: 740px;
     position: relative;
     overflow: hidden;
   }
-  .convo-frame::before {
+  .copilot-shell::before {
     content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
-    opacity: 0.8;
+    background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+    opacity: 0.85;
+    z-index: 1;
   }
-  .convo-section-label {
+
+  /* ----- Left rail ----- */
+  .copilot-rail {
+    background: var(--bg-warm);
+    border-right: 1px solid var(--line);
+    padding: 30px 22px;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 28px;
+  }
+  .rail-section { display: flex; flex-direction: column; }
+  .rail-label {
     font-family: var(--font-mono);
-    font-size: 10.5px;
-    letter-spacing: 0.2em;
+    font-size: 10px;
+    letter-spacing: 0.22em;
     color: var(--ink-400);
     text-transform: uppercase;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
     font-weight: 500;
   }
-  .convo-chip {
-    display: inline-block; padding: 9px 16px;
-    margin: 6px 8px 6px 0;
-    border: 1px solid var(--line-strong);
-    border-radius: 100px;
-    background: var(--bg-warm);
+  .rail-list { display: flex; flex-direction: column; gap: 8px; }
+  .q-chip {
+    text-align: left;
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 10px;
     color: var(--ink-700);
-    font-size: 13.5px;
-    font-weight: 450;
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1.42;
     cursor: pointer;
-    transition: all 0.25s;
+    transition: all 0.2s ease;
+    font-weight: 450;
   }
-  .convo-chip:hover {
-    border-color: var(--accent-blue);
-    background: var(--accent-blue-soft);
-    color: var(--accent-blue);
+  .q-chip:hover {
+    border-color: var(--accent-cyan);
+    color: var(--ink-900);
+    transform: translateX(2px);
   }
-  .convo-input {
-    margin-top: 32px;
-    display: flex; align-items: center; gap: 14px;
-    padding: 16px 20px;
+  .q-chip.active {
+    border-color: var(--accent-cyan);
+    background: var(--accent-cyan-soft);
+    color: var(--ink-900);
+    box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.08);
+    font-weight: 500;
+  }
+  .q-chip.muted {
+    background: transparent;
+    border-color: transparent;
+    color: var(--ink-500);
+    padding: 9px 12px;
+    font-size: 12.5px;
+  }
+  .q-chip.muted:hover {
+    background: var(--bg-elevated);
+    border-color: var(--line);
+    color: var(--ink-700);
+    transform: none;
+  }
+  .q-chip .q-tag {
+    display: inline-block;
+    margin-right: 6px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: var(--accent-cyan-soft);
+    color: var(--accent-cyan);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    vertical-align: 1px;
+  }
+
+  /* ----- Main chat panel ----- */
+  .copilot-main {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    background: var(--bg-elevated);
+  }
+  .copilot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 32px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg-section);
+  }
+  .copilot-bot {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .bot-mark {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+    display: grid; place-items: center;
+    color: white;
+    box-shadow: 0 4px 14px rgba(26, 79, 163, 0.22);
+    flex-shrink: 0;
+  }
+  .bot-mark svg { width: 20px; height: 20px; }
+  .bot-name {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ink-900);
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+  .bot-status {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--ink-400);
+    display: flex; align-items: center; gap: 7px;
+    margin-top: 4px;
+  }
+  .status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
+    animation: pulse-live 2s infinite;
+  }
+  @keyframes pulse-live {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18); }
+    50% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.08); }
+  }
+  .copilot-actions { display: flex; gap: 8px; }
+  .btn-icon {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    display: grid; place-items: center;
+    cursor: pointer;
+    color: var(--ink-500);
+    transition: all 0.2s;
+  }
+  .btn-icon:hover { color: var(--accent-blue); border-color: var(--accent-blue); }
+  .btn-icon svg { width: 14px; height: 14px; }
+
+  /* ----- Chat stream ----- */
+  .copilot-stream {
+    flex: 1 1 0;
+    min-height: 0;
+    padding: 28px 32px 8px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    scroll-behavior: smooth;
+  }
+  .copilot-stream::-webkit-scrollbar { width: 6px; }
+  .copilot-stream::-webkit-scrollbar-track { background: transparent; }
+  .copilot-stream::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 3px; }
+
+  .msg { display: flex; gap: 12px; max-width: 100%; align-items: flex-start; }
+  .msg.user { justify-content: flex-end; }
+  .msg-avatar {
+    width: 32px; height: 32px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+    margin-top: 4px;
+    box-shadow: 0 2px 8px rgba(26, 79, 163, 0.18);
+  }
+  .msg-avatar svg { width: 14px; height: 14px; color: white; }
+  .msg-bubble {
     background: var(--bg-warm);
     border: 1px solid var(--line);
-    border-radius: 12px;
-    transition: border-color 0.25s;
+    border-radius: 14px;
+    padding: 16px 20px;
+    max-width: 82%;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-700);
   }
-  .convo-input:focus-within { border-color: var(--accent-blue); background: var(--bg-elevated); }
-  .convo-input .prompt-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--accent-blue);
-  }
-  .convo-input input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
+  .msg-bubble p { margin: 0; }
+  .msg-bubble p + p,
+  .msg-bubble p + .bubble-list,
+  .msg-bubble .bubble-list + p { margin-top: 10px; }
+  .msg-bubble strong { color: var(--ink-900); font-weight: 600; }
+  .msg.user .msg-bubble {
+    background: var(--accent-blue-soft);
+    border-color: rgba(26, 79, 163, 0.12);
     color: var(--ink-900);
-    font-family: var(--font-body);
-    font-size: 15px;
+    font-weight: 450;
   }
-  .convo-input input::placeholder { color: var(--ink-400); }
-  .convo-input .send {
-    padding: 10px 18px;
-    background: var(--ink-900);
-    color: #FFFFFF;
-    border: none; border-radius: 8px;
+  .msg-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    align-self: center;
+    margin-left: 4px;
+    flex-shrink: 0;
+  }
+
+  /* ----- Structured list inside bot bubble ----- */
+  .bubble-list {
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .bubble-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 13.5px;
+    color: var(--ink-700);
+  }
+  .bubble-item:last-child { border-bottom: none; }
+  .bubble-item .item-l { flex: 1; min-width: 0; }
+  .bubble-item .item-r {
+    font-family: var(--font-display);
+    color: var(--accent-cyan);
+    font-weight: 500;
+    font-feature-settings: "tnum";
+    font-style: italic;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .bubble-item .item-r.score { color: var(--ink-800); }
+  .bubble-item .item-r.score .mom-up { color: #0E9F6E; }
+  .bubble-item .item-r.score .mom-dn { color: #C2410C; }
+  .bubble-insight {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-left: 3px solid var(--accent-cyan);
+    background: var(--accent-cyan-soft);
+    border-radius: 0 8px 8px 0;
+    font-size: 13.5px;
+    color: var(--ink-700);
+    line-height: 1.55;
+  }
+  .bubble-insight strong { color: var(--ink-900); }
+
+  /* ----- Inline audio card ----- */
+  .audio-card {
+    margin-top: 10px;
+    padding: 12px 14px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .audio-card:hover { border-color: var(--accent-cyan); box-shadow: 0 2px 12px -4px rgba(8,145,178,0.18); }
+  .audio-row {
+    display: flex; align-items: center; gap: 14px;
+  }
+  .audio-play {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--accent-cyan);
+    background: var(--accent-cyan-soft);
+    color: var(--accent-cyan);
+    display: grid; place-items: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .audio-play:hover { background: var(--accent-cyan); color: white; }
+  .audio-play svg { width: 12px; height: 12px; fill: currentColor; }
+  .audio-meta { flex: 1; min-width: 0; }
+  .audio-head {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 3px;
+  }
+  .audio-id {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--accent-blue);
+    font-weight: 600;
+    background: var(--accent-blue-soft);
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .audio-sub {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--ink-400);
+  }
+  .audio-title { font-size: 13px; color: var(--ink-800); font-weight: 500; }
+  .audio-progress {
+    margin-top: 8px;
+    height: 4px; border-radius: 2px;
+    background: var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  .audio-bar {
+    position: absolute; top: 0; left: 0; bottom: 0;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.1s linear;
+  }
+  .audio-time {
     font-family: var(--font-mono);
     font-size: 11px;
-    letter-spacing: 0.16em;
+    color: var(--ink-400);
+    min-width: 78px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ----- Typing indicator ----- */
+  .typing-dots {
+    display: inline-flex; gap: 5px; align-items: center;
+    padding: 4px 2px;
+  }
+  .typing-dots i {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--ink-400);
+    animation: typing 1.2s infinite;
+  }
+  .typing-dots i:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots i:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typing {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+    30% { transform: translateY(-4px); opacity: 1; }
+  }
+
+  /* ----- Input bar ----- */
+  .copilot-input {
+    display: flex; align-items: center;
+    padding: 18px 32px;
+    border-top: 1px solid var(--line);
+    gap: 14px;
+    background: var(--bg-section);
+  }
+  .copilot-input input {
+    flex: 1;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 13px 16px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--ink-900);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .copilot-input input::placeholder { color: var(--ink-400); }
+  .copilot-input input:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px var(--accent-blue-soft);
+  }
+  .btn-ask {
+    padding: 13px 22px;
+    background: var(--ink-900);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     cursor: pointer;
     font-weight: 600;
-    transition: all 0.25s;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: background 0.2s, transform 0.1s;
   }
-  .convo-input .send:hover { background: var(--accent-blue); }
+  .btn-ask:hover { background: var(--accent-blue); }
+  .btn-ask:active { transform: scale(0.98); }
+  .btn-ask svg { width: 14px; height: 14px; }
+
+  /* ----- Copilot responsive ----- */
+  @media (max-width: 1100px) {
+    .copilot-shell { grid-template-columns: 224px 1fr; }
+    .copilot-header { padding: 20px 24px; }
+    .copilot-stream { padding: 22px 24px 6px; }
+    .copilot-input { padding: 16px 24px; }
+  }
+  @media (max-width: 860px) {
+    .copilot-shell { grid-template-columns: 1fr; height: auto; }
+    .copilot-rail {
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+      max-height: 280px;
+    }
+    .copilot-main { height: 620px; }
+    .msg-bubble { max-width: 92%; }
+    .audio-row { flex-wrap: wrap; }
+    .audio-time { min-width: 60px; font-size: 10px; }
+  }
 
   /* ============ ARCHITECTURE CANVAS ============ */
   .arch-canvas {
@@ -1682,14 +2072,14 @@
   /* ============================================================
      SECTION 4 · PROOF OF VALUE — HORIZONTAL CAROUSEL
      ============================================================ */
-  .pov-hero { margin-bottom: 40px; }
-  .pov-hero h1 { font-size: clamp(34px, 4.4vw, 54px); margin-bottom: 18px; }
-  .pov-hero p.sub { font-size: 16px; max-width: 820px; }
+  .pov-hero { margin-bottom: 22px; }
+  .pov-hero h1 { font-size: clamp(34px, 4.4vw, 54px); margin-bottom: 14px; }
+  .pov-hero p.sub { font-size: 16px; max-width: none; line-height: 1.55; }
 
   /* Control bar with tabs + arrows */
   .pov-control {
     max-width: 1280px;
-    margin: 0 auto 28px;
+    margin: 0 auto 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1818,17 +2208,18 @@
 
   /* ===== SLIDE 1 · CALL CATEGORISATION INTELLIGENCE ===== */
   .cat-head {
-    margin-bottom: 36px;
+    margin-bottom: 20px;
   }
-  .cat-head-text { max-width: 980px; }
+  .cat-head-text { max-width: none; }
+  .cat-head-text .pov-slide-eyebrow { margin-bottom: 10px; }
   .cat-head-text .pov-slide-title {
-    margin-bottom: 16px;
-    font-size: clamp(34px, 4vw, 50px);
+    margin-bottom: 8px;
+    font-size: clamp(32px, 3.6vw, 46px);
   }
   .cat-head-text .pov-slide-sub {
-    font-size: 16px;
-    line-height: 1.62;
-    max-width: 860px;
+    font-size: 15px;
+    line-height: 1.5;
+    max-width: none;
   }
 
   .cat-ai-badge {
@@ -2494,7 +2885,362 @@
   }
   .ai-modal-foot p strong { color: var(--ink-900); font-weight: 700; }
 
-  /* ===== SLIDE 2 · AGENT PERFORMANCE ===== */
+  /* ===== SLIDE 2 · CALL INSIGHTS ===== */
+  .ci-dash {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+  .ci-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 22px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+    box-shadow: var(--shadow-xs);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .ci-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent-blue);
+    opacity: 0.7;
+  }
+  .ci-card:hover {
+    border-color: var(--line-strong);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .ci-sentiment { grid-column: span 4; }
+  .ci-product   { grid-column: span 5; }
+  .ci-idle      { grid-column: span 3; }
+  .ci-drill     { grid-column: span 6; }
+
+  .ci-sentiment::before { background: linear-gradient(90deg, #2F8B5A 0%, #2F8B5A 75%, #C2553F 75%, #C2553F 100%); opacity: 0.85; }
+  .ci-product::before   { background: var(--accent-blue); }
+  .ci-idle::before      { background: var(--accent-gold); opacity: 0.9; }
+  .ci-drill-cc::before  { background: #C2553F; opacity: 0.85; }
+  .ci-drill-hold::before{ background: var(--accent-cyan); opacity: 0.9; }
+
+  .ci-card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px 12px;
+    margin-bottom: 16px;
+  }
+  .ci-card-eyebrow {
+    flex: 1 0 100%;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .ci-card h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 19px;
+    letter-spacing: -0.018em;
+    color: var(--ink-900);
+    line-height: 1.25;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .ci-card-meta {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* --- Sentiment Pulse --- */
+  .ci-sentiment-body {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 18px;
+    align-items: center;
+    flex: 1;
+  }
+  .ci-sent-ring { width: 130px; height: 130px; flex-shrink: 0; }
+  .ci-sent-legend { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .ci-leg-row { display: flex; align-items: baseline; gap: 8px; }
+  .ci-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; transform: translateY(-1px); }
+  .ci-leg-num {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--ink-900);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .ci-leg-lbl {
+    font-size: 12.5px;
+    color: var(--ink-500);
+    font-weight: 450;
+  }
+  .ci-leg-note {
+    margin-top: 6px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--line);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink-500);
+  }
+  .ci-leg-note strong { color: var(--ink-900); font-weight: 600; }
+
+  /* --- Product Mix bars --- */
+  .ci-bars { display: flex; flex-direction: column; gap: 11px; flex: 1; }
+  .ci-bar-row { display: flex; flex-direction: column; gap: 5px; }
+  .ci-bar-label {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .ci-bar-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-800);
+    letter-spacing: -0.005em;
+  }
+  .ci-bar-pct {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-700);
+    letter-spacing: 0;
+  }
+  .ci-bar-lead .ci-bar-name { color: var(--ink-900); font-weight: 600; }
+  .ci-bar-lead .ci-bar-pct { color: var(--accent-blue); font-size: 13px; }
+  .ci-bar-track {
+    height: 10px;
+    background: var(--bg-cool);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .ci-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 0.6s cubic-bezier(.2,.8,.2,1);
+  }
+  .ci-prod-note { margin-top: 14px; }
+
+  /* --- Idle Time --- */
+  .ci-idle-body { display: flex; flex-direction: column; gap: 14px; flex: 1; }
+  .ci-idle-hero {
+    padding: 4px 0 14px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .ci-idle-num {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 52px;
+    color: var(--ink-900);
+    letter-spacing: -0.035em;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .ci-idle-num span { font-size: 28px; color: var(--accent-gold); margin-left: 2px; font-weight: 500; }
+  .ci-idle-lbl {
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--ink-500);
+  }
+  .ci-idle-sub { display: flex; flex-direction: column; gap: 12px; }
+  .ci-idle-stat-num {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 24px;
+    color: var(--accent-gold);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .ci-idle-stat-lbl {
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: var(--ink-500);
+  }
+  .ci-idle-tag {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--accent-gold-soft);
+    border: 1px solid #E8DBB6;
+    border-radius: 10px;
+    font-size: 11.5px;
+    line-height: 1.4;
+    color: #6A5A28;
+    font-weight: 500;
+  }
+  .ci-idle-tag svg {
+    width: 13px; height: 13px;
+    fill: none; stroke: currentColor;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: var(--accent-gold);
+  }
+
+  /* --- Drill-down: Covered Card reasons --- */
+  .ci-reasons { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .ci-reason {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+  }
+  .ci-reason-rank {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-300);
+    letter-spacing: 0.06em;
+    width: 22px;
+    text-align: center;
+  }
+  .ci-reason-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .ci-reason-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .ci-reason-name {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--ink-800);
+    letter-spacing: -0.005em;
+  }
+  .ci-reason-pct {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-700);
+  }
+  .ci-reason-track {
+    height: 8px;
+    background: var(--bg-cool);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .ci-reason-fill {
+    height: 100%;
+    border-radius: 100px;
+  }
+
+  /* --- Drill-down: Hold reasons --- */
+  .ci-hold-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    flex: 1;
+  }
+  .ci-hold-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 16px 14px;
+    background: var(--bg-section);
+    border: 1px solid var(--line-soft);
+    border-radius: 12px;
+  }
+  .ci-hold-col-head { display: flex; }
+  .ci-hold-prod {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 11px 5px 9px;
+    background: var(--cs);
+    color: var(--c);
+    border-radius: 100px;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
+    border: 1px solid var(--cs);
+  }
+  .ci-hold-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .ci-hold-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line-soft);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 450;
+    color: var(--ink-700);
+    line-height: 1.3;
+    transition: all 0.25s;
+  }
+  .ci-hold-list li:hover {
+    border-color: var(--line-strong);
+    transform: translateX(2px);
+  }
+  .ci-hold-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink-400);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--bg-cool);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* --- Executive strip (reuses cat-exec) --- */
+  .ci-exec { margin-bottom: 0; }
+  .ci-exec-stats { grid-template-columns: repeat(4, 1fr); }
+
+  /* --- Call Insights responsive --- */
+  @media (max-width: 1200px) {
+    .ci-sentiment { grid-column: span 6; }
+    .ci-product   { grid-column: span 6; }
+    .ci-idle      { grid-column: span 12; }
+    .ci-idle-body { flex-direction: row; align-items: stretch; }
+    .ci-idle-hero { flex: 0 0 auto; padding: 0 24px 0 0; border-bottom: none; border-right: 1px dashed var(--line); }
+    .ci-idle-sub { flex: 1; flex-direction: row; gap: 18px; align-items: center; padding-left: 6px; }
+    .ci-idle-tag { flex: 1; }
+  }
+  @media (max-width: 900px) {
+    .ci-sentiment, .ci-product, .ci-idle, .ci-drill { grid-column: span 12; }
+    .ci-sentiment-body { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+    .ci-sent-legend { width: 100%; align-items: center; }
+    .ci-idle-body { flex-direction: column; }
+    .ci-idle-hero { border-right: none; border-bottom: 1px dashed var(--line); padding: 0 0 14px; }
+    .ci-idle-sub { flex-direction: column; padding-left: 0; }
+    .ci-hold-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ===== SLIDE 3 · AGENT PERFORMANCE ===== */
   .apa-framework {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -3215,18 +3961,1102 @@
     from { opacity: 0; transform: translateY(14px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
+  /* ============================================================
+     INTRO LANDING SLIDE (Agenda / Title Card) — Light theme
+     Mirrors the Problem Statement aesthetic: cream canvas, Fraunces
+     navy headline, blue-accent italic, white agenda cards.
+     ============================================================ */
+  body.intro-active { overflow: hidden; }
+
+  .intro-slide {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    background:
+      radial-gradient(1400px 800px at 100% 0%, rgba(26, 79, 163, 0.045), transparent 60%),
+      radial-gradient(1000px 600px at 0% 100%, rgba(26, 79, 163, 0.035), transparent 60%),
+      radial-gradient(900px 700px at 50% 110%, rgba(8, 145, 178, 0.025), transparent 60%),
+      var(--bg-canvas);
+    color: var(--ink-600);
+    transform: translateX(0);
+    transition: transform 1.1s cubic-bezier(.76,.02,.22,1);
+    will-change: transform;
+    overflow: hidden;
+  }
+  .intro-slide.dismissed {
+    transform: translateX(-100vw);
+    pointer-events: none;
+  }
+
+  /* Faint blueprint grid */
+  .intro-slide::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(11, 31, 58, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(11, 31, 58, 0.025) 1px, transparent 1px);
+    background-size: 88px 88px;
+    background-position: -1px -1px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse at center, black 25%, transparent 85%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 25%, transparent 85%);
+  }
+
+  /* Decorative concentric rings (echo of .hero-mark on Problem Statement) */
+  .intro-rings {
+    position: absolute;
+    top: 50%;
+    right: -180px;
+    transform: translateY(-50%);
+    width: 720px;
+    height: 720px;
+    pointer-events: none;
+    opacity: 0.45;
+    z-index: 1;
+    animation: introRise 1.2s 0.2s cubic-bezier(.2,.8,.2,1) backwards;
+  }
+
+  .intro-inner {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 24px 56px 40px;
+    max-width: 1600px;
+    width: 100%;
+    margin: 0 auto;
+    min-height: 0;
+  }
+
+  /* Top: logo */
+  .intro-logo-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 0;
+    position: relative;
+    animation: introRise 0.95s 0.1s cubic-bezier(.2,.8,.2,1) backwards;
+  }
+  .intro-logo-wrap::before {
+    content: '';
+    position: absolute;
+    width: 380px;
+    height: 200px;
+    background: radial-gradient(ellipse at center, rgba(26, 79, 163, 0.05) 0%, rgba(8, 145, 178, 0.025) 45%, transparent 75%);
+    filter: blur(20px);
+    z-index: -1;
+  }
+  .intro-logo-wrap img {
+    height: 176px;
+    width: auto;
+    filter: drop-shadow(0 8px 24px rgba(11, 31, 58, 0.10));
+  }
+
+  /* Centre: hero title */
+  .intro-hero {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    padding: 6px 24px 0;
+    margin-bottom: clamp(48px, 9vh, 100px);
+    min-height: 0;
+  }
+
+  .intro-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(48px, 6.4vw, 96px);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    color: var(--ink-900);
+    animation: introRise 0.95s 0.28s cubic-bezier(.2,.8,.2,1) backwards;
+    max-width: 1180px;
+  }
+  .intro-title .accent {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink-800);
+  }
+
+  .intro-sub {
+    font-family: var(--font-body);
+    font-size: 17px;
+    color: var(--ink-500);
+    max-width: 760px;
+    line-height: 1.6;
+    font-weight: 400;
+    animation: introRise 0.95s 0.42s cubic-bezier(.2,.8,.2,1) backwards;
+  }
+
+  /* Bottom: agenda chip rail */
+  .intro-agenda-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ink-400);
+    font-weight: 500;
+    text-align: center;
+    margin-top: 8px;
+    margin-bottom: 28px;
+    animation: introRise 0.95s 0.62s cubic-bezier(.2,.8,.2,1) backwards;
+  }
+  .intro-agenda-label::before,
+  .intro-agenda-label::after {
+    content: '';
+    display: inline-block;
+    width: 40px;
+    height: 1px;
+    background: var(--line-strong);
+    vertical-align: middle;
+    margin: 0 14px;
+  }
+
+  .intro-sections {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+    margin-top: 8px;
+    animation: introRise 0.95s 0.78s cubic-bezier(.2,.8,.2,1) backwards;
+  }
+
+  .intro-section-card {
+    flex: 1 1 0;
+    min-width: 0;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 6px 9px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    cursor: pointer;
+    transition:
+      transform 0.35s cubic-bezier(.2,.8,.2,1),
+      border-color 0.3s,
+      box-shadow 0.3s,
+      background 0.3s;
+    position: relative;
+    overflow: hidden;
+    font-family: inherit;
+    color: inherit;
+    box-shadow: var(--shadow-xs);
+    -webkit-appearance: none;
+  }
+  .intro-section-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--accent-blue) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .intro-section-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-lg);
+    background: var(--bg-elevated);
+  }
+  .intro-section-card:hover::before { opacity: 1; }
+  .intro-section-card:hover .intro-section-icon {
+    background: var(--accent-blue);
+    color: #fff;
+  }
+
+  .intro-section-num {
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    color: var(--ink-400);
+    font-weight: 500;
+  }
+  .intro-section-icon {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: var(--accent-blue-soft);
+    color: var(--accent-blue);
+    transition: background 0.3s, color 0.3s;
+  }
+  .intro-section-icon svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .intro-section-label {
+    font-family: var(--font-display);
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--ink-900);
+    letter-spacing: -0.005em;
+    line-height: 1.25;
+  }
+
+  /* Right-side advance arrow */
+  .intro-advance-wrap {
+    position: absolute;
+    right: 56px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    animation: introRise 0.95s 1.1s cubic-bezier(.2,.8,.2,1) backwards;
+  }
+  .intro-advance {
+    width: 78px;
+    height: 78px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      0 14px 38px -10px rgba(26, 79, 163, 0.45),
+      0 0 0 0 rgba(26, 79, 163, 0.30);
+    animation: introPulse 2.4s ease-in-out infinite;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    -webkit-appearance: none;
+  }
+  .intro-advance:hover {
+    transform: scale(1.08);
+    box-shadow:
+      0 18px 44px -10px rgba(26, 79, 163, 0.6),
+      0 0 0 10px rgba(26, 79, 163, 0.10);
+    animation: none;
+  }
+  .intro-advance:active { transform: scale(0.96); }
+  .intro-advance svg {
+    width: 28px;
+    height: 28px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    animation: arrowNudge 1.8s ease-in-out infinite;
+  }
+  .intro-advance-hint {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+    text-align: center;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  @keyframes introPulse {
+    0%, 100% {
+      box-shadow:
+        0 14px 38px -10px rgba(26, 79, 163, 0.45),
+        0 0 0 0 rgba(26, 79, 163, 0.30);
+    }
+    50% {
+      box-shadow:
+        0 14px 38px -10px rgba(26, 79, 163, 0.55),
+        0 0 0 22px rgba(26, 79, 163, 0);
+    }
+  }
+  @keyframes arrowNudge {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(5px); }
+  }
+  @keyframes introRise {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Responsive */
+  @media (max-width: 1180px) {
+    .intro-inner { padding: 22px 40px 32px; }
+    .intro-advance-wrap { right: 28px; }
+    .intro-rings { right: -240px; width: 600px; height: 600px; }
+    .intro-logo-wrap img { height: 156px; }
+    .intro-hero { margin-bottom: clamp(40px, 8vh, 80px); }
+  }
+  @media (max-width: 980px) {
+    .intro-inner { padding: 20px 24px 28px; }
+    .intro-logo-wrap img { height: 132px; }
+    .intro-rings { opacity: 0.25; }
+    .intro-hero { margin-bottom: clamp(36px, 7vh, 72px); }
+    .intro-section-label { font-size: 10.5px; }
+    .intro-section-icon { width: 30px; height: 30px; }
+    .intro-section-icon svg { width: 16px; height: 16px; }
+    .intro-section-card { padding: 8px 4px 7px; gap: 4px; }
+    .intro-sections { gap: 6px; }
+  }
+  @media (max-width: 640px) {
+    .intro-inner { padding: 18px 12px 88px; }
+    .intro-logo-wrap img { height: 108px; }
+    .intro-hero { padding: 4px 8px 0; gap: 12px; margin-bottom: clamp(28px, 6vh, 52px); }
+    .intro-section-label { font-size: 9px; line-height: 1.15; }
+    .intro-section-num { font-size: 7px; letter-spacing: 0.12em; }
+    .intro-rings { display: none; }
+    .intro-advance-wrap {
+      right: 50%;
+      top: auto;
+      bottom: 22px;
+      transform: translateX(50%);
+      flex-direction: row-reverse;
+      gap: 16px;
+    }
+    .intro-advance { width: 60px; height: 60px; }
+    .intro-advance svg { width: 22px; height: 22px; }
+  }
+
+  /* ============================================================
+     SECTION 8 · BUSINESS CASE
+     Two-tab carousel (Investment Case | Per-Product Economics)
+     designed to fit a single CEO-friendly view per tab.
+     ============================================================ */
+  #business { padding: 44px 56px 60px; }
+  #business .hero { margin-bottom: 24px; max-width: 1280px; }
+  #business .hero .eyebrow { margin-bottom: 16px; padding: 5px 11px 5px 9px; font-size: 10px; }
+  #business .hero h1 {
+    font-size: clamp(32px, 4vw, 50px);
+    line-height: 1.06;
+    margin-bottom: 14px;
+    max-width: 1100px;
+  }
+  #business .hero h1 .accent { font-style: italic; }
+  #business .hero p.sub { font-size: 15.5px; line-height: 1.55; max-width: 920px; }
+
+  /* Tabs / control bar — visual twin of .pov-control, scoped to business case */
+  .bc-control {
+    max-width: 1280px;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 10px 12px 10px 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    box-shadow: var(--shadow-xs);
+  }
+  .bc-tabs { display: flex; gap: 4px; }
+  .bc-tab {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 10px 20px 10px 14px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 100px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    color: var(--ink-500);
+    transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+  }
+  .bc-tab:hover { color: var(--ink-800); }
+  .bc-tab.active {
+    background: var(--ink-900);
+    color: #F2F6FC;
+    border-color: var(--ink-900);
+  }
+  .bc-tab-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    opacity: 0.55;
+    font-weight: 500;
+  }
+  .bc-tab.active .bc-tab-num { opacity: 0.7; }
+  .bc-tab-name {
+    font-size: 13.5px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  .bc-nav { display: flex; align-items: center; gap: 6px; padding-right: 6px; }
+  .bc-arrow {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--bg-warm);
+    border: 1px solid var(--line);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-700);
+    transition: all 0.25s;
+  }
+  .bc-arrow:hover { background: var(--ink-900); border-color: var(--ink-900); color: #fff; }
+  .bc-arrow:disabled { opacity: 0.35; cursor: not-allowed; background: var(--bg-warm); color: var(--ink-300); }
+  .bc-arrow:disabled:hover { background: var(--bg-warm); border-color: var(--line); color: var(--ink-300); }
+  .bc-arrow svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .bc-counter {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--ink-500);
+    padding: 0 12px;
+    font-weight: 500;
+  }
+  .bc-counter .sep { margin: 0 6px; color: var(--ink-300); }
+  .bc-counter #bcCur { color: var(--ink-900); font-weight: 600; }
+
+  .bc-viewport {
+    max-width: 1280px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 18px;
+  }
+  .bc-track {
+    display: flex;
+    transition: transform 0.7s cubic-bezier(.2,.8,.2,1);
+    will-change: transform;
+  }
+  .bc-slide {
+    flex: 0 0 100%;
+    min-width: 0;
+    padding: 4px;
+    opacity: 0.35;
+    transition: opacity 0.6s ease;
+  }
+  .bc-slide.active { opacity: 1; }
+
+  /* =============================================================
+     SLIDE 1 · INVESTMENT CASE
+     4 hero KPI cards + 3-year trajectory + confidence notes
+     ============================================================= */
+  .bc-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 22px;
+  }
+  .bc-kpi {
+    position: relative;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 22px 20px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.25s, box-shadow 0.25s;
+    display: flex;
+    flex-direction: column;
+    min-height: 196px;
+  }
+  .bc-kpi:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .bc-kpi-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-400);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .bc-kpi-value {
+    font-family: var(--font-display);
+    font-size: 44px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--ink-900);
+    margin-bottom: 6px;
+  }
+  .bc-kpi-value .unit {
+    font-family: var(--font-body);
+    font-size: 21px;
+    color: var(--ink-500);
+    margin-left: 4px;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  .bc-kpi-period {
+    font-size: 13px;
+    color: var(--ink-500);
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .bc-kpi-foot {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--line-soft);
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: var(--ink-500);
+  }
+  /* ROI card — accent treatment to draw the eye */
+  .bc-kpi--accent {
+    background: linear-gradient(155deg, var(--ink-900) 0%, var(--ink-800) 100%);
+    border-color: var(--ink-900);
+    color: #F2F6FC;
+  }
+  .bc-kpi--accent .bc-kpi-label { color: rgba(242, 246, 252, 0.55); }
+  .bc-kpi--accent .bc-kpi-value { color: #F2F6FC; }
+  .bc-kpi--accent .bc-kpi-value .unit { color: rgba(242, 246, 252, 0.6); }
+  .bc-kpi--accent .bc-kpi-period { color: rgba(242, 246, 252, 0.75); }
+  .bc-kpi--accent .bc-kpi-foot {
+    color: rgba(242, 246, 252, 0.65);
+    border-top-color: rgba(242, 246, 252, 0.12);
+  }
+
+  /* Lower split — trajectory + confidence */
+  .bc-lower-grid {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 18px;
+  }
+  .bc-block {
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px 22px;
+    box-shadow: var(--shadow-sm);
+  }
+  .bc-block-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent-blue);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .bc-block-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink-900);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin-bottom: 16px;
+  }
+  .bc-block-title em { font-style: italic; color: var(--ink-800); font-weight: 400; }
+
+  /* Trajectory bars */
+  .bc-traj-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .bc-traj-row {
+    display: grid;
+    grid-template-columns: 56px 1fr 110px;
+    align-items: center;
+    gap: 14px;
+  }
+  .bc-traj-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    color: var(--ink-500);
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  .bc-traj-track {
+    position: relative;
+    height: 26px;
+    background: var(--bg-warm);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .bc-traj-bar {
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 1s cubic-bezier(.2,.8,.2,1);
+  }
+  .bc-slide.active .bc-traj-bar { transform: scaleX(var(--bc-w, 1)); }
+  .bc-traj-bar.bc-traj-bar--y1 { background: linear-gradient(90deg, #5A82C9 0%, #4071BF 100%); transition-delay: 0.08s; }
+  .bc-traj-bar.bc-traj-bar--y2 { background: linear-gradient(90deg, #2C5FB2 0%, #1A4FA3 100%); transition-delay: 0.24s; }
+  .bc-traj-bar.bc-traj-bar--y3 { background: linear-gradient(90deg, #1A4FA3 0%, #0B1F3A 100%); transition-delay: 0.40s; }
+  .bc-traj-value {
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--ink-900);
+    text-align: right;
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+  .bc-traj-value .small {
+    font-family: var(--font-body);
+    font-size: 10.5px;
+    color: var(--ink-400);
+    font-weight: 500;
+    letter-spacing: 0;
+    display: block;
+    margin-top: 4px;
+  }
+  .bc-traj-foot {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--line-strong);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+  }
+  .bc-traj-foot-l {
+    font-size: 13px;
+    color: var(--ink-500);
+    line-height: 1.45;
+  }
+  .bc-traj-foot-l strong { color: var(--ink-900); font-weight: 600; }
+  .bc-traj-foot-r {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .bc-traj-foot-r .roi {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--accent-blue);
+    line-height: 1;
+    letter-spacing: -0.015em;
+  }
+  .bc-traj-foot-r .roi-lbl {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    margin-top: 5px;
+    font-weight: 500;
+  }
+
+  /* Confidence notes */
+  .bc-notes {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .bc-note {
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+  .bc-note-check {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--accent-blue-soft);
+    color: var(--accent-blue);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .bc-note-check svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .bc-note-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink-900);
+    margin-bottom: 2px;
+    line-height: 1.35;
+  }
+  .bc-note-body {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--ink-500);
+  }
+
+  /* =============================================================
+     SLIDE 2 · PER-PRODUCT ECONOMICS
+     4 product cards in a row + totals strip
+     ============================================================= */
+  .bc-products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .bc-product {
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 16px 0;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .bc-product:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .bc-product-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .bc-product-name {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink-900);
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+  }
+  .bc-product-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ink-400);
+    font-weight: 500;
+  }
+  .bc-product-sec {
+    margin-bottom: 12px;
+  }
+  .bc-product-sec-label {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-400);
+    font-weight: 500;
+    margin-bottom: 7px;
+  }
+  .bc-funnel {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .bc-funnel-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 12px;
+    color: var(--ink-600);
+    line-height: 1.3;
+  }
+  .bc-funnel-row strong {
+    font-family: var(--font-display);
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--ink-900);
+    letter-spacing: -0.005em;
+  }
+  .bc-funnel-row .bc-funnel-amt {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--ink-500);
+    font-weight: 500;
+  }
+
+  .bc-chips {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+  .bc-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 8px;
+    background: var(--bg-warm);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    font-size: 11px;
+    color: var(--ink-600);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  .bc-chip .bc-chip-k {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--ink-400);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .bc-chip .bc-chip-v {
+    color: var(--ink-900);
+    font-weight: 600;
+  }
+
+  .bc-impact-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .bc-impact-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 11.5px;
+    color: var(--ink-500);
+    line-height: 1.3;
+  }
+  .bc-impact-row strong {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-900);
+    letter-spacing: -0.005em;
+  }
+
+  .bc-product-out {
+    margin: 4px -16px 0;
+    padding: 12px 16px 14px;
+    background: linear-gradient(180deg, var(--bg-section) 0%, var(--bg-warm) 100%);
+    border-top: 1px solid var(--line-soft);
+    border-radius: 0 0 13px 13px;
+  }
+  .bc-product-out-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .bc-product-out-row + .bc-product-out-row { margin-top: 5px; }
+  .bc-product-out-k {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-400);
+    font-weight: 500;
+  }
+  .bc-product-out-v {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink-900);
+    letter-spacing: -0.01em;
+  }
+  .bc-product-out-row--hero .bc-product-out-v {
+    font-size: 22px;
+    color: var(--accent-blue);
+  }
+  .bc-product-out-row--hero .bc-product-out-k { color: var(--ink-600); font-weight: 600; letter-spacing: 0.16em; }
+
+  /* Totals strip */
+  .bc-totals {
+    background: linear-gradient(135deg, #0B1F3A 0%, #123A72 100%);
+    border-radius: 14px;
+    padding: 16px 22px;
+    color: #F2F6FC;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    box-shadow: var(--shadow-md);
+  }
+  .bc-totals-l {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .bc-totals-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(242, 246, 252, 0.55);
+    font-weight: 500;
+  }
+  .bc-totals-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 500;
+    color: #F2F6FC;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  .bc-totals-stats {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    align-items: baseline;
+  }
+  .bc-totals-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  .bc-totals-stat-v {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 500;
+    color: #F2F6FC;
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+  .bc-totals-stat-v .bc-mini { font-size: 11px; color: rgba(242, 246, 252, 0.6); font-family: var(--font-body); margin-left: 3px; font-weight: 500; letter-spacing: 0; }
+  .bc-totals-stat-k {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(242, 246, 252, 0.55);
+    font-weight: 500;
+  }
+  .bc-totals-divider { width: 1px; height: 32px; background: rgba(242, 246, 252, 0.14); }
+
+  /* Responsive */
+  @media (max-width: 1180px) {
+    .bc-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .bc-products-grid { grid-template-columns: repeat(2, 1fr); }
+    .bc-lower-grid { grid-template-columns: 1fr; }
+    .bc-totals { gap: 14px; }
+  }
+  @media (max-width: 720px) {
+    .bc-control { flex-direction: column; border-radius: 18px; padding: 14px; }
+    .bc-tabs { width: 100%; flex-direction: column; gap: 6px; }
+    .bc-tab { width: 100%; justify-content: flex-start; }
+    .bc-kpi-grid { grid-template-columns: 1fr; }
+    .bc-products-grid { grid-template-columns: 1fr; }
+    .bc-totals-stats { gap: 14px; }
+  }
+
 </style>
 </head>
-<body>
+<body class="intro-active">
+
+<!-- ============================================================
+     INTRO LANDING SLIDE (Agenda / Title Card)
+     Sits on top of the full app until the user clicks Begin.
+     ============================================================ -->
+<section class="intro-slide" id="introSlide" aria-label="Presentation title slide">
+
+  <!-- Decorative concentric rings (echo of Problem Statement hero-mark) -->
+  <svg class="intro-rings" viewBox="0 0 720 720" fill="none" aria-hidden="true">
+    <circle cx="360" cy="360" r="350" stroke="#D6DDE7" stroke-width="0.6"/>
+    <circle cx="360" cy="360" r="270" stroke="#D6DDE7" stroke-width="0.6"/>
+    <circle cx="360" cy="360" r="190" stroke="#D6DDE7" stroke-width="0.6"/>
+    <circle cx="360" cy="360" r="110" stroke="#D6DDE7" stroke-width="0.6"/>
+    <circle cx="360" cy="360" r="6" fill="#1A4FA3"/>
+  </svg>
+
+  <div class="intro-inner">
+
+    <div class="intro-logo-wrap">
+      <img src="assets/ace-logo-full.png" alt="ACE — Backed by Data, On Time, Every Time" />
+    </div>
+
+    <div class="intro-hero">
+      <h1 class="intro-title">
+        Transforming Contact Centre<br/>
+        with <span class="accent">Gen-AI</span>
+      </h1>
+      <p class="intro-sub">
+        Audited Transcript, Listening &amp; Sentiment — turning every conversation
+        into a measurable signal across handling time, escalation, coaching and customer experience.
+      </p>
+    </div>
+
+    <div class="intro-agenda-label">Today's Agenda</div>
+
+    <div class="intro-sections" role="list">
+      <button type="button" class="intro-section-card" data-jump="opportunity" role="listitem">
+        <span class="intro-section-num">01</span>
+        <span class="intro-section-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </span>
+        <span class="intro-section-label">Problem Statement</span>
+      </button>
+      <button type="button" class="intro-section-card" data-jump="usecases" role="listitem">
+        <span class="intro-section-num">02</span>
+        <span class="intro-section-icon">
+          <svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>
+        </span>
+        <span class="intro-section-label">Use Cases</span>
+      </button>
+      <button type="button" class="intro-section-card" data-jump="modules" role="listitem">
+        <span class="intro-section-num">03</span>
+        <span class="intro-section-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </span>
+        <span class="intro-section-label">AI Components</span>
+      </button>
+      <button type="button" class="intro-section-card" data-jump="architecture" role="listitem">
+        <span class="intro-section-num">04</span>
+        <span class="intro-section-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>
+        </span>
+        <span class="intro-section-label">Architecture</span>
+      </button>
+      <button type="button" class="intro-section-card" data-jump="arabic" role="listitem">
+        <span class="intro-section-num">05</span>
+        <span class="intro-section-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 11v1a7 7 0 0 1-14 0v-1"/><path d="M12 19v3"/></svg>
+        </span>
+        <span class="intro-section-label">Arabic Voice Engine</span>
+      </button>
+      <button type="button" class="intro-section-card" data-jump="processing" role="listitem">
+        <span class="intro-section-num">06</span>
+        <span class="intro-section-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
+        </span>
+        <span class="intro-section-label">Proof of Value</span>
+      </button>
+      <button type="button" class="intro-section-card" data-jump="convo" role="listitem">
+        <span class="intro-section-num">07</span>
+        <span class="intro-section-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.38 8.38 0 0 1 3 11.5 8.5 8.5 0 0 1 11.5 3 8.38 8.38 0 0 1 21 11.5z"/></svg>
+        </span>
+        <span class="intro-section-label">Conversational AI Query</span>
+      </button>
+      <button type="button" class="intro-section-card" data-jump="business" role="listitem">
+        <span class="intro-section-num">08</span>
+        <span class="intro-section-icon">
+          <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        </span>
+        <span class="intro-section-label">Business Case</span>
+      </button>
+    </div>
+
+  </div>
+
+  <div class="intro-advance-wrap">
+    <button type="button" class="intro-advance" id="introAdvance" aria-label="Begin presentation">
+      <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 5 7 7-7 7"/></svg>
+    </button>
+    <div class="intro-advance-hint">Begin</div>
+  </div>
+</section>
 
 <!-- ============== SIDEBAR ============== -->
 <aside class="sidebar" id="sidebar">
   <div class="brand">
-    <div class="brand-mark"></div>
-    <div class="brand-text">
-      <div class="brand-name">ACE</div>
-      <div class="brand-tag">Backed by Data, On Time, Every Time</div>
+    <div class="brand-top">
+      <div class="brand-mark">
+        <img src="assets/ace-atlas-logo.png" alt="ACE ATLAS" />
+      </div>
+      <div class="brand-name">ATLAS</div>
     </div>
+    <div class="brand-tag">Audited Transcript<br/>Listening &amp; Sentiment</div>
   </div>
 
   <button class="collapse-btn" id="collapseBtn" aria-label="Toggle navigation">
@@ -3260,13 +5090,13 @@
       <svg class="icon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
       <span class="label">Proof of Value</span>
     </li>
-    <li class="nav-item" data-target="benefits">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7h-5"/><path d="M21 7v5"/></svg>
-      <span class="label">Business Benefits Demo</span>
-    </li>
     <li class="nav-item" data-target="convo">
       <svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.38 8.38 0 0 1 3 11.5 8.5 8.5 0 0 1 11.5 3 8.38 8.38 0 0 1 21 11.5z"/></svg>
       <span class="label">Conversational AI Query</span>
+    </li>
+    <li class="nav-item" data-target="business">
+      <svg class="icon" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+      <span class="label">Business Case</span>
     </li>
   </ul>
 
@@ -3274,16 +5104,16 @@
     <div class="nav-cta-label">Console Access</div>
     <a href="login.html" class="nav-launch">
       <span class="cta-dot"></span>
-      <span class="cta-text">Launch Intelligence Console</span>
+      <span class="cta-text">Intelligence Console</span>
       <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 5 7 7-7 7"/></svg>
     </a>
   </div>
 
   <div class="nav-footer">
-    <div class="avatar">N</div>
+    <div class="avatar">T</div>
     <div class="who">
-      <div class="name">Nij Aravi</div>
-      <div class="role">Analytics & AI Lead</div>
+      <div class="name">Team Leader</div>
+      <div class="role">Call Centre Operations</div>
     </div>
   </div>
 </aside>
@@ -3372,29 +5202,29 @@
       <article class="spotlight">
         <div class="spotlight-row">
           <div class="spotlight-icon" data-spotlight-icon>
-            <svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9.5-9 11-5.5-1.5-9-6-9-11V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg>
+            <svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
           </div>
           <div class="spotlight-tags">
             <span class="spotlight-tag tag-hero" data-spotlight-hero>Flagship</span>
-            <span class="spotlight-tag tag-problem" data-spotlight-problem>Solves · P02</span>
+            <span class="spotlight-tag tag-problem" data-spotlight-problem>Solves · Revenue gap on existing customers</span>
           </div>
         </div>
 
-        <h2 class="spotlight-title" data-spotlight-title>100% AI-Driven Quality Audits</h2>
-        <p class="spotlight-lead" data-spotlight-lead>Every call audited automatically. Sample-based QA — historically limited to 1–2% of calls — is replaced by comprehensive, consistent, real-time assessment across all conversations.</p>
+        <h2 class="spotlight-title" data-spotlight-title>Powering Cross-Sell</h2>
+        <p class="spotlight-lead" data-spotlight-lead>Identify and re-engage customers who made product enquiries during their service calls. Every qualified lead surfaces to the right team within the day — closing the revenue gap that sat invisible inside voice data.</p>
 
         <div class="spotlight-metric">
-          <div class="metric-v" data-spotlight-metric-v>100<span class="metric-u">%</span></div>
-          <div class="metric-l" data-spotlight-metric-l>Call coverage vs 1–2% manual sample</div>
+          <div class="metric-v" data-spotlight-metric-v>AED 7.9M<span class="metric-u">p.a.</span></div>
+          <div class="metric-l" data-spotlight-metric-l>First-year revenue opportunity identified</div>
         </div>
 
         <div class="spotlight-outcomes">
           <div class="outcomes-label">Key Outcomes</div>
           <ul class="outcomes-grid" data-spotlight-outcomes>
-            <li>Full corpus audited — no sample bias</li>
-            <li>Consistent scoring rubric, no auditor drift</li>
-            <li>Near real-time signal for supervisors</li>
-            <li>Audit trail ready for regulators</li>
+            <li>418 leads identified in one day of calls</li>
+            <li>AED 26M eligible amount per day of sample</li>
+            <li>Extrapolates to AED 515M annual sales</li>
+            <li>Re-engages existing-customer demand</li>
           </ul>
         </div>
 
@@ -3402,51 +5232,27 @@
           <div class="footer-group">
             <span class="footer-label">Powered by</span>
             <span class="agent-chip-group" data-spotlight-agents>
-              <span class="agent-chip">A·04</span>
               <span class="agent-chip">A·05</span>
               <span class="agent-chip">A·06</span>
-              <span class="agent-chip">A·07</span>
+              <span class="agent-chip">A·04</span>
             </span>
           </div>
         </div>
       </article>
 
-      <!-- Tile list (right) -->
+      <!-- Tile list (right). DOM order MUST match the `useCases` array order
+           in the JS below (the selector logic indexes by DOM position). -->
       <div class="usecase-list" id="usecaseList">
         <button class="usecase-tile active" data-uc="0">
-          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9.5-9 11-5.5-1.5-9-6-9-11V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg></div>
-          <div class="tile-body">
-            <div class="tile-name">100% Quality Audits</div>
-            <div class="tile-sub">Every call · No sampling</div>
-          </div>
-          <span class="tile-flag">Flagship</span>
-        </button>
-
-        <button class="usecase-tile" data-uc="1">
           <div class="tile-icon"><svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
           <div class="tile-body">
             <div class="tile-name">Powering Cross-Sell</div>
             <div class="tile-sub">AED 7.9M opportunity</div>
           </div>
+          <span class="tile-flag">Flagship</span>
         </button>
 
-        <button class="usecase-tile" data-uc="2">
-          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="5"/><rect x="12" y="9" width="3" height="9"/><rect x="17" y="5" width="3" height="13"/></svg></div>
-          <div class="tile-body">
-            <div class="tile-name">Agent Performance Analytics</div>
-            <div class="tile-sub">Continuous · Objective</div>
-          </div>
-        </button>
-
-        <button class="usecase-tile" data-uc="3">
-          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg></div>
-          <div class="tile-body">
-            <div class="tile-name">AI Coaching for Agents</div>
-            <div class="tile-sub">Personalised · Self-serve</div>
-          </div>
-        </button>
-
-        <button class="usecase-tile" data-uc="4">
+        <button class="usecase-tile" data-uc="1">
           <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M12 21s-8-4.5-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-8 11-8 11"/><line x1="12" y1="9" x2="12" y2="12"/><line x1="12" y1="15" x2="12.01" y2="15"/></svg></div>
           <div class="tile-body">
             <div class="tile-name">Sentiment Management</div>
@@ -3454,7 +5260,7 @@
           </div>
         </button>
 
-        <button class="usecase-tile" data-uc="5">
+        <button class="usecase-tile" data-uc="2">
           <div class="tile-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l8 4"/><path d="M12 12L4.5 8"/></svg></div>
           <div class="tile-body">
             <div class="tile-name">Insights into Calls</div>
@@ -3462,11 +5268,35 @@
           </div>
         </button>
 
-        <button class="usecase-tile" data-uc="6">
+        <button class="usecase-tile" data-uc="3">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="5"/><rect x="12" y="9" width="3" height="9"/><rect x="17" y="5" width="3" height="13"/></svg></div>
+          <div class="tile-body">
+            <div class="tile-name">Agent Performance Analytics</div>
+            <div class="tile-sub">Continuous · Objective</div>
+          </div>
+        </button>
+
+        <button class="usecase-tile" data-uc="4">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="tile-body">
+            <div class="tile-name">AI Coaching for Agents</div>
+            <div class="tile-sub">Personalised · Self-serve</div>
+          </div>
+        </button>
+
+        <button class="usecase-tile" data-uc="5">
           <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><circle cx="11.5" cy="14.5" r="2.5"/><line x1="13.5" y1="16.5" x2="15.5" y2="18.5"/></svg></div>
           <div class="tile-body">
             <div class="tile-name">Call Search</div>
             <div class="tile-sub">Any call · In seconds</div>
+          </div>
+        </button>
+
+        <button class="usecase-tile" data-uc="6">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9.5-9 11-5.5-1.5-9-6-9-11V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg></div>
+          <div class="tile-body">
+            <div class="tile-name">100% Quality Audits</div>
+            <div class="tile-sub">Every call · No sampling</div>
           </div>
         </button>
       </div>
@@ -3969,9 +5799,9 @@
   <!-- ============== SECTION 4: PROOF OF VALUE (CAROUSEL) ============== -->
   <section class="section" id="processing">
     <div class="hero pov-hero">
-      <div class="eyebrow">Proof of Value · 06</div>
+      <div class="eyebrow">Proof of Value · 05</div>
       <h1>9,904 calls in. <span class="accent">8,601 enriched.</span></h1>
-      <p class="sub">A full study on approximately one day's volume — randomly selected from June through August. 87% of calls were successfully processed end-to-end; 13% were intentionally skipped under PCI rules, content filters, or for low-context audio.</p>
+      <p class="sub">A full study on approximately one day's volume — randomly selected from June through August. 87% of calls were successfully processed end-to-end; 13% were intentionally skipped under content filters, or for low-context audio.</p>
     </div>
 
     <!-- Carousel control bar -->
@@ -3983,6 +5813,10 @@
         </button>
         <button class="pov-tab" data-slide="1">
           <span class="pov-tab-num">02</span>
+          <span class="pov-tab-name">Call Insights</span>
+        </button>
+        <button class="pov-tab" data-slide="2">
+          <span class="pov-tab-num">03</span>
           <span class="pov-tab-name">Agent Performance Analytics</span>
         </button>
       </div>
@@ -3990,7 +5824,7 @@
         <button class="pov-arrow" id="povPrev" aria-label="Previous">
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
-        <div class="pov-counter"><span id="povCur">01</span><span class="sep">/</span><span>02</span></div>
+        <div class="pov-counter"><span id="povCur">01</span><span class="sep">/</span><span>03</span></div>
         <button class="pov-arrow" id="povNext" aria-label="Next">
           <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
         </button>
@@ -4008,7 +5842,7 @@
             <div class="cat-head-text">
               <div class="pov-slide-eyebrow">Slide 01 · AI Categorisation Intelligence</div>
               <h2 class="pov-slide-title">Call Categorisation <em>Intelligence</em></h2>
-              <p class="pov-slide-sub">ACE AI automatically classifies every customer conversation into intelligent business buckets — helping the bank identify operational pain points, automate routine service interactions, and uncover hidden revenue moments hiding inside everyday calls. Continuous learning from every interaction sharpens classification accuracy over time, surfacing the patterns that matter to the business.</p>
+              <p class="pov-slide-sub">ACE ATLAS classifies every conversation into intelligent business buckets — surfacing operational pain points, automation candidates, and hidden revenue moments.</p>
             </div>
           </div>
 
@@ -4151,7 +5985,7 @@
             <div class="cat-acc-icon">
               <svg viewBox="0 0 24 24"><path d="M12 2.5l1.85 5.55L19.5 10l-5.65 1.95L12 17.5l-1.85-5.55L4.5 10l5.65-1.95z"/></svg>
             </div>
-            <p class="cat-acc-text">ACE AI continuously learns and improves accuracy by analysing patterns, feedback, and outcomes from every call.</p>
+            <p class="cat-acc-text">ACE ATLAS continuously learns and improves accuracy by analysing patterns, feedback, and outcomes from every call.</p>
             <div class="cat-acc-stat">
               <div class="cat-acc-num">94<span>%</span></div>
               <div class="cat-acc-lbl">AI Accuracy</div>
@@ -4208,10 +6042,259 @@
 
         </article>
 
-        <!-- ===== SLIDE 2 · AGENT PERFORMANCE ANALYTICS ===== -->
+        <!-- ===== SLIDE 2 · CALL INSIGHTS ===== -->
         <article class="pov-slide">
           <div class="pov-slide-head">
-            <div class="pov-slide-eyebrow">Slide 02 / Agent Performance Analytics</div>
+            <div class="pov-slide-eyebrow">Slide 02 / Conversation Intelligence</div>
+            <h2 class="pov-slide-title">Where the <em>signal</em> hides.</h2>
+            <p class="pov-slide-sub">Beyond classification, ACE ATLAS extracts the operational signals living inside every conversation — how customers feel, which products draw the most volume, and where call time is silently leaking through hold and idle gaps.</p>
+          </div>
+
+          <!-- ============ INSIGHTS DASHBOARD ============ -->
+          <div class="ci-dash">
+
+            <!-- ===== ROW 1: PULSE CARDS ===== -->
+            <!-- Sentiment Pulse -->
+            <article class="ci-card ci-sentiment">
+              <div class="ci-card-head">
+                <div class="ci-card-eyebrow">Insight 01</div>
+                <h3>Sentiment Pulse</h3>
+              </div>
+              <div class="ci-sentiment-body">
+                <svg class="ci-sent-ring" viewBox="0 0 140 140" aria-hidden="true">
+                  <!-- Track -->
+                  <circle cx="70" cy="70" r="56" fill="none" stroke="#F0F3F8" stroke-width="14"/>
+                  <!-- Negative arc · 25% -->
+                  <circle cx="70" cy="70" r="56" fill="none" stroke="#C2553F" stroke-width="14"
+                          stroke-dasharray="87.96 351.86" stroke-linecap="round"
+                          transform="rotate(-90 70 70)"/>
+                  <!-- Positive arc · 75% -->
+                  <circle cx="70" cy="70" r="56" fill="none" stroke="#2F8B5A" stroke-width="14"
+                          stroke-dasharray="263.89 351.86" stroke-dashoffset="-92" stroke-linecap="round"
+                          transform="rotate(-90 70 70)"/>
+                  <text x="70" y="68" text-anchor="middle" fill="#0B1F3A"
+                        font-family="Fraunces, serif" font-size="30" font-weight="500" letter-spacing="-0.5">75%</text>
+                  <text x="70" y="86" text-anchor="middle" fill="#7A8BA8"
+                        font-family="JetBrains Mono, monospace" font-size="8" letter-spacing="1.5">POS · NEU</text>
+                </svg>
+                <div class="ci-sent-legend">
+                  <div class="ci-leg-row">
+                    <span class="ci-dot" style="background:#2F8B5A"></span>
+                    <span class="ci-leg-num">75%</span>
+                    <span class="ci-leg-lbl">Positive / Neutral</span>
+                  </div>
+                  <div class="ci-leg-row">
+                    <span class="ci-dot" style="background:#C2553F"></span>
+                    <span class="ci-leg-num">25%</span>
+                    <span class="ci-leg-lbl">Negative</span>
+                  </div>
+                  <div class="ci-leg-note">
+                    1 in 4 calls carries a negative signal — a steady stream of escalation candidates.
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Product Mix -->
+            <article class="ci-card ci-product">
+              <div class="ci-card-head">
+                <div class="ci-card-eyebrow">Insight 02</div>
+                <h3>Product Mix</h3>
+                <span class="ci-card-meta">Share of total volume</span>
+              </div>
+              <div class="ci-bars">
+                <div class="ci-bar-row ci-bar-lead">
+                  <div class="ci-bar-label">
+                    <span class="ci-bar-name">Covered Cards</span>
+                    <span class="ci-bar-pct">50%</span>
+                  </div>
+                  <div class="ci-bar-track"><div class="ci-bar-fill" style="width:100%; background:#1A4FA3"></div></div>
+                </div>
+                <div class="ci-bar-row">
+                  <div class="ci-bar-label">
+                    <span class="ci-bar-name">Liabilities</span>
+                    <span class="ci-bar-pct">22%</span>
+                  </div>
+                  <div class="ci-bar-track"><div class="ci-bar-fill" style="width:44%; background:#447CD0"></div></div>
+                </div>
+                <div class="ci-bar-row">
+                  <div class="ci-bar-label">
+                    <span class="ci-bar-name">Personal Finance</span>
+                    <span class="ci-bar-pct">15%</span>
+                  </div>
+                  <div class="ci-bar-track"><div class="ci-bar-fill" style="width:30%; background:#6FA0DC"></div></div>
+                </div>
+                <div class="ci-bar-row">
+                  <div class="ci-bar-label">
+                    <span class="ci-bar-name">Other Products</span>
+                    <span class="ci-bar-pct">13%</span>
+                  </div>
+                  <div class="ci-bar-track"><div class="ci-bar-fill" style="width:26%; background:#A3B0C5"></div></div>
+                </div>
+              </div>
+              <div class="ci-leg-note ci-prod-note">
+                Covered Cards alone drives <strong>half of all volume</strong> — concentrating risk and opportunity in one product line.
+              </div>
+            </article>
+
+            <!-- Idle Time Pulse -->
+            <article class="ci-card ci-idle">
+              <div class="ci-card-head">
+                <div class="ci-card-eyebrow">Insight 03</div>
+                <h3>Idle Time</h3>
+              </div>
+              <div class="ci-idle-body">
+                <div class="ci-idle-hero">
+                  <div class="ci-idle-num">60<span>%</span></div>
+                  <div class="ci-idle-lbl">of calls have at least one<br/>silent gap &gt; 8 seconds</div>
+                </div>
+                <div class="ci-idle-sub">
+                  <div class="ci-idle-stat">
+                    <div class="ci-idle-stat-num">20%</div>
+                    <div class="ci-idle-stat-lbl">of calls spend over 40% of the time idle</div>
+                  </div>
+                  <div class="ci-idle-tag">
+                    <svg viewBox="0 0 24 24"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg>
+                    <span>Covered Cards concentrate the longest idle windows</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- ===== ROW 2: DRILL-DOWNS ===== -->
+            <!-- Top reasons · Covered Card -->
+            <article class="ci-card ci-drill ci-drill-cc">
+              <div class="ci-card-head">
+                <div class="ci-card-eyebrow">Drill-down · Covered Cards</div>
+                <h3>Why customers are calling</h3>
+                <span class="ci-card-meta">Share of Covered Card calls</span>
+              </div>
+              <div class="ci-reasons">
+                <div class="ci-reason">
+                  <div class="ci-reason-rank">01</div>
+                  <div class="ci-reason-body">
+                    <div class="ci-reason-label">
+                      <span class="ci-reason-name">Fraud</span>
+                      <span class="ci-reason-pct">32%</span>
+                    </div>
+                    <div class="ci-reason-track"><div class="ci-reason-fill" style="width:100%; background:#C2553F"></div></div>
+                  </div>
+                </div>
+                <div class="ci-reason">
+                  <div class="ci-reason-rank">02</div>
+                  <div class="ci-reason-body">
+                    <div class="ci-reason-label">
+                      <span class="ci-reason-name">Unauthorised Transactions</span>
+                      <span class="ci-reason-pct">28%</span>
+                    </div>
+                    <div class="ci-reason-track"><div class="ci-reason-fill" style="width:87%; background:#D17056"></div></div>
+                  </div>
+                </div>
+                <div class="ci-reason">
+                  <div class="ci-reason-rank">03</div>
+                  <div class="ci-reason-body">
+                    <div class="ci-reason-label">
+                      <span class="ci-reason-name">Card Blocked</span>
+                      <span class="ci-reason-pct">22%</span>
+                    </div>
+                    <div class="ci-reason-track"><div class="ci-reason-fill" style="width:69%; background:#DE8C76"></div></div>
+                  </div>
+                </div>
+                <div class="ci-reason">
+                  <div class="ci-reason-rank">04</div>
+                  <div class="ci-reason-body">
+                    <div class="ci-reason-label">
+                      <span class="ci-reason-name">PIN / Activation</span>
+                      <span class="ci-reason-pct">18%</span>
+                    </div>
+                    <div class="ci-reason-track"><div class="ci-reason-fill" style="width:56%; background:#E9A993"></div></div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Top reasons · Hold Time -->
+            <article class="ci-card ci-drill ci-drill-hold">
+              <div class="ci-card-head">
+                <div class="ci-card-eyebrow">Drill-down · Hold Reasons</div>
+                <h3>What's keeping customers waiting</h3>
+                <span class="ci-card-meta">Top causes by product</span>
+              </div>
+              <div class="ci-hold-grid">
+                <div class="ci-hold-col">
+                  <div class="ci-hold-col-head">
+                    <span class="ci-hold-prod" style="--c:#1A4FA3; --cs:#E6EEFB;">Covered Cards</span>
+                  </div>
+                  <ul class="ci-hold-list">
+                    <li><span class="ci-hold-num">1</span><span>Transaction status</span></li>
+                    <li><span class="ci-hold-num">2</span><span>Card activation</span></li>
+                    <li><span class="ci-hold-num">3</span><span>Block / Unblock card</span></li>
+                  </ul>
+                </div>
+                <div class="ci-hold-col">
+                  <div class="ci-hold-col-head">
+                    <span class="ci-hold-prod" style="--c:#0891B2; --cs:#E0F2F8;">Personal Finance</span>
+                  </div>
+                  <ul class="ci-hold-list">
+                    <li><span class="ci-hold-num">1</span><span>Eligibility check</span></li>
+                    <li><span class="ci-hold-num">2</span><span>EMI / Profit rate</span></li>
+                    <li><span class="ci-hold-num">3</span><span>KYC &amp; document updates</span></li>
+                  </ul>
+                </div>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- Executive insight strip -->
+          <div class="cat-exec ci-exec">
+            <div class="cat-exec-left">
+              <div class="cat-exec-icon">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              </div>
+              <div class="cat-exec-text">
+                <h4>What the signals tell us</h4>
+                <p>One product line — <strong>Covered Cards</strong> — drives <strong>half of all volume</strong>, the deepest idle pockets, and the loudest negative sentiment. Fixing the top four call reasons and the top three hold reasons would compress workload and lift customer experience in one move.</p>
+              </div>
+            </div>
+            <div class="cat-exec-stats ci-exec-stats">
+              <div class="ces" style="--c:#2F8B5A; --cs:#E4F1EA;">
+                <div class="ces-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div>
+                <div class="ces-text">
+                  <div class="ces-num">75%</div>
+                  <div class="ces-lbl">Healthy Sentiment</div>
+                </div>
+              </div>
+              <div class="ces" style="--c:#1A4FA3; --cs:#E6EEFB;">
+                <div class="ces-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 3v18"/></svg></div>
+                <div class="ces-text">
+                  <div class="ces-num">50%</div>
+                  <div class="ces-lbl">Covered Card Share</div>
+                </div>
+              </div>
+              <div class="ces" style="--c:#B08D3E; --cs:#F5EFE0;">
+                <div class="ces-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></div>
+                <div class="ces-text">
+                  <div class="ces-num">60%</div>
+                  <div class="ces-lbl">Calls With Idle Gaps</div>
+                </div>
+              </div>
+              <div class="ces" style="--c:#C2553F; --cs:#FBEEEA;">
+                <div class="ces-icon"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div>
+                <div class="ces-text">
+                  <div class="ces-num">7</div>
+                  <div class="ces-lbl">Fixable Root Causes</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </article>
+
+        <!-- ===== SLIDE 3 · AGENT PERFORMANCE ANALYTICS ===== -->
+        <article class="pov-slide">
+          <div class="pov-slide-head">
+            <div class="pov-slide-eyebrow">Slide 03 / Agent Performance Analytics</div>
             <h2 class="pov-slide-title">Six signals. <em>One</em> fair score.</h2>
             <p class="pov-slide-sub">Every agent is evaluated across four dimensions of service quality. These resolve into six weighted scores, which combine into one final agent score — comparable across teams, language, and call mix.</p>
           </div>
@@ -4373,113 +6456,464 @@
     </div>
   </div>
 
-  <!-- ============== SECTION 5: BUSINESS BENEFITS ============== -->
-  <section class="section" id="benefits">
+  <!-- ============== SECTION 5: CONVERSATIONAL AI QUERY ============== -->
+  <section class="section" id="convo">
     <div class="hero">
-      <div class="eyebrow">Proof of Value & Business Case · 06</div>
-      <h1>3.7× return. <span class="accent">AED 7.9M annual opportunity.</span></h1>
-      <p class="sub">A grounded business case built from one day's 10K call sample, extrapolated across product lines. The economics work on cross-sell opportunity alone — every other benefit compounds on top.</p>
+      <div class="eyebrow">Conversational Intelligence · 06</div>
+      <h1>Ask the call centre <span class="accent">anything.</span></h1>
+      <p class="sub">A natural-language interface over the call corpus. Built for the corner office — query operations, surface insights, retrieve specific conversations, and listen to the raw audio without writing a single SQL line.</p>
     </div>
 
-    <div class="processor" style="margin-bottom: 32px;">
-      <div class="processor-stats">
-        <div class="item">
-          <div class="v">AED 7.9M<span class="u">p.a.</span></div>
-          <div class="l">Opportunity (yr 1)</div>
+    <div class="copilot-shell">
+      <!-- ===== Left rail ===== -->
+      <aside class="copilot-rail">
+        <div class="rail-section">
+          <div class="rail-label">Suggested questions</div>
+          <div class="rail-list">
+            <button class="q-chip" data-q="top-issues">What were yesterday's top customer issues?</button>
+            <button class="q-chip" data-q="hvc-sentiment">Show me high-value customers with negative sentiment</button>
+            <button class="q-chip" data-q="critical-escalations"><span class="q-tag">audio</span>Critical escalations from yesterday</button>
+            <button class="q-chip" data-q="coaching">Which agents need coaching support?</button>
+            <button class="q-chip" data-q="cross-sell">Summarise cross-sell opportunities by product</button>
+            <button class="q-chip" data-q="arabic"><span class="q-tag">audio</span>Highlight unusual patterns in Arabic calls</button>
+          </div>
         </div>
-        <div class="item">
-          <div class="v">AED 1.8M<span class="u">p.a.</span></div>
-          <div class="l">Calls Processing Cost · 0.5/call</div>
-        </div>
-        <div class="item">
-          <div class="v">AED 900K</div>
-          <div class="l">Soln. Dev Cost · 9 months</div>
-        </div>
-        <div class="item">
-          <div class="v">3.7×</div>
-          <div class="l">3-Year ROI · 4.2× excl. dev cost</div>
-        </div>
-      </div>
-    </div>
 
-    <div class="feature-row">
-      <h2>Where the Value Comes From</h2>
-      <div class="meta">Six demonstration scenarios</div>
-    </div>
+        <div class="rail-section">
+          <div class="rail-label">Recent threads</div>
+          <div class="rail-list">
+            <button class="q-chip muted">Q3 sentiment vs Q2 — by product</button>
+            <button class="q-chip muted">Pull all PF complaints from last week</button>
+            <button class="q-chip muted">Top complaints — Covered Card</button>
+          </div>
+        </div>
+      </aside>
 
-    <div class="grid">
-      <div class="card span-6">
-        <span class="index">01</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-        <h3>Cross-Sell Revenue Uplift</h3>
-        <p>418 leads identified in a single day's sample, eligible amount AED 26M. Extrapolated to 1 year of processed calls: AED 515.5M in sales, AED 7.9M in first-year revenue.</p>
-        <span class="tag">Revenue</span>
-      </div>
-      <div class="card span-6">
-        <span class="index">02</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M19 9l-5 5-4-4-3 3"/></svg></div>
-        <h3>Coaching ROI</h3>
-        <p>Continuous agent evaluation across Interaction, Productivity, AHT, and Idle metrics. Objective coaching replaces sample-based reviews.</p>
-        <span class="tag">Workforce</span>
-      </div>
-      <div class="card span-6">
-        <span class="index">03</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-        <h3>100% Compliance Coverage</h3>
-        <p>Every call audited against required disclosures, KYC checks, and scripted controls — replacing the 1–2% sample currently feasible by manual review.</p>
-        <span class="tag">Risk</span>
-      </div>
-      <div class="card span-6">
-        <span class="index">04</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 21s-8-4.5-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-8 11-8 11"/></svg></div>
-        <h3>High-Value Churn Early-Warning</h3>
-        <p>Negative sentiment on high-value customer calls auto-escalates to team leaders. Today, escalation depends on manual judgement or post-call complaints.</p>
-        <span class="tag">Retention</span>
-      </div>
-      <div class="card span-6">
-        <span class="index">05</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-        <h3>AHT & Idle Optimisation</h3>
-        <p>61% of processed calls involved idle/hold time. Top enquiry types driving idle now identified — verification, statements, transaction status — for targeted process improvement.</p>
-        <span class="tag">Efficiency</span>
-      </div>
-      <div class="card span-6">
-        <span class="index">06</span>
-        <div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
-        <h3>Call Search Capability</h3>
-        <p>Searchable summaries across the full call corpus mean any past enquiry, complaint, or commitment can be retrieved in seconds for investigation or quality review.</p>
-        <span class="tag">Operations</span>
+      <!-- ===== Main chat panel ===== -->
+      <div class="copilot-main">
+        <div class="copilot-header">
+          <div class="copilot-bot">
+            <div class="bot-mark">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 22 7 22 17 12 22 2 17 2 7 12 2"/>
+                <polyline points="2 7 12 12 22 7"/>
+                <line x1="12" y1="22" x2="12" y2="12"/>
+              </svg>
+            </div>
+            <div>
+              <div class="bot-name">ACE ATLAS Copilot</div>
+              <div class="bot-status"><span class="status-dot"></span>Live · 8,601 calls indexed today</div>
+            </div>
+          </div>
+          <div class="copilot-actions">
+            <button class="btn-icon" id="copilotReset" title="Clear conversation">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9"/><polyline points="3 4 3 10 9 10"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="copilot-stream" id="chatStream"></div>
+
+        <div class="copilot-input">
+          <input type="text" id="chatInput" placeholder="Ask about issues, sentiment, agents, leads, products…" />
+          <button class="btn-ask" id="askBtn">
+            Ask
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 5 19 12 13 19"/>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ============== SECTION 6: CONVERSATIONAL QUERY UI ============== -->
-  <section class="section" id="convo">
+  <!-- ============== SECTION 6: BUSINESS CASE ============== -->
+  <section class="section" id="business">
     <div class="hero">
-      <div class="eyebrow">Natural Language Surface · 07</div>
-      <h1>Ask ACE anything. <span class="accent">In your own words.</span></h1>
-      <p class="sub">A single conversational interface across every signal the platform produces — from agent rankings to customer themes — designed for executives, line managers, and analysts alike.</p>
+      <svg class="hero-mark" viewBox="0 0 280 280" fill="none">
+        <circle cx="140" cy="140" r="130" stroke="#D6DDE7" stroke-width="0.5"/>
+        <circle cx="140" cy="140" r="90" stroke="#D6DDE7" stroke-width="0.5"/>
+        <circle cx="140" cy="140" r="50" stroke="#D6DDE7" stroke-width="0.5"/>
+        <polyline points="80 170 120 130 150 150 200 100" stroke="#1A4FA3" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="180 100 200 100 200 120" stroke="#1A4FA3" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="eyebrow">Business Case · 07</div>
+      <h1>AED 7.9M opportunity. AED 900K to build. <span class="accent">3.7X return over three years.</span></h1>
+      <p class="sub">A grounded business case for ATLAS — built on a real audit of <strong>418 enquiry calls</strong> across Personal Finance, Cards, Home Finance, and Auto Finance. Conservative by design: counts only first-year revenue per converted sale.</p>
     </div>
 
-    <div class="convo-frame">
-      <div class="convo-section-label">Suggested executive queries</div>
-      <div>
-        <span class="convo-chip">Show me high-value customer calls with negative sentiment this week</span>
-        <span class="convo-chip">Top cross-sell opportunities by product in the last 7 days</span>
-        <span class="convo-chip">Which agents scored above 70 on the final performance score?</span>
-        <span class="convo-chip">Calls with hold time above 40% — what are customers asking about?</span>
-        <span class="convo-chip">Why were 664 calls flagged by the content filter yesterday?</span>
-        <span class="convo-chip">Arabic vs English transcription accuracy trend over the last 30 days</span>
+    <!-- Tab control -->
+    <div class="bc-control">
+      <div class="bc-tabs">
+        <button class="bc-tab active" data-bcslide="0">
+          <span class="bc-tab-num">01</span>
+          <span class="bc-tab-name">Investment Case</span>
+        </button>
+        <button class="bc-tab" data-bcslide="1">
+          <span class="bc-tab-num">02</span>
+          <span class="bc-tab-name">Per-Product Economics</span>
+        </button>
       </div>
-
-      <div class="convo-input">
-        <span class="prompt-dot"></span>
-        <input type="text" placeholder="Ask ACE about any call, agent, customer theme, or operational signal..." />
-        <button class="send">Ask ACE</button>
+      <div class="bc-nav">
+        <button class="bc-arrow" id="bcPrev" aria-label="Previous">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="bc-counter"><span id="bcCur">01</span><span class="sep">/</span><span>02</span></div>
+        <button class="bc-arrow" id="bcNext" aria-label="Next">
+          <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
       </div>
+    </div>
 
-      <div class="convo-section-label" style="margin-top: 28px; margin-bottom: 0;">
-        Response surface · placeholder
+    <!-- Carousel viewport -->
+    <div class="bc-viewport">
+      <div class="bc-track" id="bcTrack">
+
+        <!-- ===== SLIDE 1 · INVESTMENT CASE ===== -->
+        <article class="bc-slide active">
+
+          <!-- 4 hero KPI cards -->
+          <div class="bc-kpi-grid">
+            <div class="bc-kpi">
+              <div class="bc-kpi-label">Opportunity</div>
+              <div class="bc-kpi-value">AED 7.9<span class="unit">M</span></div>
+              <div class="bc-kpi-period">per annum</div>
+              <div class="bc-kpi-foot">Year-1 revenue from cross-sell conversion on existing customer enquiries.</div>
+            </div>
+            <div class="bc-kpi">
+              <div class="bc-kpi-label">Operating Cost</div>
+              <div class="bc-kpi-value">AED 1.8<span class="unit">M</span></div>
+              <div class="bc-kpi-period">per annum</div>
+              <div class="bc-kpi-foot">0.5 AED per call at full call-centre volume — LLM inference and infrastructure.</div>
+            </div>
+            <div class="bc-kpi">
+              <div class="bc-kpi-label">Build Cost</div>
+              <div class="bc-kpi-value">AED 900<span class="unit">K</span></div>
+              <div class="bc-kpi-period">one-time · 6 months</div>
+              <div class="bc-kpi-foot">660K · ACE (2 AI engineers) &nbsp;+&nbsp; 240K · ITD enablement.</div>
+            </div>
+            <div class="bc-kpi bc-kpi--accent">
+              <div class="bc-kpi-label">Return on Investment</div>
+              <div class="bc-kpi-value">3.7<span class="unit">×</span></div>
+              <div class="bc-kpi-period">over 3 years</div>
+              <div class="bc-kpi-foot">4.2× annually when excluding development cost. Pays back well inside year one.</div>
+            </div>
+          </div>
+
+          <!-- Lower split — trajectory + confidence notes -->
+          <div class="bc-lower-grid">
+            <div class="bc-block">
+              <div class="bc-block-label">The 3-Year Picture</div>
+              <div class="bc-block-title">From <em>AED 7.9M</em> in Year 1 to <em>AED 23.7M</em> by Year 3.</div>
+              <div class="bc-traj-rows">
+                <div class="bc-traj-row">
+                  <div class="bc-traj-label">Year 1</div>
+                  <div class="bc-traj-track"><div class="bc-traj-bar bc-traj-bar--y1" style="--bc-w: 0.333;"></div></div>
+                  <div class="bc-traj-value">AED 7.9M<span class="small">opportunity captured</span></div>
+                </div>
+                <div class="bc-traj-row">
+                  <div class="bc-traj-label">Year 2</div>
+                  <div class="bc-traj-track"><div class="bc-traj-bar bc-traj-bar--y2" style="--bc-w: 0.667;"></div></div>
+                  <div class="bc-traj-value">AED 15.8M<span class="small">cumulative</span></div>
+                </div>
+                <div class="bc-traj-row">
+                  <div class="bc-traj-label">Year 3</div>
+                  <div class="bc-traj-track"><div class="bc-traj-bar bc-traj-bar--y3" style="--bc-w: 1;"></div></div>
+                  <div class="bc-traj-value">AED 23.7M<span class="small">cumulative</span></div>
+                </div>
+              </div>
+              <div class="bc-traj-foot">
+                <div class="bc-traj-foot-l">
+                  Against a 3-year total cost of <strong>AED 6.3M</strong> &nbsp;(<span style="white-space:nowrap;">0.9M build + 5.4M ops</span>)<br/>
+                  Net return: <strong>AED 17.4M</strong> · payback in Year 1.
+                </div>
+                <div class="bc-traj-foot-r">
+                  <div class="roi">3.7×</div>
+                  <div class="roi-lbl">3-Year ROI</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bc-block">
+              <div class="bc-block-label">Why this estimate holds</div>
+              <div class="bc-block-title">Evidence, <em>not optimism.</em></div>
+              <div class="bc-notes">
+                <div class="bc-note">
+                  <div class="bc-note-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                  <div>
+                    <div class="bc-note-title">Sample-grounded</div>
+                    <div class="bc-note-body">418 real enquiry calls audited across four products. No synthetic data, no industry benchmarks.</div>
+                  </div>
+                </div>
+                <div class="bc-note">
+                  <div class="bc-note-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                  <div>
+                    <div class="bc-note-title">Conservative accounting</div>
+                    <div class="bc-note-body">Counts only first-year revenue per converted sale — multi-year customer value (NIM, fees, retention) is upside.</div>
+                  </div>
+                </div>
+                <div class="bc-note">
+                  <div class="bc-note-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                  <div>
+                    <div class="bc-note-title">Cross-sell focused</div>
+                    <div class="bc-note-body">Targets the 88% of calls from existing customers — eligibility already pre-qualified by relationship.</div>
+                  </div>
+                </div>
+                <div class="bc-note">
+                  <div class="bc-note-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                  <div>
+                    <div class="bc-note-title">Fast to value</div>
+                    <div class="bc-note-body">6-month build with 2 AI engineers + ITD enablement. Production-ready inside the fiscal year.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </article>
+
+        <!-- ===== SLIDE 2 · PER-PRODUCT ECONOMICS ===== -->
+        <article class="bc-slide">
+
+          <div class="bc-products-grid">
+
+            <!-- PERSONAL FINANCE -->
+            <article class="bc-product">
+              <div class="bc-product-head">
+                <div class="bc-product-name">Personal Finance</div>
+                <div class="bc-product-num">PF · 01</div>
+              </div>
+
+              <div class="bc-product-sec">
+                <div class="bc-product-sec-label">Sample enquiry funnel</div>
+                <div class="bc-funnel">
+                  <div class="bc-funnel-row"><span>Enquiries</span><strong>134</strong></div>
+                  <div class="bc-funnel-row"><span>No application in 30d</span><strong>64</strong></div>
+                  <div class="bc-funnel-row"><span>Eligible for cross-sell</span><strong>27</strong></div>
+                  <div class="bc-funnel-row"><span>Amount enquired</span><span class="bc-funnel-amt">AED 3.1M</span></div>
+                </div>
+              </div>
+
+              <div class="bc-product-sec">
+                <div class="bc-product-sec-label">Customer profile</div>
+                <div class="bc-chips">
+                  <span class="bc-chip" title="Salary Transfer"><span class="bc-chip-k">STL</span><span class="bc-chip-v">79%</span></span>
+                  <span class="bc-chip" title="Top Master List"><span class="bc-chip-k">TML</span><span class="bc-chip-v">54%</span></span>
+                  <span class="bc-chip" title="UAE National"><span class="bc-chip-k">UAEN</span><span class="bc-chip-v">70%</span></span>
+                </div>
+              </div>
+
+              <div class="bc-product-sec">
+                <div class="bc-product-sec-label">Annual extrapolation</div>
+                <div class="bc-impact-rows">
+                  <div class="bc-impact-row"><span>Conversion</span><strong>10%</strong></div>
+                  <div class="bc-impact-row"><span>Conversions</span><strong>983</strong></div>
+                  <div class="bc-impact-row"><span>Sales value</span><strong>AED 110.3M</strong></div>
+                  <div class="bc-impact-row"><span>Revenue share</span><strong>3%</strong></div>
+                </div>
+              </div>
+
+              <div class="bc-product-out">
+                <div class="bc-product-out-row">
+                  <span class="bc-product-out-k">Annual revenue</span>
+                  <span class="bc-product-out-v">AED 2.8M</span>
+                </div>
+                <div class="bc-product-out-row bc-product-out-row--hero">
+                  <span class="bc-product-out-k">3-Year revenue</span>
+                  <span class="bc-product-out-v">AED 8.3M</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- CARDS -->
+            <article class="bc-product">
+              <div class="bc-product-head">
+                <div class="bc-product-name">Cards</div>
+                <div class="bc-product-num">CARDS · 02</div>
+              </div>
+
+              <div class="bc-product-sec">
+                <div class="bc-product-sec-label">Sample enquiry funnel</div>
+                <div class="bc-funnel">
+                  <div class="bc-funnel-row"><span>Enquiries</span><strong>154</strong></div>
+                  <div class="bc-funnel-row"><span>No application in 30d</span><strong>123</strong></div>
+                  <div class="bc-funnel-row"><span>Eligible for cross-sell</span><strong>79</strong></div>
+                  <div class="bc-funnel-row"><span>Amount enquired</span><span class="bc-funnel-amt">AED 5.8M</span></div>
+                </div>
+              </div>
+
+              <div class="bc-product-sec">
+                <div class="bc-product-sec-label">Customer profile</div>
+                <div class="bc-chips">
+                  <span class="bc-chip" title="Salary Transfer"><span class="bc-chip-k">STL</span><span class="bc-chip-v">79%</span></span>
+                  <span class="bc-chip" title="Top Master List"><span class="bc-chip-k">TML</span><span class="bc-chip-v">64%</span></span>
+                  <span class="bc-chip" title="UAE National"><span class="bc-chip-k">UAEN</span><span class="bc-chip-v">78%</span></span>
+                </div>
+              </div>
+
+              <div class="bc-product-sec">
+                <div class="bc-product-sec-label">Annual extrapolation</div>
+                <div class="bc-impact-rows">
+                  <div class="bc-impact-row"><span>Conversion</span><strong>10%</strong></div>
+                  <div class="bc-impact-row"><span>Conversions</span><strong>2,834</strong></div>
+                  <div class="bc-impact-row"><span>Sales value</span><strong>AED 209.7M</strong></div>
+                  <div class="bc-impact-row"><span>Revenue / card</span><strong>1,450</strong></div>
+                </div>
+              </div>
+
+              <div class="bc-product-out">
+                <div class="bc-product-out-row">
+                  <span class="bc-product-out-k">Annual revenue</span>
+                  <span class="bc-product-out-v">AED 4.1M</span>
+                </div>
+                <div class="bc-product-out-row bc-product-out-row--hero">
+                  <span class="bc-product-out-k">3-Year revenue</span>
+                  <span class="bc-product-out-v">AED 12.3M</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- HOME FINANCE -->
+            <article class="bc-product">
+              <div class="bc-product-head">
+                <div class="bc-product-name">Home Finance</div>
+                <div class="bc-product-num">HF · 03</div>
+              </div>
+
+              <div class="bc-product-sec">
+                <div class="bc-product-sec-label">Sample enquiry funnel</div>
+                <div class="bc-funnel">
+                  <div class="bc-funnel-row"><span>Enquiries</span><strong>19</strong></div>
+                  <div class="bc-funnel-row"><span>No application in 30d</span><strong>18</strong></div>
+                  <div class="bc-funnel-row"><span>Eligible for cross-sell</span><strong>8</strong></div>
+                  <div class="bc-funnel-row"><span>Amount enquired</span><span class="bc-funnel-amt">AED 13.4M</span></div>
+                </div>
+              </div>
+
+              <div class="bc-product-sec">
+                <div class="bc-product-sec-label">Customer profile</div>
+                <div class="bc-chips">
+                  <span class="bc-chip" title="Salary Transfer"><span class="bc-chip-k">STL</span><span class="bc-chip-v">61%</span></span>
+                  <span class="bc-chip" title="Top Master List"><span class="bc-chip-k">TML</span><span class="bc-chip-v">72%</span></span>
+                  <span class="bc-chip" title="UAE National"><span class="bc-chip-k">UAEN</span><span class="bc-chip-v">77%</span></span>
+                </div>
+              </div>
+
+              <div class="bc-product-sec">
+                <div class="bc-product-sec-label">Annual extrapolation</div>
+                <div class="bc-impact-rows">
+                  <div class="bc-impact-row"><span>Conversion</span><strong>2.5%</strong></div>
+                  <div class="bc-impact-row"><span>Conversions</span><strong>71</strong></div>
+                  <div class="bc-impact-row"><span>Sales value</span><strong>AED 121.0M</strong></div>
+                  <div class="bc-impact-row"><span>Revenue share</span><strong>0.7%</strong></div>
+                </div>
+              </div>
+
+              <div class="bc-product-out">
+                <div class="bc-product-out-row">
+                  <span class="bc-product-out-k">Annual revenue</span>
+                  <span class="bc-product-out-v">AED 0.8M</span>
+                </div>
+                <div class="bc-product-out-row bc-product-out-row--hero">
+                  <span class="bc-product-out-k">3-Year revenue</span>
+                  <span class="bc-product-out-v">AED 2.5M</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- AUTO FINANCE -->
+            <article class="bc-product">
+              <div class="bc-product-head">
+                <div class="bc-product-name">Auto Finance</div>
+                <div class="bc-product-num">AF · 04</div>
+              </div>
+
+              <div class="bc-product-sec">
+                <div class="bc-product-sec-label">Sample enquiry funnel</div>
+                <div class="bc-funnel">
+                  <div class="bc-funnel-row"><span>Enquiries</span><strong>90</strong></div>
+                  <div class="bc-funnel-row"><span>No application in 30d</span><strong>78</strong></div>
+                  <div class="bc-funnel-row"><span>Eligible for cross-sell</span><strong>34</strong></div>
+                  <div class="bc-funnel-row"><span>Amount enquired</span><span class="bc-funnel-amt">AED 4.1M</span></div>
+                </div>
+              </div>
+
+              <div class="bc-product-sec">
+                <div class="bc-product-sec-label">Customer profile</div>
+                <div class="bc-chips">
+                  <span class="bc-chip" title="Salary Transfer"><span class="bc-chip-k">STL</span><span class="bc-chip-v">76%</span></span>
+                  <span class="bc-chip" title="Top Master List"><span class="bc-chip-k">TML</span><span class="bc-chip-v">58%</span></span>
+                  <span class="bc-chip" title="UAE National"><span class="bc-chip-k">UAEN</span><span class="bc-chip-v">83%</span></span>
+                </div>
+              </div>
+
+              <div class="bc-product-sec">
+                <div class="bc-product-sec-label">Annual extrapolation</div>
+                <div class="bc-impact-rows">
+                  <div class="bc-impact-row"><span>Conversion</span><strong>5%</strong></div>
+                  <div class="bc-impact-row"><span>Conversions</span><strong>619</strong></div>
+                  <div class="bc-impact-row"><span>Sales value</span><strong>AED 74.5M</strong></div>
+                  <div class="bc-impact-row"><span>Revenue share</span><strong>0%*</strong></div>
+                </div>
+              </div>
+
+              <div class="bc-product-out">
+                <div class="bc-product-out-row">
+                  <span class="bc-product-out-k">Annual revenue</span>
+                  <span class="bc-product-out-v">AED 0.2M</span>
+                </div>
+                <div class="bc-product-out-row bc-product-out-row--hero">
+                  <span class="bc-product-out-k">3-Year revenue</span>
+                  <span class="bc-product-out-v">AED 0.6M</span>
+                </div>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- Totals strip -->
+          <div class="bc-totals">
+            <div class="bc-totals-l">
+              <div class="bc-totals-eyebrow">Totals · annual extrapolation</div>
+              <div class="bc-totals-title">All four products combined</div>
+            </div>
+            <div class="bc-totals-stats">
+              <div class="bc-totals-stat">
+                <div class="bc-totals-stat-v">418</div>
+                <div class="bc-totals-stat-k">Sample enquiries</div>
+              </div>
+              <div class="bc-totals-divider"></div>
+              <div class="bc-totals-stat">
+                <div class="bc-totals-stat-v">131</div>
+                <div class="bc-totals-stat-k">Cross-sell eligible</div>
+              </div>
+              <div class="bc-totals-divider"></div>
+              <div class="bc-totals-stat">
+                <div class="bc-totals-stat-v">4,507</div>
+                <div class="bc-totals-stat-k">Annual conversions</div>
+              </div>
+              <div class="bc-totals-divider"></div>
+              <div class="bc-totals-stat">
+                <div class="bc-totals-stat-v">AED 515.5<span class="bc-mini">M</span></div>
+                <div class="bc-totals-stat-k">Sales value</div>
+              </div>
+              <div class="bc-totals-divider"></div>
+              <div class="bc-totals-stat">
+                <div class="bc-totals-stat-v">AED 7.9<span class="bc-mini">M</span></div>
+                <div class="bc-totals-stat-k">Annual revenue</div>
+              </div>
+              <div class="bc-totals-divider"></div>
+              <div class="bc-totals-stat">
+                <div class="bc-totals-stat-v">AED 23.7<span class="bc-mini">M</span></div>
+                <div class="bc-totals-stat-k">3-Year revenue</div>
+              </div>
+            </div>
+          </div>
+
+        </article>
+
       </div>
     </div>
   </section>
@@ -4508,6 +6942,53 @@
   document.getElementById('collapseBtn').addEventListener('click', () => {
     sidebar.classList.toggle('collapsed');
   });
+
+  // ============ INTRO LANDING SLIDE ============
+  (function () {
+    const intro = document.getElementById('introSlide');
+    if (!intro) return;
+    const advance = document.getElementById('introAdvance');
+    const cards = intro.querySelectorAll('.intro-section-card');
+
+    function dismiss(targetId) {
+      intro.classList.add('dismissed');
+      document.body.classList.remove('intro-active');
+
+      // After the slide-off finishes, optionally jump straight to a section
+      // and free the overlay from the layout entirely.
+      const cleanup = () => {
+        if (targetId) {
+          const navItem = document.querySelector(`.nav-item[data-target="${targetId}"]`);
+          if (navItem) navItem.click();
+        }
+        intro.style.display = 'none';
+        intro.removeEventListener('transitionend', onEnd);
+      };
+      const onEnd = (e) => {
+        if (e.propertyName === 'transform') cleanup();
+      };
+      intro.addEventListener('transitionend', onEnd);
+      // Failsafe in case transitionend doesn't fire
+      setTimeout(cleanup, 1400);
+    }
+
+    advance.addEventListener('click', () => dismiss());
+
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        dismiss(card.dataset.jump);
+      });
+    });
+
+    // Allow Enter / Space / ArrowRight to advance from the title slide
+    document.addEventListener('keydown', (e) => {
+      if (document.body.classList.contains('intro-active') &&
+          (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight')) {
+        e.preventDefault();
+        dismiss();
+      }
+    });
+  })();
 
   // ============ AI COMPONENTS CAROUSEL ============
   (function () {
@@ -4594,25 +7075,12 @@
     const outcomesEl = board.querySelector('[data-spotlight-outcomes]');
     const agentsEl = board.querySelector('[data-spotlight-agents]');
 
+    // Order MUST match the DOM order of `.usecase-tile` buttons above —
+    // selectUseCase indexes by tile position, not data-uc attribute.
     const useCases = [
       {
-        icon: '<svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9.5-9 11-5.5-1.5-9-6-9-11V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg>',
-        isHero: true,
-        problem: 'Solves · P02',
-        title: '100% AI-Driven Quality Audits',
-        lead: 'Every call audited automatically. Sample-based QA — historically limited to 1–2% of calls — is replaced by comprehensive, consistent, real-time assessment across all conversations.',
-        metricV: '100<span class="metric-u">%</span>',
-        metricL: 'Call coverage vs 1–2% manual sample',
-        outcomes: [
-          'Full corpus audited — no sample bias',
-          'Consistent scoring rubric, no auditor drift',
-          'Near real-time signal for supervisors',
-          'Audit trail ready for regulators'
-        ],
-        agents: ['A·04', 'A·05', 'A·06', 'A·07']
-      },
-      {
         icon: '<svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>',
+        isHero: true,
         problem: 'Solves · Revenue gap on existing customers',
         title: 'Powering Cross-Sell',
         lead: 'Identify and re-engage customers who made product enquiries during their service calls. Every qualified lead surfaces to the right team within the day — closing the revenue gap that sat invisible inside voice data.',
@@ -4625,36 +7093,6 @@
           'Re-engages existing-customer demand'
         ],
         agents: ['A·05', 'A·06', 'A·04']
-      },
-      {
-        icon: '<svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="5"/><rect x="12" y="9" width="3" height="9"/><rect x="17" y="5" width="3" height="13"/></svg>',
-        problem: 'Solves · P04',
-        title: 'Agent Performance Analytics',
-        lead: 'Continuously evaluates every agent across every conversation. Quantitative and qualitative insights replace random sampling — feeding the leaderboard, coaching workflows, and supervisor reviews.',
-        metricV: '100<span class="metric-u">%</span>',
-        metricL: 'Of agent calls scored — every shift, every agent',
-        outcomes: [
-          'Every call scored, every agent ranked',
-          'Coaching grounded in actual conversations',
-          'Leaderboard updated near real-time',
-          'Eliminates supervisor sampling bias'
-        ],
-        agents: ['A·07', 'A·08', 'A·06']
-      },
-      {
-        icon: '<svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg>',
-        problem: 'Solves · P04',
-        title: 'AI Coaching for Agents',
-        lead: 'An AI assistant offering actionable improvement suggestions — personalised to each agent, grounded in their own conversations, with specific call and turn references attached to every recommendation.',
-        metricV: '24/7',
-        metricL: 'Self-serve coaching available to every agent',
-        outcomes: [
-          'Coaching tied to specific calls and turns',
-          'Agents practise improvements at their own pace',
-          'Manager workload reduced on routine coaching',
-          'Faster new-hire ramp to productive scoring'
-        ],
-        agents: ['A·04', 'A·07']
       },
       {
         icon: '<svg viewBox="0 0 24 24"><path d="M12 21s-8-4.5-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-8 11-8 11"/><line x1="12" y1="9" x2="12" y2="12"/><line x1="12" y1="15" x2="12.01" y2="15"/></svg>',
@@ -4687,6 +7125,36 @@
         agents: ['A·04', 'A·05']
       },
       {
+        icon: '<svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="5"/><rect x="12" y="9" width="3" height="9"/><rect x="17" y="5" width="3" height="13"/></svg>',
+        problem: 'Solves · P04',
+        title: 'Agent Performance Analytics',
+        lead: 'Continuously evaluates every agent across every conversation. Quantitative and qualitative insights replace random sampling — feeding the leaderboard, coaching workflows, and supervisor reviews.',
+        metricV: '100<span class="metric-u">%</span>',
+        metricL: 'Of agent calls scored — every shift, every agent',
+        outcomes: [
+          'Every call scored, every agent ranked',
+          'Coaching grounded in actual conversations',
+          'Leaderboard updated near real-time',
+          'Eliminates supervisor sampling bias'
+        ],
+        agents: ['A·07', 'A·08', 'A·06']
+      },
+      {
+        icon: '<svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg>',
+        problem: 'Solves · P04',
+        title: 'AI Coaching for Agents',
+        lead: 'An AI assistant offering actionable improvement suggestions — personalised to each agent, grounded in their own conversations, with specific call and turn references attached to every recommendation.',
+        metricV: '24/7',
+        metricL: 'Self-serve coaching available to every agent',
+        outcomes: [
+          'Coaching tied to specific calls and turns',
+          'Agents practise improvements at their own pace',
+          'Manager workload reduced on routine coaching',
+          'Faster new-hire ramp to productive scoring'
+        ],
+        agents: ['A·04', 'A·07']
+      },
+      {
         icon: '<svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><circle cx="11.5" cy="14.5" r="2.5"/><line x1="13.5" y1="16.5" x2="15.5" y2="18.5"/></svg>',
         problem: 'Solves · P02',
         title: 'Call Search Capability',
@@ -4700,6 +7168,21 @@
           'Underpins regulatory response time'
         ],
         agents: ['A·04', 'A·05']
+      },
+      {
+        icon: '<svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9.5-9 11-5.5-1.5-9-6-9-11V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg>',
+        problem: 'Solves · P02',
+        title: '100% AI-Driven Quality Audits',
+        lead: 'Every call audited automatically. Sample-based QA — historically limited to 1–2% of calls — is replaced by comprehensive, consistent, real-time assessment across all conversations.',
+        metricV: '100<span class="metric-u">%</span>',
+        metricL: 'Call coverage vs 1–2% manual sample',
+        outcomes: [
+          'Full corpus audited — no sample bias',
+          'Consistent scoring rubric, no auditor drift',
+          'Near real-time signal for supervisors',
+          'Audit trail ready for regulators'
+        ],
+        agents: ['A·04', 'A·05', 'A·06', 'A·07']
       }
     ];
 
@@ -4796,6 +7279,45 @@
     // Keyboard nav when section is active
     document.addEventListener('keydown', (e) => {
       const section = document.getElementById('processing');
+      if (!section || !section.classList.contains('active')) return;
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(idx + 1); }
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); go(idx - 1); }
+    });
+
+    go(0);
+  })();
+
+  // ============ BUSINESS CASE · TAB CAROUSEL ============
+  (function () {
+    const track = document.getElementById('bcTrack');
+    if (!track) return;
+
+    const slides  = track.querySelectorAll('.bc-slide');
+    const tabs    = document.querySelectorAll('.bc-tab');
+    const prevBtn = document.getElementById('bcPrev');
+    const nextBtn = document.getElementById('bcNext');
+    const curEl   = document.getElementById('bcCur');
+    const total   = slides.length;
+    let idx = 0;
+
+    function go(n) {
+      idx = Math.max(0, Math.min(total - 1, n));
+      track.style.transform = `translateX(-${idx * 100}%)`;
+      slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+      tabs.forEach((t, i) => t.classList.toggle('active', i === idx));
+      curEl.textContent = String(idx + 1).padStart(2, '0');
+      prevBtn.disabled = idx === 0;
+      nextBtn.disabled = idx === total - 1;
+    }
+
+    tabs.forEach((t, i) => t.addEventListener('click', () => go(i)));
+    prevBtn.addEventListener('click', () => go(idx - 1));
+    nextBtn.addEventListener('click', () => go(idx + 1));
+
+    // Keyboard nav only when this section is active
+    document.addEventListener('keydown', (e) => {
+      const section = document.getElementById('business');
       if (!section || !section.classList.contains('active')) return;
       if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
       if (e.key === 'ArrowRight') { e.preventDefault(); go(idx + 1); }
@@ -4973,6 +7495,263 @@
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && modal.classList.contains('open')) close();
     });
+  })();
+
+  // ============ ACE COPILOT CHAT (Section 6) ============
+  (function () {
+    const stream = document.getElementById('chatStream');
+    if (!stream) return;
+    const chips = document.querySelectorAll('.q-chip[data-q]');
+    const input = document.getElementById('chatInput');
+    const askBtn = document.getElementById('askBtn');
+    const resetBtn = document.getElementById('copilotReset');
+
+    const botIconSVG = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 22 7 22 17 12 22 2 17 2 7 12 2"/>
+        <polyline points="2 7 12 12 22 7"/>
+        <line x1="12" y1="22" x2="12" y2="12"/>
+      </svg>`;
+
+    function audioCard(callId, agentTime, title, durationStr) {
+      return `
+        <div class="audio-card">
+          <div class="audio-row">
+            <button class="audio-play" data-action="play" aria-label="Play call ${callId}">
+              <svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8V4z"/></svg>
+            </button>
+            <div class="audio-meta">
+              <div class="audio-head">
+                <span class="audio-id">${callId}</span>
+                <span class="audio-sub">${agentTime}</span>
+              </div>
+              <div class="audio-title">${title}</div>
+              <div class="audio-progress"><span class="audio-bar"></span></div>
+            </div>
+            <div class="audio-time" data-duration="${durationStr}">0:00 / ${durationStr}</div>
+          </div>
+        </div>`;
+    }
+
+    const responses = {
+      'top-issues': {
+        question: "What were yesterday's top customer issues?",
+        body: () => `
+          <p>Yesterday's top issue clusters across <strong>5,222 issue calls</strong>:</p>
+          <div class="bubble-list">
+            <div class="bubble-item"><span class="item-l">Covered Card · Fraud / unauthorised txn</span><span class="item-r">412 calls</span></div>
+            <div class="bubble-item"><span class="item-l">Liabilities · ATM cash deposit not credited</span><span class="item-r">318 calls</span></div>
+            <div class="bubble-item"><span class="item-l">PF · KYC / profile rejection</span><span class="item-r">267 calls</span></div>
+            <div class="bubble-item"><span class="item-l">MB · App login / technical</span><span class="item-r">244 calls</span></div>
+            <div class="bubble-item"><span class="item-l">Liabilities · Account closure / dormancy</span><span class="item-r">198 calls</span></div>
+          </div>
+          <div class="bubble-insight">Fraud patterns on Covered Card are concentrated in <strong>18:00–22:00</strong> — recommend reviewing fraud-detection threshold tuning for the evening window.</div>`
+      },
+      'hvc-sentiment': {
+        question: "Show me high-value customers with negative sentiment",
+        body: () => `
+          <p>Identified <strong>147 high-value customer calls</strong> with negative sentiment in the last 7 days. Top concerns:</p>
+          <div class="bubble-list">
+            <div class="bubble-item"><span class="item-l">Transfer delay / not credited</span><span class="item-r">42 cases</span></div>
+            <div class="bubble-item"><span class="item-l">Card blocked unexpectedly</span><span class="item-r">31 cases</span></div>
+            <div class="bubble-item"><span class="item-l">Reward not credited</span><span class="item-r">28 cases</span></div>
+            <div class="bubble-item"><span class="item-l">RM unreachable / delayed callback</span><span class="item-r">24 cases</span></div>
+            <div class="bubble-item"><span class="item-l">Statement / fee dispute</span><span class="item-r">22 cases</span></div>
+          </div>
+          <div class="bubble-insight">All 147 have been auto-escalated to team leaders within 24h of close. <strong>89 already actioned</strong> — open the case board to triage the remaining 58.</div>`
+      },
+      'critical-escalations': {
+        question: "What critical escalations happened yesterday?",
+        body: () => `
+          <p><strong>12 calls</strong> auto-escalated to Tier-2 yesterday. Top 3 by severity — listen directly:</p>
+          ${audioCard('S917823', 'Salem Al Mazrouei · 18:42 · 4m 18s', 'HVC · Fraud claim disputed — agent committed to refund timeline outside policy', '4:18')}
+          ${audioCard('S917654', 'Mariam Al Ali · 14:11 · 6m 52s', 'Repeat caller · 4th attempt to unblock Covered Card — visible frustration', '6:52')}
+          ${audioCard('S917491', 'Ahmed Al Hosani · 11:23 · 3m 07s', 'Compliance flag · investment advice given without product certification', '3:07')}
+          <div class="bubble-insight">All three routed to <strong>Risk &amp; QA review</strong>; targeted coaching package auto-generated for Agent S916844 (handled two of the three).</div>`
+      },
+      'coaching': {
+        question: "Which agents need coaching support?",
+        body: () => `
+          <p><strong>3 agents</strong> on the coaching watchlist this week (Final Score &lt; 70):</p>
+          <div class="bubble-list">
+            <div class="bubble-item"><span class="item-l">S917076 · Fatima Al Suwaidi</span><span class="item-r score">Final 65.7 · <span class="mom-dn">−2.1 MoM</span></span></div>
+            <div class="bubble-item"><span class="item-l">S916844 · Rashed Al Naqbi</span><span class="item-r score">Final 64.2 · <span class="mom-up">+0.8 MoM</span></span></div>
+            <div class="bubble-item"><span class="item-l">S917150 · Hessa Al Otaibi</span><span class="item-r score">Final 61.8 · <span class="mom-dn">−1.4 MoM</span></span></div>
+          </div>
+          <div class="bubble-insight">Recommended action: pair-shadow with <strong>Aisha Al Mansoori</strong> (top performer, Final 91.4) for one cycle; structured coaching plan auto-attached to each agent's profile.</div>`
+      },
+      'cross-sell': {
+        question: "Summarise cross-sell opportunities by product",
+        body: () => `
+          <p><strong>418 qualified leads</strong> in the last 24h, <strong>AED 26M</strong> eligible amount. Top by product:</p>
+          <div class="bubble-list">
+            <div class="bubble-item"><span class="item-l">Auto Finance</span><span class="item-r">142 leads · AED 8.4M</span></div>
+            <div class="bubble-item"><span class="item-l">Personal Loan</span><span class="item-r">98 leads · AED 5.7M</span></div>
+            <div class="bubble-item"><span class="item-l">Covered Card upgrade</span><span class="item-r">86 leads · AED 4.1M</span></div>
+            <div class="bubble-item"><span class="item-l">Mortgage refinance</span><span class="item-r">54 leads · AED 5.9M</span></div>
+            <div class="bubble-item"><span class="item-l">Wealth · investment products</span><span class="item-r">38 leads · AED 1.9M</span></div>
+          </div>
+          <div class="bubble-insight">All leads routed to product specialists within SLA. First contact attempted on <strong>312 (75%)</strong> within 4 hours — Auto Finance lagging on response time, queue depth at 38.</div>`
+      },
+      'arabic': {
+        question: "Highlight any unusual patterns in Arabic calls",
+        body: () => `
+          <p>Arabic call volume up <strong>+8% WoW</strong> (3,218 calls). Two unusual signals — recordings sampled:</p>
+          ${audioCard('S917388', 'Khaled Al Romaithi · 19:55 · 5m 24s', 'Code-switching · Khaleeji → English mid-call when discussing fraud claim', '5:24')}
+          ${audioCard('S917102', 'Noura Al Shamsi · 09:14 · 7m 41s', 'Sentiment drop at 09:10 — extended hold time, customer audibly frustrated', '7:41')}
+          <div class="bubble-insight">
+            <strong>12%</strong> of Arabic fraud calls showed English code-switching — possible stress indicator. Sentiment trough sits in the <strong>09:00–10:00</strong> window, correlating with peak hold times.<br/><br/>
+            <strong>Recommendation:</strong> validate Arabic STT confidence on the fraud lexicon; review morning-shift capacity in the call centre.
+          </div>`
+      }
+    };
+
+    function makeMsg(role, html, opts = {}) {
+      const el = document.createElement('div');
+      el.className = 'msg ' + role;
+      if (role === 'bot') {
+        el.innerHTML = `<div class="msg-avatar">${botIconSVG}</div><div class="msg-bubble">${html}</div>`;
+      } else {
+        el.innerHTML = `<div class="msg-bubble">${html}</div><div class="msg-tag">You</div>`;
+      }
+      if (opts.typing) el.classList.add('is-typing');
+      return el;
+    }
+
+    function scrollToBottom() {
+      requestAnimationFrame(() => { stream.scrollTop = stream.scrollHeight; });
+    }
+
+    function handleQuestion(qKey) {
+      const r = responses[qKey];
+      if (!r) return;
+
+      chips.forEach(c => c.classList.toggle('active', c.dataset.q === qKey));
+
+      stream.appendChild(makeMsg('user', r.question));
+      scrollToBottom();
+
+      const typing = makeMsg('bot', `<span class="typing-dots"><i></i><i></i><i></i></span>`, { typing: true });
+      stream.appendChild(typing);
+      scrollToBottom();
+
+      setTimeout(() => {
+        typing.remove();
+        stream.appendChild(makeMsg('bot', r.body()));
+        scrollToBottom();
+      }, 750);
+    }
+
+    function handleFreeText(text) {
+      stream.appendChild(makeMsg('user', text.replace(/</g, '&lt;')));
+      scrollToBottom();
+      const typing = makeMsg('bot', `<span class="typing-dots"><i></i><i></i><i></i></span>`, { typing: true });
+      stream.appendChild(typing);
+      scrollToBottom();
+      setTimeout(() => {
+        typing.remove();
+        stream.appendChild(makeMsg('bot', `
+          <p>I've indexed your question across <strong>8,601 calls</strong> from today and the last 30 days. To keep this demo focused, try one of the suggested questions on the left — each maps to a pre-validated query with full audit trail.</p>
+          <div class="bubble-insight">In production, ACE ATLAS Copilot runs the question through the planner agent → SQL/vector retrieval → grounded summary, with citations to specific call IDs and turn timestamps.</div>
+        `));
+        scrollToBottom();
+      }, 650);
+    }
+
+    // ----- Audio playback (mock) -----
+    function parseDur(str) {
+      const [m, s] = str.split(':').map(Number);
+      return m * 60 + s;
+    }
+    function fmt(sec) {
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${m}:${String(s).padStart(2, '0')}`;
+    }
+    stream.addEventListener('click', (e) => {
+      const btn = e.target.closest('.audio-play');
+      if (!btn) return;
+      const card = btn.closest('.audio-card');
+      const bar = card.querySelector('.audio-bar');
+      const timeEl = card.querySelector('.audio-time');
+      const totalStr = timeEl.dataset.duration;
+      const total = parseDur(totalStr);
+
+      const playSVG = `<svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8V4z"/></svg>`;
+      const pauseSVG = `<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`;
+
+      if (btn.dataset.playing === 'true') {
+        clearInterval(btn._timer);
+        btn.dataset.playing = 'false';
+        btn.innerHTML = playSVG;
+        return;
+      }
+
+      // Pause any other playing audio
+      document.querySelectorAll('.audio-play[data-playing="true"]').forEach(b => {
+        clearInterval(b._timer);
+        b.dataset.playing = 'false';
+        b.innerHTML = playSVG;
+      });
+
+      btn.dataset.playing = 'true';
+      btn.innerHTML = pauseSVG;
+      let elapsed = parseFloat(btn._elapsed) || 0;
+      btn._timer = setInterval(() => {
+        elapsed += 0.25; // 2.5x speed for demo
+        const pct = Math.min((elapsed / total) * 100, 100);
+        bar.style.width = pct + '%';
+        timeEl.textContent = `${fmt(elapsed)} / ${totalStr}`;
+        btn._elapsed = elapsed;
+        if (elapsed >= total) {
+          clearInterval(btn._timer);
+          btn.dataset.playing = 'false';
+          btn._elapsed = 0;
+          btn.innerHTML = playSVG;
+          setTimeout(() => {
+            bar.style.width = '0%';
+            timeEl.textContent = `0:00 / ${totalStr}`;
+          }, 600);
+        }
+      }, 100);
+    });
+
+    // ----- Wire chip clicks -----
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => handleQuestion(chip.dataset.q));
+    });
+
+    // ----- Free-text input -----
+    askBtn.addEventListener('click', () => {
+      const v = input.value.trim();
+      if (!v) return;
+      input.value = '';
+      handleFreeText(v);
+    });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); askBtn.click(); }
+    });
+
+    // ----- Reset -----
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        stream.innerHTML = '';
+        chips.forEach(c => c.classList.remove('active'));
+        seedConversation();
+      });
+    }
+
+    // ----- Seed initial conversation (matches screenshot intent) -----
+    function seedConversation() {
+      // Welcome message
+      stream.appendChild(makeMsg('bot', `
+        <p>Good morning. I've indexed <strong>8,601 calls</strong> from today across English and Arabic. Ask me anything about issues, sentiment, agents, leads, or specific conversations — or pick one of the suggested questions on the left.</p>
+      `));
+      // Auto-trigger the first suggested question after a short pause
+      setTimeout(() => handleQuestion('top-issues'), 600);
+    }
+
+    seedConversation();
   })();
 </script>
 
