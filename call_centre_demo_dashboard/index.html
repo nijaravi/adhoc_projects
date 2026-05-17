@@ -4034,7 +4034,7 @@
     min-height: 0;
   }
 
-  /* Top: logo */
+  /* Top: logo (centred, larger than earlier 176px baseline) */
   .intro-logo-wrap {
     display: flex;
     justify-content: center;
@@ -4046,14 +4046,14 @@
   .intro-logo-wrap::before {
     content: '';
     position: absolute;
-    width: 380px;
-    height: 200px;
+    width: 440px;
+    height: 230px;
     background: radial-gradient(ellipse at center, rgba(26, 79, 163, 0.05) 0%, rgba(8, 145, 178, 0.025) 45%, transparent 75%);
     filter: blur(20px);
     z-index: -1;
   }
   .intro-logo-wrap img {
-    height: 176px;
+    height: 220px;
     width: auto;
     filter: drop-shadow(0 8px 24px rgba(11, 31, 58, 0.10));
   }
@@ -4301,12 +4301,12 @@
     .intro-inner { padding: 22px 40px 32px; }
     .intro-advance-wrap { right: 28px; }
     .intro-rings { right: -240px; width: 600px; height: 600px; }
-    .intro-logo-wrap img { height: 156px; }
+    .intro-logo-wrap img { height: 194px; }
     .intro-hero { margin-bottom: clamp(40px, 8vh, 80px); }
   }
   @media (max-width: 980px) {
     .intro-inner { padding: 20px 24px 28px; }
-    .intro-logo-wrap img { height: 132px; }
+    .intro-logo-wrap img { height: 166px; }
     .intro-rings { opacity: 0.25; }
     .intro-hero { margin-bottom: clamp(36px, 7vh, 72px); }
     .intro-section-label { font-size: 10.5px; }
@@ -4317,7 +4317,7 @@
   }
   @media (max-width: 640px) {
     .intro-inner { padding: 18px 12px 88px; }
-    .intro-logo-wrap img { height: 108px; }
+    .intro-logo-wrap img { height: 128px; }
     .intro-hero { padding: 4px 8px 0; gap: 12px; margin-bottom: clamp(28px, 6vh, 52px); }
     .intro-section-label { font-size: 9px; line-height: 1.15; }
     .intro-section-num { font-size: 7px; letter-spacing: 0.12em; }
@@ -6887,21 +6887,27 @@
     const cards = intro.querySelectorAll('.intro-section-card');
 
     function dismiss(targetId) {
+      if (intro.classList.contains('dismissed')) return;
       intro.classList.add('dismissed');
       document.body.classList.remove('intro-active');
 
       // After the slide-off finishes, optionally jump straight to a section
       // and free the overlay from the layout entirely.
       const cleanup = () => {
+        intro.removeEventListener('transitionend', onEnd);
+        if (intro.style.display === 'none') return;
         if (targetId) {
           const navItem = document.querySelector(`.nav-item[data-target="${targetId}"]`);
           if (navItem) navItem.click();
         }
         intro.style.display = 'none';
-        intro.removeEventListener('transitionend', onEnd);
       };
       const onEnd = (e) => {
-        if (e.propertyName === 'transform') cleanup();
+        /* transitionend bubbles from children (e.g. .intro-advance's transform).
+           Only react when the slide layer itself finishes translating. */
+        if (e.target !== intro) return;
+        if (e.propertyName !== 'transform') return;
+        cleanup();
       };
       intro.addEventListener('transitionend', onEnd);
       // Failsafe in case transitionend doesn't fire
