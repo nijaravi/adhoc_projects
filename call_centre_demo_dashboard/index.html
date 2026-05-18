@@ -4815,101 +4815,127 @@
   }
 
   /* =============================================================
-     SLIDE 2 · PER-PRODUCT ECONOMICS — comparison table
+     SLIDE 2 · PER-PRODUCT ECONOMICS — card column grid
+     (scoped under .bc-econ-v2; matches per-product-economics.html)
      ============================================================= */
-  .bc-econ-wrap {
-    background: var(--bg-elevated);
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-  }
-  .bc-econ-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    table-layout: fixed;
+  .bc-econ-v2 {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
     font-feature-settings: "tnum" 1, "lnum" 1;
   }
-  .bc-econ-table col.bc-col-label { width: 17%; }
-  .bc-econ-table col.bc-col-prod { width: 14.5%; }
-  .bc-econ-table col.bc-col-total { width: 25%; }
-
-  /* Header row · product names */
-  .bc-econ-table thead th {
-    text-align: right;
-    padding: 18px 18px 14px;
-    vertical-align: bottom;
-    background: linear-gradient(180deg, var(--bg-warm) 0%, var(--bg-elevated) 100%);
-    border-bottom: 1px solid var(--line);
+  .bc-econ-v2 .econ-grid {
+    display: grid;
+    grid-template-columns: 190px repeat(4, 1fr) 1.1fr;
+    gap: 0;
+    /* stretch so every column matches the tallest card; flex below pins annual/y3 to the bottom */
+    align-items: stretch;
+    min-width: 920px;
   }
-  .bc-econ-table thead th:first-child {
-    text-align: left;
+  .bc-econ-v2 .col-labels {
+    padding-right: 8px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 100%;
+  }
+  .bc-econ-v2 .col-card {
     background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    margin: 0 4px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.3s, border-color 0.3s;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 100%;
   }
-  .bc-econ-table thead th.bc-econ-total-head {
-    background: linear-gradient(180deg, #0B1F3A 0%, #123A72 100%);
-    border-bottom: 1px solid #0B1F3A;
+  .bc-econ-v2 .col-card:hover {
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-md);
   }
-  .bc-econ-prod-name {
-    display: block;
+  .bc-econ-v2 .col-card.col-total {
+    background: linear-gradient(180deg, #0B1F3A 0%, #0E2A52 100%);
+    border-color: #0B1F3A;
+  }
+  .bc-econ-v2 .col-card.col-total:hover { border-color: #1A4FA3; }
+  .bc-econ-v2 .card-header {
+    padding: 20px 18px 16px;
+    text-align: center;
+    border-bottom: 1px solid var(--line-soft);
+    background: linear-gradient(180deg, var(--bg-warm) 0%, var(--bg-elevated) 100%);
+  }
+  .bc-econ-v2 .col-total .card-header {
+    background: linear-gradient(180deg, rgba(26, 79, 163, 0.15) 0%, transparent 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .bc-econ-v2 .card-header .prod-name {
     font-family: var(--font-display);
-    font-size: 15.5px;
     font-weight: 500;
+    font-size: 17px;
     color: var(--ink-900);
-    letter-spacing: -0.018em;
-    line-height: 1.1;
-    white-space: nowrap;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
   }
-  .bc-econ-prod-code {
-    display: block;
-    margin-top: 4px;
+  .bc-econ-v2 .col-total .card-header .prod-name { color: #F2F6FC; }
+  .bc-econ-v2 .card-header .prod-code {
     font-family: var(--font-mono);
-    font-size: 9.5px;
-    letter-spacing: 0.18em;
+    font-size: 9px;
+    letter-spacing: 0.2em;
     color: var(--ink-400);
     text-transform: uppercase;
     font-weight: 500;
+    margin-top: 4px;
   }
-  .bc-econ-total-head .bc-econ-prod-name { color: #F2F6FC; }
-  .bc-econ-total-head .bc-econ-prod-code { color: rgba(242, 246, 252, 0.55); }
-  .bc-econ-table thead th:first-child .bc-econ-prod-name {
+  .bc-econ-v2 .col-total .card-header .prod-code { color: rgba(242,246,252,0.45); }
+  .bc-econ-v2 .label-header {
+    height: 68px;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 16px;
+  }
+  .bc-econ-v2 .label-header span {
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.22em;
-    text-transform: uppercase;
     color: var(--ink-400);
-    font-weight: 500;
-  }
-
-  /* Section bands · break up the table */
-  .bc-econ-section td {
-    padding: 11px 18px 8px;
-    background: var(--bg-section);
-    border-top: 1px solid var(--line-soft);
-    border-bottom: 1px solid var(--line-soft);
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
     text-transform: uppercase;
+    font-weight: 500;
+  }
+  .bc-econ-v2 .section-label {
+    padding: 12px 0 6px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.22em;
     color: var(--ink-500);
+    text-transform: uppercase;
     font-weight: 500;
+    white-space: nowrap;
   }
-
-  /* Data rows */
-  .bc-econ-table tbody td {
-    padding: 11px 18px;
+  .bc-econ-v2 .section-spacer {
+    padding: 12px 18px 6px;
     border-top: 1px solid var(--line-soft);
-    vertical-align: baseline;
+    background: var(--bg-section);
   }
-  .bc-econ-table tbody tr:first-child td { border-top: 0; }
-  .bc-econ-label {
-    text-align: left;
-    color: var(--ink-700);
-    font-size: 13px;
-    font-weight: 500;
+  .bc-econ-v2 .col-total .section-spacer {
+    background: rgba(26, 79, 163, 0.06);
+    border-top-color: rgba(255,255,255,0.04);
   }
-  .bc-econ-val {
+  .bc-econ-v2 .metric-label {
+    padding: 11px 0;
+    font-size: 12.5px;
+    color: var(--ink-600);
+    font-weight: 450;
+    border-top: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .bc-econ-v2 .metric-label.tall { min-height: 68px; }
+  .bc-econ-v2 .metric-val {
+    padding: 11px 18px;
     text-align: right;
     font-family: var(--font-display);
     font-size: 15px;
@@ -4917,144 +4943,220 @@
     color: var(--ink-900);
     letter-spacing: -0.005em;
     font-variant-numeric: tabular-nums;
+    border-top: 1px solid var(--line-soft);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
   }
-  .bc-econ-val--mute {
-    color: var(--ink-400);
+  .bc-econ-v2 .col-total .metric-val {
+    color: #F2F6FC;
+    border-top-color: rgba(255,255,255,0.06);
+  }
+  .bc-econ-v2 .metric-val.muted {
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: 11px;
+    color: var(--ink-400);
     font-weight: 500;
+    letter-spacing: 0.02em;
   }
-  .bc-econ-val--small {
-    font-size: 13px;
-  }
-  .bc-econ-val em {
+  .bc-econ-v2 .col-total .metric-val.muted { color: rgba(242,246,252,0.4); }
+  .bc-econ-v2 .metric-val.small-note { font-size: 13px; }
+  .bc-econ-v2 .metric-val.small-note em {
     font-style: normal;
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: 10px;
     color: var(--ink-500);
     font-weight: 500;
-    margin-left: 2px;
+    margin-left: 3px;
     letter-spacing: 0.04em;
   }
-  /* Total column · subtle warm bg */
-  .bc-econ-total {
-    background: var(--bg-warm);
-    border-left: 1px solid var(--line);
+  .bc-econ-v2 .col-total .metric-val.small-note em { color: rgba(242,246,252,0.45); }
+  .bc-econ-v2 .metric-val.profile {
+    min-height: 68px;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 4px;
   }
-  .bc-econ-section .bc-econ-total {
-    background: var(--bg-warm);
-  }
-
-  /* Customer profile · inline pills row */
-  .bc-econ-profile {
+  .bc-econ-v2 .profile-row {
     display: flex;
-    gap: 10px;
-    justify-content: flex-end;
+    gap: 8px;
     align-items: baseline;
+    justify-content: flex-end;
     flex-wrap: wrap;
   }
-  .bc-econ-profile-item {
+  .bc-econ-v2 .profile-item {
     display: inline-flex;
     align-items: baseline;
-    gap: 4px;
+    gap: 3px;
     font-variant-numeric: tabular-nums;
   }
-  .bc-econ-profile-item-k {
+  .bc-econ-v2 .profile-item .k {
     font-family: var(--font-mono);
-    font-size: 9.5px;
-    letter-spacing: 0.16em;
+    font-size: 9px;
+    letter-spacing: 0.14em;
     color: var(--ink-400);
     text-transform: uppercase;
     font-weight: 500;
     cursor: help;
     border-bottom: 1px dotted var(--ink-300);
   }
-  .bc-econ-profile-item-v {
+  .bc-econ-v2 .profile-item .v {
     font-family: var(--font-display);
     font-size: 14px;
     font-weight: 500;
     color: var(--ink-900);
     letter-spacing: -0.005em;
   }
-
-  /* Annual revenue row · the first climax */
-  .bc-econ-annual td {
-    padding: 14px 18px;
-    background: linear-gradient(to right, var(--bg-section) 0%, var(--bg-warm) 100%);
-    border-top: 1px solid var(--line);
-  }
-  .bc-econ-annual .bc-econ-label {
+  .bc-econ-v2 .annual-label {
+    padding: 15px 0;
     font-family: var(--font-mono);
     font-size: 10.5px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--ink-700);
     font-weight: 600;
+    border-top: 1px solid transparent;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    margin-top: auto;
   }
-  .bc-econ-annual .bc-econ-val {
-    font-size: 18px;
+  .bc-econ-v2 .annual-val {
+    margin-top: auto;
+    padding: 15px 18px;
+    text-align: right;
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 500;
     color: var(--ink-900);
+    letter-spacing: -0.01em;
+    border-top: 2px solid var(--line);
+    background: linear-gradient(180deg, var(--bg-section) 0%, var(--bg-elevated) 100%);
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    box-sizing: border-box;
   }
-  .bc-econ-annual .bc-econ-total .bc-econ-val {
-    font-size: 22px;
-    color: var(--accent-blue);
-  }
-
-  /* 3-Year revenue row · dark climax band */
-  .bc-econ-3yr td {
-    padding: 20px 18px;
-    background: linear-gradient(135deg, #0B1F3A 0%, #123A72 100%);
+  .bc-econ-v2 .col-total .annual-val {
     color: #F2F6FC;
-    border-top: 0;
+    font-size: 19px;
+    font-weight: 600;
+    border-top-color: rgba(255,255,255,0.1);
+    background: linear-gradient(180deg, rgba(26, 79, 163, 0.12) 0%, transparent 100%);
   }
-  .bc-econ-3yr .bc-econ-label {
+  .bc-econ-v2 .y3-label {
+    padding: 22px 0;
     font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: rgba(242, 246, 252, 0.7);
+    color: var(--ink-800);
     font-weight: 600;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
   }
-  .bc-econ-3yr .bc-econ-val {
+  .bc-econ-v2 .y3-val {
+    padding: 22px 18px;
+    text-align: right;
     font-family: var(--font-display);
     font-size: 22px;
-    color: #F2F6FC;
-    font-weight: 500;
-  }
-  .bc-econ-3yr .bc-econ-total {
-    background: linear-gradient(135deg, #123A72 0%, #1B4D8C 100%);
-    border-left: 1px solid rgba(242, 246, 252, 0.16);
-  }
-  .bc-econ-3yr .bc-econ-total .bc-econ-val {
-    font-size: 30px;
-    color: #FFF;
+    font-weight: 600;
     letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #0B1F3A 0%, #123A72 100%);
+    color: #F2F6FC;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    border-bottom-left-radius: 13px;
+    border-bottom-right-radius: 13px;
+    box-sizing: border-box;
   }
-
-  /* Footnote */
-  .bc-econ-note {
-    margin-top: 10px;
+  .bc-econ-v2 .col-total .y3-val {
+    font-size: 22px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #123A72 0%, #1B4D8C 100%);
+    color: #FFFFFF;
+  }
+  .bc-econ-v2 .econ-note {
+    margin-top: 12px;
     font-family: var(--font-mono);
     font-size: 10.5px;
     letter-spacing: 0.06em;
     color: var(--ink-500);
     text-align: right;
   }
+  .bc-econ-v2 .totals-bar {
+    margin-top: 24px;
+    background: linear-gradient(135deg, var(--nav-bg-1), var(--nav-bg-2));
+    border-radius: 14px;
+    padding: 24px 32px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .bc-econ-v2 .totals-bar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(600px 300px at 20% 0%, rgba(26, 79, 163, 0.25), transparent 60%);
+    pointer-events: none;
+  }
+  .bc-econ-v2 .t-title {
+    grid-column: 1 / -1;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: var(--nav-text-quiet);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: -8px;
+    position: relative;
+  }
+  .bc-econ-v2 .t-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: var(--nav-text-muted);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .bc-econ-v2 .t-value {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 22px;
+    color: #F2F6FC;
+    letter-spacing: -0.02em;
+    position: relative;
+  }
+  .bc-econ-v2 .t-value.gold { color: var(--accent-gold); }
 
   /* Responsive */
   @media (max-width: 1180px) {
     .bc-kpi-grid { grid-template-columns: repeat(2, 1fr); }
     .bc-lower-grid { grid-template-columns: 1fr; }
-    .bc-econ-table { font-size: 12px; }
-    .bc-econ-table thead th,
-    .bc-econ-table tbody td { padding: 10px 12px; }
-    .bc-econ-prod-name { font-size: 15px; }
-    .bc-econ-val { font-size: 14px; }
-    .bc-econ-3yr .bc-econ-total .bc-econ-val { font-size: 24px; }
+    .bc-econ-v2 .econ-grid { min-width: 860px; }
+    .bc-econ-v2 .card-header .prod-name { font-size: 15px; }
+    .bc-econ-v2 .metric-val { font-size: 14px; }
+  }
+  @media (max-width: 900px) {
+    .bc-econ-v2 .totals-bar {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      padding: 20px 22px;
+    }
   }
   @media (max-width: 860px) {
-    .bc-econ-wrap { overflow-x: auto; }
-    .bc-econ-table { min-width: 720px; }
+    .bc-econ-v2 .econ-grid { min-width: 780px; }
   }
   @media (max-width: 720px) {
     .bc-control { flex-direction: column; border-radius: 18px; padding: 14px; }
@@ -6910,181 +7012,200 @@
         <!-- ===== SLIDE 2 · PER-PRODUCT ECONOMICS ===== -->
         <article class="bc-slide">
 
-          <div class="bc-econ-wrap">
-            <table class="bc-econ-table">
-              <colgroup>
-                <col class="bc-col-label">
-                <col class="bc-col-prod">
-                <col class="bc-col-prod">
-                <col class="bc-col-prod">
-                <col class="bc-col-prod">
-                <col class="bc-col-total">
-              </colgroup>
-              <thead>
-                <tr>
-                  <th><span class="bc-econ-prod-name">Metric</span></th>
-                  <th>
-                    <span class="bc-econ-prod-name">Personal Finance</span>
-                    <span class="bc-econ-prod-code">PF · 01</span>
-                  </th>
-                  <th>
-                    <span class="bc-econ-prod-name">Cards</span>
-                    <span class="bc-econ-prod-code">Cards · 02</span>
-                  </th>
-                  <th>
-                    <span class="bc-econ-prod-name">Home Finance</span>
-                    <span class="bc-econ-prod-code">HF · 03</span>
-                  </th>
-                  <th>
-                    <span class="bc-econ-prod-name">Auto Finance</span>
-                    <span class="bc-econ-prod-code">AF · 04</span>
-                  </th>
-                  <th class="bc-econ-total-head">
-                    <span class="bc-econ-prod-name">Total</span>
-                    <span class="bc-econ-prod-code">All products</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+          <div class="bc-econ-v2">
+            <div class="econ-grid">
 
-                <!-- Section: Sample enquiry funnel -->
-                <tr class="bc-econ-section">
-                  <td colspan="5">Sample enquiry funnel</td>
-                  <td class="bc-econ-total"></td>
-                </tr>
-                <tr>
-                  <td class="bc-econ-label">Enquiries</td>
-                  <td class="bc-econ-val">134</td>
-                  <td class="bc-econ-val">154</td>
-                  <td class="bc-econ-val">19</td>
-                  <td class="bc-econ-val">90</td>
-                  <td class="bc-econ-val bc-econ-total">397</td>
-                </tr>
-                <tr>
-                  <td class="bc-econ-label">No application in 30d</td>
-                  <td class="bc-econ-val">64</td>
-                  <td class="bc-econ-val">123</td>
-                  <td class="bc-econ-val">18</td>
-                  <td class="bc-econ-val">78</td>
-                  <td class="bc-econ-val bc-econ-total">283</td>
-                </tr>
-                <tr>
-                  <td class="bc-econ-label">Eligible for cross-sell</td>
-                  <td class="bc-econ-val">27</td>
-                  <td class="bc-econ-val">79</td>
-                  <td class="bc-econ-val">8</td>
-                  <td class="bc-econ-val">34</td>
-                  <td class="bc-econ-val bc-econ-total">148</td>
-                </tr>
-                <tr>
-                  <td class="bc-econ-label">Amount enquired</td>
-                  <td class="bc-econ-val">AED 3.1M</td>
-                  <td class="bc-econ-val">AED 5.8M</td>
-                  <td class="bc-econ-val">AED 13.4M</td>
-                  <td class="bc-econ-val">AED 4.1M</td>
-                  <td class="bc-econ-val bc-econ-total">AED 26.4M</td>
-                </tr>
+              <div class="col-labels">
+                <div class="label-header"><span>Metric</span></div>
 
-                <!-- Section: Customer profile -->
-                <tr class="bc-econ-section">
-                  <td colspan="5">Customer profile · share of eligible base</td>
-                  <td class="bc-econ-total"></td>
-                </tr>
-                <tr>
-                  <td class="bc-econ-label">Profile breakdown</td>
-                  <td>
-                    <div class="bc-econ-profile">
-                      <span class="bc-econ-profile-item"><span class="bc-econ-profile-item-k" title="Salary Transfer Loan customers">STL</span><span class="bc-econ-profile-item-v">79%</span></span>
-                      <span class="bc-econ-profile-item"><span class="bc-econ-profile-item-k" title="Top Master List · priority customer segment">TML</span><span class="bc-econ-profile-item-v">54%</span></span>
-                      <span class="bc-econ-profile-item"><span class="bc-econ-profile-item-k" title="UAE National">UAEN</span><span class="bc-econ-profile-item-v">70%</span></span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="bc-econ-profile">
-                      <span class="bc-econ-profile-item"><span class="bc-econ-profile-item-k" title="Salary Transfer Loan customers">STL</span><span class="bc-econ-profile-item-v">79%</span></span>
-                      <span class="bc-econ-profile-item"><span class="bc-econ-profile-item-k" title="Top Master List · priority customer segment">TML</span><span class="bc-econ-profile-item-v">64%</span></span>
-                      <span class="bc-econ-profile-item"><span class="bc-econ-profile-item-k" title="UAE National">UAEN</span><span class="bc-econ-profile-item-v">78%</span></span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="bc-econ-profile">
-                      <span class="bc-econ-profile-item"><span class="bc-econ-profile-item-k" title="Salary Transfer Loan customers">STL</span><span class="bc-econ-profile-item-v">61%</span></span>
-                      <span class="bc-econ-profile-item"><span class="bc-econ-profile-item-k" title="Top Master List · priority customer segment">TML</span><span class="bc-econ-profile-item-v">72%</span></span>
-                      <span class="bc-econ-profile-item"><span class="bc-econ-profile-item-k" title="UAE National">UAEN</span><span class="bc-econ-profile-item-v">77%</span></span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="bc-econ-profile">
-                      <span class="bc-econ-profile-item"><span class="bc-econ-profile-item-k" title="Salary Transfer Loan customers">STL</span><span class="bc-econ-profile-item-v">76%</span></span>
-                      <span class="bc-econ-profile-item"><span class="bc-econ-profile-item-k" title="Top Master List · priority customer segment">TML</span><span class="bc-econ-profile-item-v">58%</span></span>
-                      <span class="bc-econ-profile-item"><span class="bc-econ-profile-item-k" title="UAE National">UAEN</span><span class="bc-econ-profile-item-v">83%</span></span>
-                    </div>
-                  </td>
-                  <td class="bc-econ-val--mute bc-econ-total">—</td>
-                </tr>
+                <div class="section-label">Sample Enquiry Funnel</div>
+                <div class="metric-label">Enquiries</div>
+                <div class="metric-label">No application in 30d</div>
+                <div class="metric-label">Eligible for cross-sell</div>
+                <div class="metric-label">Amount enquired</div>
 
-                <!-- Section: Annual economics -->
-                <tr class="bc-econ-section">
-                  <td colspan="5">Annual economics · extrapolated from sample</td>
-                  <td class="bc-econ-total"></td>
-                </tr>
-                <tr>
-                  <td class="bc-econ-label">Conversion rate</td>
-                  <td class="bc-econ-val">10%</td>
-                  <td class="bc-econ-val">10%</td>
-                  <td class="bc-econ-val">2.5%</td>
-                  <td class="bc-econ-val">5%</td>
-                  <td class="bc-econ-val--mute bc-econ-total">—</td>
-                </tr>
-                <tr>
-                  <td class="bc-econ-label">Annual conversions</td>
-                  <td class="bc-econ-val">983</td>
-                  <td class="bc-econ-val">2,834</td>
-                  <td class="bc-econ-val">71</td>
-                  <td class="bc-econ-val">619</td>
-                  <td class="bc-econ-val bc-econ-total">4,507</td>
-                </tr>
-                <tr>
-                  <td class="bc-econ-label">Sales value</td>
-                  <td class="bc-econ-val">AED 110.3M</td>
-                  <td class="bc-econ-val">AED 209.7M</td>
-                  <td class="bc-econ-val">AED 121.0M</td>
-                  <td class="bc-econ-val">AED 74.5M</td>
-                  <td class="bc-econ-val bc-econ-total">AED 515.5M</td>
-                </tr>
-                <tr>
-                  <td class="bc-econ-label">Revenue rate</td>
-                  <td class="bc-econ-val bc-econ-val--small">3%<em>of sales</em></td>
-                  <td class="bc-econ-val bc-econ-val--small">AED 1,450<em>/card</em></td>
-                  <td class="bc-econ-val bc-econ-val--small">0.7%<em>of sales</em></td>
-                  <td class="bc-econ-val bc-econ-val--small">0%*</td>
-                  <td class="bc-econ-val--mute bc-econ-total">—</td>
-                </tr>
+                <div class="section-label">Customer Profile</div>
+                <div class="metric-label tall">Profile breakdown</div>
 
-                <!-- Annual revenue · first climax -->
-                <tr class="bc-econ-annual">
-                  <td class="bc-econ-label">Annual revenue</td>
-                  <td class="bc-econ-val">AED 2.8M</td>
-                  <td class="bc-econ-val">AED 4.1M</td>
-                  <td class="bc-econ-val">AED 0.8M</td>
-                  <td class="bc-econ-val">AED 0.2M</td>
-                  <td class="bc-econ-val bc-econ-total">AED 7.9M</td>
-                </tr>
+                <div class="section-label">Annual Extrapolation</div>
+                <div class="metric-label">Conversion rate</div>
+                <div class="metric-label">Annual conversions</div>
+                <div class="metric-label">Sales value</div>
+                <div class="metric-label">Revenue rate</div>
 
-                <!-- 3-Year revenue · the closing argument -->
-                <tr class="bc-econ-3yr">
-                  <td class="bc-econ-label">3-Year revenue</td>
-                  <td class="bc-econ-val">AED 8.3M</td>
-                  <td class="bc-econ-val">AED 12.3M</td>
-                  <td class="bc-econ-val">AED 2.5M</td>
-                  <td class="bc-econ-val">AED 0.6M</td>
-                  <td class="bc-econ-val bc-econ-total">AED 23.7M</td>
-                </tr>
+                <div class="annual-label">Annual Revenue</div>
+                <div class="y3-label">3-Year Revenue</div>
+              </div>
 
-              </tbody>
-            </table>
+              <div class="col-card">
+                <div class="card-header">
+                  <div class="prod-name">Personal Finance</div>
+                  <div class="prod-code">PF · 01</div>
+                </div>
+                <div class="section-spacer"></div>
+                <div class="metric-val">134</div>
+                <div class="metric-val">64</div>
+                <div class="metric-val">27</div>
+                <div class="metric-val">AED 3.1M</div>
+                <div class="section-spacer"></div>
+                <div class="metric-val profile">
+                  <div class="profile-row">
+                    <span class="profile-item"><span class="k" title="Salary Transfer Loan customers">STL</span><span class="v">79%</span></span>
+                    <span class="profile-item"><span class="k" title="Top Master List · priority customer segment">TML</span><span class="v">54%</span></span>
+                  </div>
+                  <div class="profile-row">
+                    <span class="profile-item"><span class="k" title="UAE National">UAEN</span><span class="v">70%</span></span>
+                  </div>
+                </div>
+                <div class="section-spacer"></div>
+                <div class="metric-val">10%</div>
+                <div class="metric-val">983</div>
+                <div class="metric-val">AED 110.3M</div>
+                <div class="metric-val small-note">3%<em>of sales</em></div>
+                <div class="annual-val">AED 2.8M</div>
+                <div class="y3-val">AED 8.3M</div>
+              </div>
+
+              <div class="col-card">
+                <div class="card-header">
+                  <div class="prod-name">Cards</div>
+                  <div class="prod-code">Cards · 02</div>
+                </div>
+                <div class="section-spacer"></div>
+                <div class="metric-val">154</div>
+                <div class="metric-val">123</div>
+                <div class="metric-val">79</div>
+                <div class="metric-val">AED 5.8M</div>
+                <div class="section-spacer"></div>
+                <div class="metric-val profile">
+                  <div class="profile-row">
+                    <span class="profile-item"><span class="k" title="Salary Transfer Loan customers">STL</span><span class="v">79%</span></span>
+                    <span class="profile-item"><span class="k" title="Top Master List · priority customer segment">TML</span><span class="v">64%</span></span>
+                  </div>
+                  <div class="profile-row">
+                    <span class="profile-item"><span class="k" title="UAE National">UAEN</span><span class="v">78%</span></span>
+                  </div>
+                </div>
+                <div class="section-spacer"></div>
+                <div class="metric-val">10%</div>
+                <div class="metric-val">2,834</div>
+                <div class="metric-val">AED 209.7M</div>
+                <div class="metric-val small-note">AED 1,450<em>/card</em></div>
+                <div class="annual-val">AED 4.1M</div>
+                <div class="y3-val">AED 12.3M</div>
+              </div>
+
+              <div class="col-card">
+                <div class="card-header">
+                  <div class="prod-name">Home Finance</div>
+                  <div class="prod-code">HF · 03</div>
+                </div>
+                <div class="section-spacer"></div>
+                <div class="metric-val">19</div>
+                <div class="metric-val">18</div>
+                <div class="metric-val">8</div>
+                <div class="metric-val">AED 13.4M</div>
+                <div class="section-spacer"></div>
+                <div class="metric-val profile">
+                  <div class="profile-row">
+                    <span class="profile-item"><span class="k" title="Salary Transfer Loan customers">STL</span><span class="v">61%</span></span>
+                    <span class="profile-item"><span class="k" title="Top Master List · priority customer segment">TML</span><span class="v">72%</span></span>
+                  </div>
+                  <div class="profile-row">
+                    <span class="profile-item"><span class="k" title="UAE National">UAEN</span><span class="v">77%</span></span>
+                  </div>
+                </div>
+                <div class="section-spacer"></div>
+                <div class="metric-val">2.5%</div>
+                <div class="metric-val">71</div>
+                <div class="metric-val">AED 121.0M</div>
+                <div class="metric-val small-note">0.7%<em>of sales</em></div>
+                <div class="annual-val">AED 0.8M</div>
+                <div class="y3-val">AED 2.5M</div>
+              </div>
+
+              <div class="col-card">
+                <div class="card-header">
+                  <div class="prod-name">Auto Finance</div>
+                  <div class="prod-code">AF · 04</div>
+                </div>
+                <div class="section-spacer"></div>
+                <div class="metric-val">90</div>
+                <div class="metric-val">78</div>
+                <div class="metric-val">34</div>
+                <div class="metric-val">AED 4.1M</div>
+                <div class="section-spacer"></div>
+                <div class="metric-val profile">
+                  <div class="profile-row">
+                    <span class="profile-item"><span class="k" title="Salary Transfer Loan customers">STL</span><span class="v">76%</span></span>
+                    <span class="profile-item"><span class="k" title="Top Master List · priority customer segment">TML</span><span class="v">58%</span></span>
+                  </div>
+                  <div class="profile-row">
+                    <span class="profile-item"><span class="k" title="UAE National">UAEN</span><span class="v">83%</span></span>
+                  </div>
+                </div>
+                <div class="section-spacer"></div>
+                <div class="metric-val">5%</div>
+                <div class="metric-val">619</div>
+                <div class="metric-val">AED 74.5M</div>
+                <div class="metric-val small-note">0.25%<em>of sales</em></div>
+                <div class="annual-val">AED 0.19M</div>
+                <div class="y3-val">AED 0.56M</div>
+              </div>
+
+              <div class="col-card col-total">
+                <div class="card-header">
+                  <div class="prod-name">Total</div>
+                  <div class="prod-code">All Products</div>
+                </div>
+                <div class="section-spacer"></div>
+                <div class="metric-val">397</div>
+                <div class="metric-val">283</div>
+                <div class="metric-val">148</div>
+                <div class="metric-val">AED 26.4M</div>
+                <div class="section-spacer"></div>
+                <div class="metric-val muted">—</div>
+                <div class="section-spacer"></div>
+                <div class="metric-val muted">—</div>
+                <div class="metric-val">4,507</div>
+                <div class="metric-val">AED 515.5M</div>
+                <div class="metric-val muted">—</div>
+                <div class="annual-val">AED 7.9M</div>
+                <div class="y3-val">AED 23.7M</div>
+              </div>
+
+            </div>
+
+            <div class="econ-note">Auto Finance revenue at 0.25% of extrapolated sales value in this model; partner terms may differ in production.</div>
+
+            <div class="totals-bar">
+              <div class="t-title">Totals · Annual Extrapolation · All four products combined</div>
+              <div>
+                <div class="t-label">Sample Enquiries</div>
+                <div class="t-value">418</div>
+              </div>
+              <div>
+                <div class="t-label">Cross-sell Eligible</div>
+                <div class="t-value">148</div>
+              </div>
+              <div>
+                <div class="t-label">Annual Conversions</div>
+                <div class="t-value">4,507</div>
+              </div>
+              <div>
+                <div class="t-label">Sales Value</div>
+                <div class="t-value">AED 515.5M</div>
+              </div>
+              <div>
+                <div class="t-label">Annual Revenue</div>
+                <div class="t-value">AED 7.9M</div>
+              </div>
+              <div>
+                <div class="t-label">3-Year Revenue</div>
+                <div class="t-value gold">AED 23.7M</div>
+              </div>
+            </div>
           </div>
-          <div class="bc-econ-note">*Auto Finance · revenue share not contracted in sample period; sales value still credits the channel.</div>
 
         </article>
 
