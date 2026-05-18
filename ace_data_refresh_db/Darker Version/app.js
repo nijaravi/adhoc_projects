@@ -3,7 +3,7 @@
    ============================================================ */
 
 const CONFIG = {
-  refreshIntervalMs: 2 * 60 * 1000,    // 2 minutes
+  refreshIntervalMs: 5 * 60 * 1000,    // 5 minutes
   tickIntervalMs: 1000,                // 1 second for clocks/countdowns
   retryDelayMinutes: 30,
 };
@@ -17,11 +17,11 @@ const STATE = {
 /* ────────────── ICONS (inline SVG) ────────────── */
 const ICONS = {
   completed: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
-  inprogress: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`,
-  pending: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="7" x2="12" y2="12"/><line x1="12" y1="12" x2="15" y2="14"/></svg>`,
-  failed: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
-  retry: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>`,
-  eta: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>`,
+  running:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`,
+  pending:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="7" x2="12" y2="12"/><line x1="12" y1="12" x2="15" y2="14"/></svg>`,
+  failed:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+  retry:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>`,
+  eta:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>`,
 };
 
 /* ────────────── UTILITIES ────────────── */
@@ -84,7 +84,8 @@ async function fetchData() {
     if (!raw) throw new Error('window.DASHBOARD_DATA not defined in dashboard_data.js');
     // Use timestamps exactly as supplied by the data file. Your producer
     // is responsible for writing current/correct timestamps; the dashboard
-    // never silently shifts them.
+    // never silently shifts them. Likewise, statuses are taken verbatim —
+    // we never infer or fall back to a default status string.
     STATE.data = raw;
     STATE.lastFetch = new Date();
     STATE.nextRefresh = new Date(Date.now() + CONFIG.refreshIntervalMs);
@@ -113,28 +114,31 @@ function render() {
 function computeSummary(data) {
   const all = [...(data.ace_consumption || []), ...(data.ace_analytics || [])];
   const counts = {
-    completed: 0,
-    inprogress: 0,
-    pending: 0,
-    failed: 0,
-    retry: 0,
+    completed:  0,   // SUCCESS
+    running:    0,   // RUNNING
+    pending:    0,   // NOT_STARTED + QUEUED  (states that will run)
+    failed:     0,   // FAILED                (true failures — operator action required)
+    reschedule: 0,   // UP_FOR_RESCHEDULE
   };
+  // Statuses intentionally NOT counted in KPIs:
+  //   UPSTREAM_FAILED / SKIPPED / REMOVED — visible on the card, but
+  //   they're not "pending work" so don't pollute the headline counts.
   for (const d of all) {
     switch (d.status) {
-      case 'DONE':                 counts.completed++;  break;
-      case 'INPROGRESS':           counts.inprogress++; break;
-      case 'FAILED':               counts.failed++;     break;
-      case 'RETRY':                counts.retry++;      break;
-      case 'NOT_STARTED':          counts.pending++;    break;
-      case 'WAITING_FOR_UPSTREAM': counts.pending++;    break;
+      case 'SUCCESS':            counts.completed++;  break;
+      case 'RUNNING':            counts.running++;    break;
+      case 'FAILED':             counts.failed++;     break;
+      case 'UP_FOR_RESCHEDULE':  counts.reschedule++; break;
+      case 'NOT_STARTED':        counts.pending++;    break;
+      case 'QUEUED':             counts.pending++;    break;
     }
   }
   return { ...counts, overall_eta_minutes: computeOverallEta(data) };
 }
 
 /* Parallel-aware ETA. Models three independent paths and returns the longest:
-   1. In-progress DAGs: remaining time on the slowest currently-running job.
-   2. Retry queue: retry delay (30m) + runtime of slowest retrying job.
+   1. Running DAGs: remaining time on the slowest currently-running job.
+   2. Reschedule queue: retry delay (30m) + runtime of slowest waiting job.
    3. Pending wave: assumes ace_consumption pending DAGs run in parallel
       (max of their runtimes), then ace_analytics pending DAGs run in parallel
       after consumption finishes (their max added on top).
@@ -144,27 +148,27 @@ function computeOverallEta(data) {
   const consumption = data.ace_consumption || [];
   const analytics   = data.ace_analytics || [];
 
-  // ── Path 1: in-progress, take the slowest remaining time
-  let inProgressRemaining = 0;
+  // ── Path 1: running, take the slowest remaining time
+  let runningRemaining = 0;
   for (const d of [...consumption, ...analytics]) {
-    if (d.status !== 'INPROGRESS' || !d.start_time) continue;
+    if (d.status !== 'RUNNING' || !d.start_time) continue;
     const start = parseTs(d.start_time);
     if (!start) continue;
     const elapsedMin = (now - start.getTime()) / 60000;
     const remaining = Math.max(0, (d.avg_runtime_minutes || 0) - elapsedMin);
-    if (remaining > inProgressRemaining) inProgressRemaining = remaining;
+    if (remaining > runningRemaining) runningRemaining = remaining;
   }
 
-  // ── Path 2: retries — retry delay + runtime, take the slowest
-  let retryRemaining = 0;
+  // ── Path 2: reschedule queue — retry delay + runtime, take the slowest
+  let rescheduleRemaining = 0;
   for (const d of [...consumption, ...analytics]) {
-    if (d.status !== 'RETRY' || !d.start_time) continue;
+    if (d.status !== 'UP_FOR_RESCHEDULE' || !d.start_time) continue;
     const start = parseTs(d.start_time);
     if (!start) continue;
     const retryAtMin = Math.max(0,
       (start.getTime() + CONFIG.retryDelayMinutes * 60000 - now) / 60000);
     const total = retryAtMin + (d.avg_runtime_minutes || 0);
-    if (total > retryRemaining) retryRemaining = total;
+    if (total > rescheduleRemaining) rescheduleRemaining = total;
   }
 
   // ── Path 3: pending wave — consumption pending in parallel, then analytics
@@ -183,28 +187,28 @@ function computeOverallEta(data) {
   // Analytics waiters that depend on consumption add on top; analytics
   // that are merely NOT_STARTED (independent) can run in parallel with
   // consumption, so they're already absorbed into consumptionWaveMin via max.
-  // Use a simple bound: pending path = consumption wave + analytics wave
-  // when there's anything blocking, else just whichever wave exists.
-  const pendingPath = consumption.some(d => d.status === 'INPROGRESS' || isPending(d))
+  const pendingPath = consumption.some(d => d.status === 'RUNNING' || isPending(d))
     ? consumptionWaveMin + analyticsWaveMin
     : analyticsWaveMin;
 
-  const overallMin = Math.max(inProgressRemaining, retryRemaining, pendingPath);
+  const overallMin = Math.max(runningRemaining, rescheduleRemaining, pendingPath);
   return Math.round(overallMin);
 }
 
 function isPending(dag) {
-  return dag.status === 'NOT_STARTED' || dag.status === 'WAITING_FOR_UPSTREAM';
+  // "Pending" for ETA purposes = states that will eventually run this batch.
+  // UPSTREAM_FAILED / SKIPPED / REMOVED won't run, so they're excluded.
+  return dag.status === 'NOT_STARTED' || dag.status === 'QUEUED';
 }
 
 function renderKpis(summary) {
   const bar = document.getElementById('kpiBar');
   const cards = [
     { id: 'completed',  label: 'Completed',   value: summary.completed,  icon: ICONS.completed },
-    { id: 'inprogress', label: 'In Progress', value: summary.inprogress, icon: ICONS.inprogress },
+    { id: 'running',    label: 'Running',     value: summary.running,    icon: ICONS.running },
     { id: 'pending',    label: 'Yet To Start',value: summary.pending,    icon: ICONS.pending },
     { id: 'failed',     label: 'Failed',      value: summary.failed,     icon: ICONS.failed },
-    { id: 'retry',      label: 'Retry Queue', value: summary.retry,      icon: ICONS.retry },
+    { id: 'reschedule', label: 'Reschedule',  value: summary.reschedule, icon: ICONS.retry },
     { id: 'eta',        label: 'Overall ETA', value: fmtEta(summary.overall_eta_minutes), icon: ICONS.eta, isEta: true },
   ];
 
@@ -233,7 +237,7 @@ function renderZone(key, dags) {
 
   countEl.textContent = `${dags.length} DAGs`;
 
-  const completed = dags.filter(d => d.status === 'DONE').length;
+  const completed = dags.filter(d => d.status === 'SUCCESS').length;
   const pct = Math.round((completed / dags.length) * 100);
   progressEl.style.width = `${pct}%`;
   pctEl.textContent = `${pct}%`;
@@ -242,6 +246,17 @@ function renderZone(key, dags) {
 }
 
 function renderCard(dag, index) {
+  // dag.status is taken verbatim from dashboard_data.js — no normalization.
+  // The class produced is `status-` + status.toLowerCase(), so:
+  //   SUCCESS              → status-success
+  //   RUNNING              → status-running
+  //   FAILED               → status-failed
+  //   UP_FOR_RESCHEDULE    → status-up_for_reschedule
+  //   NOT_STARTED          → status-not_started
+  //   QUEUED               → status-queued
+  //   UPSTREAM_FAILED      → status-upstream_failed
+  //   SKIPPED              → status-skipped
+  //   REMOVED              → status-removed
   const statusClass = `status-${dag.status.toLowerCase()}`;
   const start = parseTs(dag.start_time);
   const end = parseTs(dag.end_time);
@@ -249,9 +264,9 @@ function renderCard(dag, index) {
   // Display name without the t0_ prefix (data preserves the original)
   const displayName = dag.dag_name.replace(/^t0_/, '');
 
-  // SLA breach: in-progress and past expected end
+  // SLA breach: only meaningful while a DAG is actively running past its avg
   let slaBreach = false;
-  if (dag.status === 'INPROGRESS' && start) {
+  if (dag.status === 'RUNNING' && start) {
     const expectedEnd = new Date(start.getTime() + dag.avg_runtime_minutes * 60000);
     slaBreach = Date.now() > expectedEnd.getTime();
   }
@@ -271,7 +286,7 @@ function renderCard(dag, index) {
         <div class="dag-indicator"></div>
       </div>
 
-      ${dag.status === 'INPROGRESS' ? `
+      ${dag.status === 'RUNNING' ? `
         <div class="dag-progress">
           <div class="dag-progress-fill" data-progress-fill style="width:0%"></div>
         </div>
@@ -284,9 +299,14 @@ function renderCard(dag, index) {
   `;
 }
 
+/* Every production status has its own explicit branch. There is no default
+   fallthrough that silently invents a label (the old code used to label
+   NOT_STARTED cards as "Queued" — that auto-inference is gone). If an
+   unknown status string arrives, we render it verbatim so the data issue
+   is visible rather than hidden. */
 function renderTimeBlocks(dag, start, end, slaBreach) {
   switch (dag.status) {
-    case 'DONE':
+    case 'SUCCESS':
       return `
         <div class="dag-time-block">
           <span class="dag-time-label">Started</span>
@@ -310,7 +330,7 @@ function renderTimeBlocks(dag, start, end, slaBreach) {
         </div>
       `;
 
-    case 'INPROGRESS':
+    case 'RUNNING':
       return `
         <div class="dag-time-block">
           <span class="dag-time-label">Started</span>
@@ -322,7 +342,7 @@ function renderTimeBlocks(dag, start, end, slaBreach) {
         </div>
       `;
 
-    case 'RETRY':
+    case 'UP_FOR_RESCHEDULE':
       return `
         <div class="dag-time-block">
           <span class="dag-time-label">Last Run</span>
@@ -334,31 +354,39 @@ function renderTimeBlocks(dag, start, end, slaBreach) {
         </div>
       `;
 
-    case 'WAITING_FOR_UPSTREAM':
-      return `
-        <div class="dag-time-block">
-          <span class="dag-time-label">Avg Runtime</span>
-          <span class="dag-time-value">${dag.avg_runtime_minutes}m</span>
-        </div>
-        <div class="dag-time-block right">
-          <span class="dag-time-label">Status</span>
-          <span class="dag-time-value highlight">Upstream</span>
-        </div>
-      `;
-
     case 'NOT_STARTED':
+      return staticBlock(dag, 'Not Started');
+
+    case 'QUEUED':
+      return staticBlock(dag, 'Queued');
+
+    case 'UPSTREAM_FAILED':
+      return staticBlock(dag, 'Upstream Failed');
+
+    case 'SKIPPED':
+      return staticBlock(dag, 'Skipped');
+
+    case 'REMOVED':
+      return staticBlock(dag, 'Removed');
+
     default:
-      return `
-        <div class="dag-time-block">
-          <span class="dag-time-label">Avg Runtime</span>
-          <span class="dag-time-value">${dag.avg_runtime_minutes}m</span>
-        </div>
-        <div class="dag-time-block right">
-          <span class="dag-time-label">Status</span>
-          <span class="dag-time-value highlight">Queued</span>
-        </div>
-      `;
+      // Unknown status — render literally so the operator notices the
+      // data issue. Do not invent a friendly label.
+      return staticBlock(dag, dag.status);
   }
+}
+
+function staticBlock(dag, label) {
+  return `
+    <div class="dag-time-block">
+      <span class="dag-time-label">Avg Runtime</span>
+      <span class="dag-time-value">${dag.avg_runtime_minutes}m</span>
+    </div>
+    <div class="dag-time-block right">
+      <span class="dag-time-label">Status</span>
+      <span class="dag-time-value highlight">${escapeHtml(label)}</span>
+    </div>
+  `;
 }
 
 /* ────────────── COUNTDOWN TICK (1Hz) ────────────── */
@@ -383,7 +411,7 @@ function tick() {
     const avg = parseFloat(card.dataset.avg);
     const start = parseTs(startStr);
 
-    if (status === 'INPROGRESS' && start) {
+    if (status === 'RUNNING' && start) {
       const expectedEnd = new Date(start.getTime() + avg * 60000);
       const remainingSec = (expectedEnd.getTime() - now.getTime()) / 1000;
       const etaEl = card.querySelector('[data-countdown="eta"]');
@@ -403,7 +431,7 @@ function tick() {
       if (fill) fill.style.width = `${pct}%`;
     }
 
-    if (status === 'RETRY' && start) {
+    if (status === 'UP_FOR_RESCHEDULE' && start) {
       const retryAt = new Date(start.getTime() + CONFIG.retryDelayMinutes * 60000);
       const remainingSec = (retryAt.getTime() - now.getTime()) / 1000;
       const retryEl = card.querySelector('[data-countdown="retry"]');
@@ -432,7 +460,7 @@ function renderTicker() {
   const allDags = [...STATE.data.ace_consumption, ...STATE.data.ace_analytics];
   const failed = allDags.filter(d => d.status === 'FAILED');
   const overruns = allDags
-    .filter(d => d.status === 'INPROGRESS' && d.start_time)
+    .filter(d => d.status === 'RUNNING' && d.start_time)
     .filter(d => {
       const start = parseTs(d.start_time);
       const expected = new Date(start.getTime() + d.avg_runtime_minutes * 60000);
@@ -484,7 +512,7 @@ async function boot() {
   // 1 Hz tick for clock + countdowns
   setInterval(tick, CONFIG.tickIntervalMs);
   tick();
-  // Auto-refresh data every 2 minutes
+  // Auto-refresh data every 5 minutes
   setInterval(fetchData, CONFIG.refreshIntervalMs);
 }
 

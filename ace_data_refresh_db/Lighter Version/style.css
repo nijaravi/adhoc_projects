@@ -45,6 +45,24 @@
   --st-waiting-dim: rgba(184, 144, 44, 0.10);
   --st-sla:         #D85800;
 
+  /* Production Airflow-aligned names (used by KPI + DAG cards; tuned for light surfaces) */
+  --st-success:             #0F8C5C;
+  --st-success-dim:         rgba(15, 140, 92, 0.10);
+  --st-running:             #0094B8;
+  --st-running-dim:         rgba(0, 148, 184, 0.10);
+  --st-reschedule:          #C97400;
+  --st-reschedule-dim:      rgba(201, 116, 0, 0.10);
+  --st-notstarted:          #7889A6;
+  --st-notstarted-dim:      rgba(120, 137, 166, 0.08);
+  --st-queued:              #3A86AD;
+  --st-queued-dim:          rgba(58, 134, 173, 0.10);
+  --st-upstream-failed:     #C23B72;
+  --st-upstream-failed-dim: rgba(194, 59, 114, 0.10);
+  --st-skipped:             #8B7CB8;
+  --st-skipped-dim:         rgba(139, 124, 184, 0.10);
+  --st-removed:             #5A6578;
+  --st-removed-dim:         rgba(90, 101, 120, 0.10);
+
   /* Typography */
   --font-display: 'Orbitron', sans-serif;
   --font-mono:    'JetBrains Mono', ui-monospace, monospace;
@@ -171,6 +189,19 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.header-logo {
+  height: 48px;
+  width: auto;
+  max-width: min(200px, 28vw);
+  object-fit: contain;
+  object-position: left center;
+  flex-shrink: 0;
+  border-radius: 12px;
+  mix-blend-mode: multiply;
 }
 
 .brand-title {
@@ -218,6 +249,8 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
+  position: relative;
+  z-index: 1;
 }
 
 .inline-stat {
@@ -312,7 +345,7 @@ body {
   width: 38px;
   height: 38px;
   border-radius: 6px;
-  background: var(--kpi-bg, var(--st-progress-dim));
+  background: var(--kpi-bg, var(--st-running-dim));
   color: var(--kpi-accent, var(--accent-cyan));
   border: 1px solid var(--kpi-accent, var(--accent-cyan));
   border-opacity: 0.3;
@@ -344,15 +377,15 @@ body {
 }
 
 /* Per-KPI accents */
-.kpi-card.kpi-completed   { --kpi-accent: var(--st-done);     --kpi-bg: var(--st-done-dim); }
-.kpi-card.kpi-inprogress  { --kpi-accent: var(--st-progress); --kpi-bg: var(--st-progress-dim); }
-.kpi-card.kpi-pending     { --kpi-accent: var(--st-pending);  --kpi-bg: var(--st-pending-dim); }
-.kpi-card.kpi-failed      { --kpi-accent: var(--st-failed);   --kpi-bg: var(--st-failed-dim); }
-.kpi-card.kpi-retry       { --kpi-accent: var(--st-retry);    --kpi-bg: var(--st-retry-dim); }
-.kpi-card.kpi-eta         { --kpi-accent: var(--accent-purple); --kpi-bg: rgba(140, 91, 255, 0.12); }
+.kpi-card.kpi-completed   { --kpi-accent: var(--st-success);    --kpi-bg: var(--st-success-dim); }
+.kpi-card.kpi-running     { --kpi-accent: var(--st-running);     --kpi-bg: var(--st-running-dim); }
+.kpi-card.kpi-pending     { --kpi-accent: var(--st-notstarted); --kpi-bg: var(--st-notstarted-dim); }
+.kpi-card.kpi-failed      { --kpi-accent: var(--st-failed);      --kpi-bg: var(--st-failed-dim); }
+.kpi-card.kpi-reschedule  { --kpi-accent: var(--st-reschedule); --kpi-bg: var(--st-reschedule-dim); }
+.kpi-card.kpi-eta         { --kpi-accent: var(--accent-purple); --kpi-bg: rgba(104, 65, 199, 0.12); }
 
-/* In-progress pulse on KPI */
-.kpi-card.kpi-inprogress .kpi-icon {
+/* Running KPI icon spin */
+.kpi-card.kpi-running .kpi-icon {
   animation: kpiSpin 2.2s linear infinite;
 }
 @keyframes kpiSpin {
@@ -450,7 +483,7 @@ body {
 }
 .zone-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--st-progress), var(--st-done));
+  background: linear-gradient(90deg, var(--st-running), var(--st-success));
   transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
 }
@@ -507,7 +540,7 @@ body {
   content: '';
   position: absolute;
   top: 0; left: 0; bottom: 0; width: 3px;
-  background: var(--card-accent, var(--st-pending));
+  background: var(--card-accent, var(--st-notstarted));
 }
 
 .dag-card-top {
@@ -535,7 +568,7 @@ body {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--card-accent, var(--st-pending));
+  background: var(--card-accent, var(--st-notstarted));
   margin-top: 3px;
   position: relative;
 }
@@ -585,17 +618,17 @@ body {
   font-weight: 700;
 }
 
-/* Progress bar for inprogress DAGs */
+/* Progress bar for running DAGs */
 .dag-progress {
   height: 3px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(74, 100, 140, 0.1);
   border-radius: 2px;
   overflow: hidden;
   position: relative;
 }
 .dag-progress-fill {
   height: 100%;
-  background: var(--card-accent, var(--st-progress));
+  background: var(--card-accent, var(--st-running));
   transition: width 1s linear;
   position: relative;
 }
@@ -613,75 +646,33 @@ body {
 
 /* ───────── STATUS VARIANTS ───────── */
 
-/* DONE */
-.dag-card.status-done {
-  --card-accent: var(--st-done);
-  border-color: rgba(0, 255, 163, 0.22);
+/* SUCCESS */
+.dag-card.status-success {
+  --card-accent: var(--st-success);
+  border-color: rgba(15, 140, 92, 0.35);
 }
-.dag-card.status-done .dag-indicator::after {
+.dag-card.status-success .dag-indicator::after {
   content: '✓';
   position: absolute;
   inset: 0;
   display: flex; align-items: center; justify-content: center;
   font-size: 8px;
-  color: var(--bg-void);
+  color: #FFFFFF;
   font-weight: 900;
 }
 
-/* INPROGRESS */
-.dag-card.status-inprogress {
-  --card-accent: var(--st-progress);
-  border-color: rgba(0, 148, 184, 0.35);
-  background: linear-gradient(135deg, var(--st-progress-dim), var(--bg-panel) 60%);
+/* RUNNING */
+.dag-card.status-running {
+  --card-accent: var(--st-running);
+  border-color: rgba(0, 148, 184, 0.4);
+  background: linear-gradient(135deg, var(--st-running-dim), var(--bg-panel) 55%);
   animation: cardActivePulse 2.4s ease-in-out infinite;
 }
 @keyframes cardActivePulse {
-  0%, 100% { border-color: rgba(0, 148, 184, 0.35); }
-  50% { border-color: rgba(0, 148, 184, 0.6); }
+  0%, 100% { border-color: rgba(0, 148, 184, 0.4); }
+  50% { border-color: rgba(0, 148, 184, 0.62); }
 }
-
-/* FAILED */
-.dag-card.status-failed {
-  --card-accent: var(--st-failed);
-  border-color: rgba(200, 52, 76, 0.4);
-  background: linear-gradient(135deg, var(--st-failed-dim), var(--bg-panel) 60%);
-}
-
-/* RETRY */
-.dag-card.status-retry {
-  --card-accent: var(--st-retry);
-  border-color: rgba(201, 116, 0, 0.4);
-  background: linear-gradient(135deg, var(--st-retry-dim), var(--bg-panel) 60%);
-}
-
-/* NOT_STARTED */
-.dag-card.status-not_started {
-  --card-accent: var(--st-pending);
-  opacity: 0.85;
-}
-
-/* WAITING_FOR_UPSTREAM */
-.dag-card.status-waiting {
-  --card-accent: var(--st-waiting);
-  border-color: rgba(184, 144, 44, 0.3);
-  background:
-    repeating-linear-gradient(45deg,
-      transparent 0, transparent 8px,
-      rgba(184, 144, 44, 0.04) 8px, rgba(184, 144, 44, 0.04) 16px),
-    var(--bg-panel);
-}
-
-/* SLA BREACH */
-.dag-card.sla-breach {
-  border-color: var(--st-sla) !important;
-  border-width: 1.5px;
-  background: linear-gradient(135deg, rgba(216, 88, 0, 0.10), var(--bg-panel) 60%) !important;
-}
-.dag-card.sla-breach::before {
-  background: var(--st-sla);
-  width: 4px;
-}
-.dag-card.status-inprogress .dag-indicator {
+.dag-card.status-running .dag-indicator {
   animation: indicatorPulse 1.4s ease-in-out infinite;
 }
 @keyframes indicatorPulse {
@@ -689,7 +680,12 @@ body {
   50% { transform: scale(1.35); opacity: 0.6; }
 }
 
-/* FAILED indicator marker */
+/* FAILED */
+.dag-card.status-failed {
+  --card-accent: var(--st-failed);
+  border-color: rgba(200, 52, 76, 0.4);
+  background: linear-gradient(135deg, var(--st-failed-dim), var(--bg-panel) 55%);
+}
 .dag-card.status-failed .dag-indicator::after {
   content: '!';
   position: absolute;
@@ -700,18 +696,100 @@ body {
   font-weight: 900;
 }
 
-/* RETRY indicator pulse */
-.dag-card.status-retry .dag-indicator {
-  animation: retryPulse 1.8s ease-in-out infinite;
+/* UP_FOR_RESCHEDULE */
+.dag-card.status-up_for_reschedule {
+  --card-accent: var(--st-reschedule);
+  border-color: rgba(201, 116, 0, 0.38);
+  background: linear-gradient(135deg, var(--st-reschedule-dim), var(--bg-panel) 55%);
 }
-@keyframes retryPulse {
+.dag-card.status-up_for_reschedule .dag-indicator {
+  animation: reschedulePulse 1.8s ease-in-out infinite;
+}
+@keyframes reschedulePulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  50% { opacity: 0.55; }
 }
 
-/* NOT_STARTED text dimming */
+/* NOT_STARTED */
+.dag-card.status-not_started {
+  --card-accent: var(--st-notstarted);
+  opacity: 0.88;
+}
 .dag-card.status-not_started .dag-name {
   color: var(--text-secondary);
+}
+
+/* QUEUED */
+.dag-card.status-queued {
+  --card-accent: var(--st-queued);
+  border-color: rgba(58, 134, 173, 0.35);
+  opacity: 0.95;
+}
+.dag-card.status-queued .dag-indicator {
+  animation: queuedPulse 2.4s ease-in-out infinite;
+}
+@keyframes queuedPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+/* UPSTREAM_FAILED */
+.dag-card.status-upstream_failed {
+  --card-accent: var(--st-upstream-failed);
+  border-color: rgba(194, 59, 114, 0.38);
+  background:
+    repeating-linear-gradient(135deg,
+      transparent 0, transparent 8px,
+      rgba(194, 59, 114, 0.06) 8px, rgba(194, 59, 114, 0.06) 16px),
+    var(--bg-panel);
+}
+.dag-card.status-upstream_failed .dag-indicator::after {
+  content: '⊘';
+  position: absolute;
+  inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  color: #FFFFFF;
+  font-weight: 900;
+  line-height: 1;
+}
+
+/* SKIPPED */
+.dag-card.status-skipped {
+  --card-accent: var(--st-skipped);
+  border-color: rgba(139, 124, 184, 0.32);
+  opacity: 0.82;
+}
+.dag-card.status-skipped .dag-name {
+  color: var(--text-secondary);
+  text-decoration: line-through;
+  text-decoration-color: rgba(139, 124, 184, 0.55);
+  text-decoration-thickness: 1px;
+}
+
+/* REMOVED */
+.dag-card.status-removed {
+  --card-accent: var(--st-removed);
+  border-style: dashed;
+  border-color: rgba(90, 101, 120, 0.45);
+  opacity: 0.55;
+  background: var(--bg-panel);
+}
+.dag-card.status-removed .dag-name {
+  color: var(--text-tertiary);
+  text-decoration: line-through;
+  text-decoration-color: rgba(90, 101, 120, 0.6);
+}
+
+/* SLA BREACH */
+.dag-card.sla-breach {
+  border-color: var(--st-sla) !important;
+  border-width: 1.5px;
+  background: linear-gradient(135deg, rgba(216, 88, 0, 0.12), var(--bg-panel) 60%) !important;
+}
+.dag-card.sla-breach::before {
+  background: var(--st-sla);
+  width: 4px;
 }
 
 /* ───────── CALL OUTS TICKER ───────── */
