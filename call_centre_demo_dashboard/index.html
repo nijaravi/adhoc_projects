@@ -455,10 +455,26 @@
   }
   .hero-meta {
     margin-top: 40px;
-    display: flex; align-items: center; gap: 40px;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: start;
+    gap: 0;
     padding-top: 30px;
     border-top: 1px solid var(--line);
-    max-width: 760px;
+    max-width: min(1100px, 100%);
+    width: 100%;
+  }
+  .hero-meta .stat {
+    min-width: 0;
+    padding: 0 clamp(6px, 1vw, 14px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-left: 1px solid var(--line-strong);
+  }
+  .hero-meta .stat:first-child {
+    border-left: none;
   }
   .hero-meta .stat .num {
     font-family: var(--font-display);
@@ -467,6 +483,9 @@
     color: var(--ink-900);
     letter-spacing: -0.02em;
     line-height: 1;
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: center;
   }
   .hero-meta .stat .num .unit {
     font-family: var(--font-body);
@@ -479,13 +498,15 @@
   .hero-meta .stat .lbl {
     font-family: var(--font-mono);
     font-size: 10px;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.14em;
     color: var(--ink-400);
     text-transform: uppercase;
     margin-top: 10px;
     font-weight: 500;
+    max-width: 100%;
+    text-wrap: balance;
+    line-height: 1.35;
   }
-  .hero-meta .divider { width: 1px; height: 36px; background: var(--line-strong); }
 
   .hero-mark {
     position: absolute;
@@ -1158,11 +1179,14 @@
   }
   #opportunity .hero p.sub { font-size: 15.5px; line-height: 1.6; max-width: 740px; }
   #opportunity .hero-mark { width: 220px; height: 220px; opacity: 0.45; }
-  #opportunity .hero-meta { margin-top: 28px; padding-top: 22px; gap: 36px; max-width: 780px; }
+  #opportunity .hero-meta {
+    margin-top: 28px;
+    padding-top: 22px;
+    max-width: min(1100px, 100%);
+  }
   #opportunity .hero-meta .stat .num { font-size: 30px; }
   #opportunity .hero-meta .stat .num .unit { font-size: 14px; margin-left: 5px; }
-  #opportunity .hero-meta .stat .lbl { font-size: 10px; margin-top: 8px; letter-spacing: 0.16em; }
-  #opportunity .hero-meta .divider { height: 32px; }
+  #opportunity .hero-meta .stat .lbl { font-size: 10px; margin-top: 8px; letter-spacing: 0.12em; }
 
   #opportunity .feature-row { margin-bottom: 18px; padding-bottom: 14px; }
   #opportunity .feature-row h2 { font-size: 22px; }
@@ -2154,7 +2178,7 @@
   .lane-store   { left: 67.5%; }
 
   /* ============================================================
-     SECTION 4 · PROOF OF VALUE — HORIZONTAL CAROUSEL
+     SECTION 4 · PROOF OF CONCEPT — HORIZONTAL CAROUSEL
      ============================================================ */
   .pov-hero { margin-bottom: 22px; }
   .pov-hero h1 { font-size: clamp(34px, 4.4vw, 54px); margin-bottom: 14px; }
@@ -4024,6 +4048,22 @@
     .outcomes-grid { grid-template-columns: 1fr; }
     .spotlight { padding: 24px; }
     .spotlight-title { font-size: 26px; }
+    .hero-meta {
+      grid-template-columns: 1fr;
+      row-gap: 0;
+    }
+    .hero-meta .stat {
+      border-left: none;
+      padding: 14px 12px 16px;
+      border-top: 1px solid var(--line-strong);
+    }
+    .hero-meta .stat:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+    .hero-meta .stat:last-child {
+      padding-bottom: 0;
+    }
   }
 
   /* ============ STAGGER ANIMATIONS ============ */
@@ -4432,7 +4472,11 @@
     margin-bottom: 14px;
     max-width: 1100px;
   }
-  #business .hero h1 .accent { font-style: italic; }
+  #business .hero h1 .accent {
+    font-style: normal;
+    font-weight: 500;
+    color: var(--accent-blue);
+  }
   #business .hero p.sub { font-size: 15.5px; line-height: 1.55; max-width: 920px; }
 
   /* Tabs / control bar — visual twin of .pov-control, scoped to business case */
@@ -5098,7 +5142,7 @@
         <span class="intro-section-icon">
           <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
         </span>
-        <span class="intro-section-label">Proof of Value</span>
+        <span class="intro-section-label">Proof of Concept</span>
       </button>
       <button type="button" class="intro-section-card" data-jump="convo" role="listitem">
         <span class="intro-section-num">07</span>
@@ -5167,7 +5211,7 @@
     </li>
     <li class="nav-item" data-target="processing">
       <svg class="icon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
-      <span class="label">Proof of Value</span>
+      <span class="label">Proof of Concept</span>
     </li>
     <li class="nav-item" data-target="convo">
       <svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.38 8.38 0 0 1 3 11.5 8.5 8.5 0 0 1 11.5 3 8.38 8.38 0 0 1 21 11.5z"/></svg>
@@ -5217,17 +5261,18 @@
           <div class="num">88<span class="unit">%</span></div>
           <div class="lbl">Calls from existing customers</div>
         </div>
-        <div class="divider"></div>
         <div class="stat">
-          <div class="num">40<span class="unit">%</span></div>
-          <div class="lbl">Product sales calls</div>
+          <div class="num">61<span class="unit">%</span></div>
+          <div class="lbl">Product issues</div>
         </div>
-        <div class="divider"></div>
         <div class="stat">
-          <div class="num">44<span class="unit">%</span></div>
-          <div class="lbl">Product service / info</div>
+          <div class="num">31<span class="unit">%</span></div>
+          <div class="lbl">Product services</div>
         </div>
-        <div class="divider"></div>
+        <div class="stat">
+          <div class="num">5<span class="unit">%</span></div>
+          <div class="lbl">Product sales</div>
+        </div>
         <div class="stat">
           <div class="num">25<span class="unit">%</span></div>
           <div class="lbl">High-value customers</div>
@@ -5698,7 +5743,7 @@
   <section class="section" id="architecture">
     <div class="hero">
       <div class="eyebrow">Solution Architecture · 04</div>
-      <h1>From recorded call to <span class="accent">manager dashboard.</span></h1>
+      <h1>From recorded call to <span class="accent">Intelligence Console (CC Dashboard).</span></h1>
       <p class="sub">A multi-agent AI pipeline — language routing, bilingual transcription, parallel data streams feeding five downstream agents that enrich every call.</p>
     </div>
 
@@ -5915,7 +5960,7 @@
         <div class="l">Calls in Arabic</div>
       </div>
       <div class="ar-stat">
-        <div class="v">50<span class="v-trail">→ 80%</span></div>
+        <div class="v">50%<span class="v-trail">→ 80%</span></div>
         <div class="l">Accuracy uplift</div>
       </div>
       <div class="ar-stat">
@@ -6027,11 +6072,11 @@
     </div>
   </section>
 
-  <!-- ============== SECTION 4: PROOF OF VALUE (CAROUSEL) ============== -->
+  <!-- ============== SECTION 4: PROOF OF CONCEPT (CAROUSEL) ============== -->
   <section class="section" id="processing">
     <div class="hero pov-hero">
-      <div class="eyebrow">Proof of Value · 05</div>
-      <h1>9,904 calls in. <span class="accent">8,601 enriched.</span></h1>
+      <div class="eyebrow">Proof of Concept · 05</div>
+      <h1>9,904 calls in. <span class="accent">8,601 Processed through AI.</span></h1>
       <p class="sub">A full study on approximately one day's volume — randomly selected from June through August. 87% of calls were successfully processed end-to-end; 13% were intentionally skipped under content filters, or for low-context audio.</p>
     </div>
 
@@ -6220,49 +6265,6 @@
             <div class="cat-acc-stat">
               <div class="cat-acc-num">94<span>%</span></div>
               <div class="cat-acc-lbl">AI Accuracy</div>
-            </div>
-          </div>
-
-          <!-- Executive AI Summary -->
-          <div class="cat-exec">
-            <div class="cat-exec-left">
-              <div class="cat-exec-icon">
-                <svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7h-5"/><path d="M21 7v5"/></svg>
-              </div>
-              <div class="cat-exec-text">
-                <h4>Executive AI Summary</h4>
-                <p>AI identified <strong>418 potential sales opportunities</strong>, classified <strong>5,247 operational issue calls</strong>, and reduced manual call review dependency by <strong>82%</strong> across the contact centre.</p>
-              </div>
-            </div>
-            <div class="cat-exec-stats">
-              <div class="ces" style="--c:#2F8B5A; --cs:#E4F1EA;">
-                <div class="ces-icon"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div>
-                <div class="ces-text">
-                  <div class="ces-num">94%</div>
-                  <div class="ces-lbl">AI Accuracy</div>
-                </div>
-              </div>
-              <div class="ces" style="--c:#1A4FA3; --cs:#E6EEFB;">
-                <div class="ces-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg></div>
-                <div class="ces-text">
-                  <div class="ces-num">8,601</div>
-                  <div class="ces-lbl">Calls / Day</div>
-                </div>
-              </div>
-              <div class="ces" style="--c:#B08D3E; --cs:#F5EFE0;">
-                <div class="ces-icon"><svg viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-                <div class="ces-text">
-                  <div class="ces-num">AED 7.9M</div>
-                  <div class="ces-lbl">Revenue Opportunity</div>
-                </div>
-              </div>
-              <div class="ces" style="--c:#C2553F; --cs:#FBEEEA;">
-                <div class="ces-icon"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div>
-                <div class="ces-text">
-                  <div class="ces-num">148</div>
-                  <div class="ces-lbl">Recurring Issues</div>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -6771,7 +6773,7 @@
         <polyline points="180 100 200 100 200 120" stroke="#1A4FA3" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <div class="eyebrow">Business Case · 07</div>
-      <h1>AED 7.9M opportunity. AED 900K to build. <span class="accent">3.7X return over three years.</span></h1>
+      <h1>Revenue Opportunity of AED 7.9M p.a.<br/><span class="accent">ROI of 3.7x over 3 years</span></h1>
       <p class="sub">A grounded business case for ATLAS — built on a real audit of <strong>418 enquiry calls</strong> across Personal Finance, Cards, Home Finance, and Auto Finance. Conservative by design: counts only first-year revenue per converted sale.</p>
     </div>
 
@@ -7427,7 +7429,7 @@
     });
   })();
 
-  // ============ PROOF OF VALUE · HORIZONTAL CAROUSEL ============
+  // ============ PROOF OF CONCEPT · HORIZONTAL CAROUSEL ============
   (function () {
     const track = document.getElementById('povTrack');
     if (!track) return;
