@@ -1322,7 +1322,7 @@
         <div class="panel span-6" id="panelSentDist">
           <div class="panel-head">
             <div>
-              <div class="panel-title">Sentiment Score Distribution</div>
+              <div class="panel-title">Sentiment By call Category</div>
               <div class="panel-sub" id="subSentDist">Histogram across all calls</div>
             </div>
             <div class="panel-meta"><span class="v" id="metaMean">+0.62</span>Mean</div>
@@ -1384,8 +1384,8 @@
         <div class="panel span-7">
           <div class="panel-head">
             <div>
-              <div class="panel-title">Operational Efficiency Profile</div>
-              <div class="panel-sub">Idle % × call category · 30-day window</div>
+              <div class="panel-title">Hold Frequency Distribution</div>
+              <div class="panel-sub">Share of calls by holds per call · 30-day window</div>
             </div>
             <div class="panel-meta"><span class="v">61%</span>Idle occurrence</div>
           </div>
@@ -2603,22 +2603,28 @@
       });
     }
 
-    // ---- Chart 13: Operational Efficiency Profile (bar, position-based colors) ----
+    // ---- Chart 13: Hold Frequency Distribution (sheet: Operational Efficiency Profile) ----
     {
-      const { labels, cols, seriesKeys } = readSheet(workbook, 'Operational Efficiency Profile');
+      const HOLD_BAND_LABELS = ['1', '2', '3', '4', '5', '>5'];
+      const { cols, seriesKeys } = readSheet(workbook, 'Operational Efficiency Profile');
       const [valKey] = seriesKeys;
-      // First 3 bars acceptable (BLUE), last 2 problematic (NEG). Rule by position.
-      const colors = labels.map((_, i) => i < 3 ? BLUE : NEG);
+      const raw = cols[valKey] || [];
+      const data = HOLD_BAND_LABELS.map((_, i) => {
+        const n = raw[i];
+        return n != null && n !== '' && !Number.isNaN(Number(n)) ? Number(n) : 0;
+      });
+      // 1–4 holds: blue; 5 and >5: red
+      const colors = HOLD_BAND_LABELS.map((_, i) => (i < 4 ? BLUE : NEG));
       if (callIntelCharts.opEfficiency) callIntelCharts.opEfficiency.destroy();
       callIntelCharts.opEfficiency = new Chart(document.getElementById('chOpEfficiency'), {
         type: 'bar',
-        data: { labels, datasets: [{ label: valKey, data: cols[valKey], backgroundColor: colors, borderRadius: 6 }] },
+        data: { labels: HOLD_BAND_LABELS, datasets: [{ label: valKey, data, backgroundColor: colors, borderRadius: 6 }] },
         options: {
           ...baseOpts,
           plugins: { ...baseOpts.plugins, legend: { display: false } },
           scales: {
-            x: { ...baseScale.x, title: { display: true, text: 'Total Idle Time as % of Call Duration', color: '#7A8BA8', font: { size: 10 } } },
-            y: { ...baseScale.y, ticks: { ...baseScale.y.ticks, callback: v => v + '%' }, title: { display: true, text: '% of Total Calls', color: '#7A8BA8', font: { size: 10 } } }
+            x: { ...baseScale.x, title: { display: true, text: 'Holds per call', color: '#7A8BA8', font: { size: 10 } } },
+            y: { ...baseScale.y, ticks: { ...baseScale.y.ticks, callback: v => v + '%' }, title: { display: true, text: 'Hold Frequency/Call', color: '#7A8BA8', font: { size: 10 } } }
           }
         }
       });
