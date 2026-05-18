@@ -611,6 +611,12 @@ body {
   text-align: right;
   align-items: flex-end;
 }
+.dag-time-block.center {
+  text-align: center;
+  align-items: center;
+  /* Slight horizontal padding so it doesn't crowd Last Run on narrow cards */
+  padding: 0 4px;
+}
 .dag-time-label {
   font-size: 9px;
   letter-spacing: 0.18em;

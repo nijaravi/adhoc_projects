@@ -236,13 +236,13 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--st-done);
-  box-shadow: 0 0 10px var(--st-done);
+  background: var(--st-success);
+  box-shadow: 0 0 10px var(--st-success);
   animation: livePulse 1.6s ease-in-out infinite;
 }
 @keyframes livePulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.55; }
+  0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--st-success); }
+  50% { opacity: 0.55; box-shadow: 0 0 16px var(--st-success); }
 }
 
 .header-right {
@@ -326,14 +326,15 @@ body {
   position: absolute;
   top: 0; left: 0; bottom: 0; width: 3px;
   background: var(--kpi-accent, var(--accent-cyan));
-  opacity: 0.9;
+  box-shadow: 0 0 12px var(--kpi-accent, var(--accent-cyan));
+  opacity: 0.85;
 }
 .kpi-card::after {
   content: '';
   position: absolute;
   inset: -1px;
   background: radial-gradient(circle at top left, var(--kpi-accent, var(--accent-cyan)), transparent 60%);
-  opacity: 0.04;
+  opacity: 0.05;
   pointer-events: none;
 }
 
@@ -359,6 +360,7 @@ body {
   color: var(--text-primary);
   line-height: 1;
   letter-spacing: 0.04em;
+  text-shadow: 0 0 12px var(--kpi-accent, transparent);
   align-self: end;
 }
 .kpi-value.eta {
@@ -484,6 +486,7 @@ body {
 .zone-progress-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--st-running), var(--st-success));
+  box-shadow: 0 0 10px rgba(0, 148, 184, 0.35);
   transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
 }
@@ -541,6 +544,7 @@ body {
   position: absolute;
   top: 0; left: 0; bottom: 0; width: 3px;
   background: var(--card-accent, var(--st-notstarted));
+  box-shadow: 0 0 8px var(--card-accent, var(--st-notstarted));
 }
 
 .dag-card-top {
@@ -593,6 +597,12 @@ body {
   text-align: right;
   align-items: flex-end;
 }
+.dag-time-block.center {
+  text-align: center;
+  align-items: center;
+  /* Slight horizontal padding so it doesn't crowd Last Run on narrow cards */
+  padding: 0 4px;
+}
 .dag-time-label {
   font-size: 9px;
   letter-spacing: 0.18em;
@@ -616,6 +626,7 @@ body {
 .dag-time-value.highlight {
   color: var(--card-accent, var(--text-primary));
   font-weight: 700;
+  text-shadow: 0 0 8px var(--card-accent, transparent);
 }
 
 /* Progress bar for running DAGs */
@@ -629,6 +640,7 @@ body {
 .dag-progress-fill {
   height: 100%;
   background: var(--card-accent, var(--st-running));
+  box-shadow: 0 0 8px var(--card-accent, var(--st-running));
   transition: width 1s linear;
   position: relative;
 }
@@ -669,22 +681,32 @@ body {
   animation: cardActivePulse 2.4s ease-in-out infinite;
 }
 @keyframes cardActivePulse {
-  0%, 100% { border-color: rgba(0, 148, 184, 0.4); }
-  50% { border-color: rgba(0, 148, 184, 0.62); }
+  0%, 100% {
+    border-color: rgba(0, 148, 184, 0.4);
+    box-shadow: 0 0 0 rgba(0, 148, 184, 0);
+  }
+  50% {
+    border-color: rgba(0, 148, 184, 0.62);
+    box-shadow: 0 0 18px rgba(0, 148, 184, 0.2), inset 0 0 8px rgba(0, 148, 184, 0.06);
+  }
 }
 .dag-card.status-running .dag-indicator {
   animation: indicatorPulse 1.4s ease-in-out infinite;
 }
 @keyframes indicatorPulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.35); opacity: 0.6; }
+  0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 6px var(--st-running); }
+  50% { transform: scale(1.35); opacity: 0.6; box-shadow: 0 0 12px var(--st-running); }
 }
 
 /* FAILED */
 .dag-card.status-failed {
   --card-accent: var(--st-failed);
   border-color: rgba(200, 52, 76, 0.4);
-  background: linear-gradient(135deg, var(--st-failed-dim), var(--bg-panel) 55%);
+  animation: cardFailedPulse 2s ease-in-out infinite;
+}
+@keyframes cardFailedPulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(200, 52, 76, 0); }
+  50% { box-shadow: 0 0 14px rgba(200, 52, 76, 0.22), inset 0 0 8px rgba(200, 52, 76, 0.06); }
 }
 .dag-card.status-failed .dag-indicator::after {
   content: '!';
@@ -700,48 +722,47 @@ body {
 .dag-card.status-up_for_reschedule {
   --card-accent: var(--st-reschedule);
   border-color: rgba(201, 116, 0, 0.38);
-  background: linear-gradient(135deg, var(--st-reschedule-dim), var(--bg-panel) 55%);
 }
 .dag-card.status-up_for_reschedule .dag-indicator {
   animation: reschedulePulse 1.8s ease-in-out infinite;
 }
 @keyframes reschedulePulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.55; }
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--st-reschedule); }
+  50% { opacity: 0.5; box-shadow: 0 0 12px var(--st-reschedule); }
 }
 
-/* NOT_STARTED */
+/* NOT_STARTED — neutral grey, dimmed, no animation */
 .dag-card.status-not_started {
   --card-accent: var(--st-notstarted);
-  opacity: 0.88;
+  opacity: 0.7;
 }
 .dag-card.status-not_started .dag-name {
   color: var(--text-secondary);
 }
 
-/* QUEUED */
+/* QUEUED — steel blue, slow pulse to indicate "in line" */
 .dag-card.status-queued {
   --card-accent: var(--st-queued);
   border-color: rgba(58, 134, 173, 0.35);
-  opacity: 0.95;
+  opacity: 0.92;
 }
 .dag-card.status-queued .dag-indicator {
   animation: queuedPulse 2.4s ease-in-out infinite;
 }
 @keyframes queuedPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.55; }
+  0%, 100% { opacity: 1; box-shadow: 0 0 5px var(--st-queued); }
+  50% { opacity: 0.55; box-shadow: 0 0 10px var(--st-queued); }
 }
 
-/* UPSTREAM_FAILED */
+/* UPSTREAM_FAILED — pink with diagonal hatch to read as "blocked by failure" */
 .dag-card.status-upstream_failed {
   --card-accent: var(--st-upstream-failed);
   border-color: rgba(194, 59, 114, 0.38);
-  background:
+  background-image:
     repeating-linear-gradient(135deg,
       transparent 0, transparent 8px,
       rgba(194, 59, 114, 0.06) 8px, rgba(194, 59, 114, 0.06) 16px),
-    var(--bg-panel);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(74, 100, 140, 0.06));
 }
 .dag-card.status-upstream_failed .dag-indicator::after {
   content: '⊘';
@@ -754,11 +775,11 @@ body {
   line-height: 1;
 }
 
-/* SKIPPED */
+/* SKIPPED — lavender, faded, strike-through name to read as "bypassed" */
 .dag-card.status-skipped {
   --card-accent: var(--st-skipped);
   border-color: rgba(139, 124, 184, 0.32);
-  opacity: 0.82;
+  opacity: 0.78;
 }
 .dag-card.status-skipped .dag-name {
   color: var(--text-secondary);
@@ -767,13 +788,15 @@ body {
   text-decoration-thickness: 1px;
 }
 
-/* REMOVED */
+/* REMOVED — heavily dimmed, dashed border, strike-through name */
 .dag-card.status-removed {
   --card-accent: var(--st-removed);
   border-style: dashed;
   border-color: rgba(90, 101, 120, 0.45);
-  opacity: 0.55;
-  background: var(--bg-panel);
+  opacity: 0.5;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(90, 101, 120, 0.08)),
+    var(--bg-panel);
 }
 .dag-card.status-removed .dag-name {
   color: var(--text-tertiary);
@@ -781,15 +804,19 @@ body {
   text-decoration-color: rgba(90, 101, 120, 0.6);
 }
 
-/* SLA BREACH */
+/* SLA BREACH — overlay on a RUNNING card whose elapsed time exceeds avg */
 .dag-card.sla-breach {
   border-color: var(--st-sla) !important;
   border-width: 1.5px;
-  background: linear-gradient(135deg, rgba(216, 88, 0, 0.12), var(--bg-panel) 60%) !important;
+  animation: slaBreachPulse 1.4s ease-in-out infinite;
+}
+@keyframes slaBreachPulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(216, 88, 0, 0); }
+  50% { box-shadow: 0 0 16px rgba(216, 88, 0, 0.28), inset 0 0 8px rgba(216, 88, 0, 0.08); }
 }
 .dag-card.sla-breach::before {
   background: var(--st-sla);
-  width: 4px;
+  box-shadow: 0 0 12px var(--st-sla);
 }
 
 /* ───────── CALL OUTS TICKER ───────── */
@@ -823,7 +850,12 @@ body {
   height: 8px;
   border-radius: 50%;
   background: var(--accent-cyan);
-  animation: livePulse 1.4s ease-in-out infinite;
+  box-shadow: 0 0 10px var(--accent-cyan);
+  animation: tickerDotPulse 1.4s ease-in-out infinite;
+}
+@keyframes tickerDotPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--accent-cyan); }
+  50% { opacity: 0.55; box-shadow: 0 0 16px var(--accent-cyan); }
 }
 
 .ticker-track {
@@ -852,7 +884,7 @@ body {
   font-style: italic;
 }
 .ticker-content .highlight {
-  color: var(--st-retry);
+  color: var(--st-reschedule);
   font-weight: 600;
 }
 .ticker-content .name {
@@ -872,7 +904,7 @@ body {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.18em;
-  color: var(--st-done);
+  color: var(--st-success);
   text-transform: uppercase;
   flex-shrink: 0;
 }
@@ -880,7 +912,8 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--st-done);
+  background: var(--st-success);
+  box-shadow: 0 0 10px var(--st-success);
   animation: livePulse 1.6s ease-in-out infinite;
 }
 .ticker-status.alert {
@@ -888,12 +921,24 @@ body {
 }
 .ticker-status.alert .ticker-status-dot {
   background: var(--st-failed);
+  box-shadow: 0 0 10px var(--st-failed);
+  animation: tickerAlertDotPulse 1.6s ease-in-out infinite;
 }
 .ticker-status.warning {
-  color: var(--st-retry);
+  color: var(--st-reschedule);
 }
 .ticker-status.warning .ticker-status-dot {
-  background: var(--st-retry);
+  background: var(--st-reschedule);
+  box-shadow: 0 0 10px var(--st-reschedule);
+  animation: tickerWarningDotPulse 1.6s ease-in-out infinite;
+}
+@keyframes tickerAlertDotPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--st-failed); }
+  50% { opacity: 0.55; box-shadow: 0 0 16px var(--st-failed); }
+}
+@keyframes tickerWarningDotPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--st-reschedule); }
+  50% { opacity: 0.55; box-shadow: 0 0 16px var(--st-reschedule); }
 }
 
 /* ───────── ENTRY ANIMATIONS ───────── */

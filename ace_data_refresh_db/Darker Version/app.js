@@ -343,10 +343,17 @@ function renderTimeBlocks(dag, start, end, slaBreach) {
       `;
 
     case 'UP_FOR_RESCHEDULE':
+      // 3-column layout: Last Run · Attempt · Retry In
+      // attempt_number is supplied by the producer only on UP_FOR_RESCHEDULE
+      // rows; if missing we render an em-dash rather than inventing a value.
       return `
         <div class="dag-time-block">
           <span class="dag-time-label">Last Run</span>
           <span class="dag-time-value">${fmtTime(start)}</span>
+        </div>
+        <div class="dag-time-block center">
+          <span class="dag-time-label">Attempt</span>
+          <span class="dag-time-value">${dag.attempt_number ?? '—'}</span>
         </div>
         <div class="dag-time-block right">
           <span class="dag-time-label">Retry In</span>

@@ -1,5 +1,5 @@
 /* ────────────────────────────────────────────────────────────
-   Intelligence Platform — Dashboard Data
+   ACE Intelligence Platform — Dashboard Data
    ────────────────────────────────────────────────────────────
    Edit this file to update the dashboard. The dashboard reloads
    this file every 5 minutes (cache-busted), so saved changes
@@ -22,6 +22,12 @@
    The dashboard never infers a status — what you write here is
    what shows on the card.
 
+   OPTIONAL FIELDS:
+   ──────────────────────────────────────────────────────────
+     attempt_number — integer, only meaningful on UP_FOR_RESCHEDULE
+                      rows. Shown as the middle "Attempt" column on
+                      the card. If omitted, the card renders "—".
+
    Scenario: Daily batch kicked off at 06:00 AM. "Now" is roughly
    08:30 AM — batch is ~2.5 hours in. Deposit Details failed at
    07:08, cascading into Deposit Genome (UPSTREAM_FAILED).
@@ -43,14 +49,14 @@ window.DASHBOARD_DATA = {
     /* ── Second wave (~06:15): finance + cards ────────────────────── */
     { "dag_name": "t0_rbg_cl_direct_load_tables",     "status": "SUCCESS",           "start_time": "2026-05-13 06:15:00", "end_time": "2026-05-13 06:23:00", "avg_runtime_minutes":  8 },
     { "dag_name": "t0_rbg_cl_debit_card_details",     "status": "SUCCESS",           "start_time": "2026-05-13 06:15:00", "end_time": "2026-05-13 06:26:00", "avg_runtime_minutes": 11 },
-    { "dag_name": "t0_rbg_cl_covered_card_details",   "status": "SUCCESS",  "start_time": "2026-05-13 08:10:00", "end_time": "2026-05-13 06:26:00",                  "avg_runtime_minutes": 15 },
+    { "dag_name": "t0_rbg_cl_covered_card_details",   "status": "UP_FOR_RESCHEDULE", "start_time": "2026-05-18 16:10:00", "end_time": null,                  "avg_runtime_minutes": 15, "attempt_number": 2 },
 
     /* ── Third wave (~06:30): the big finance pulls ───────────────── */
     { "dag_name": "t0_wbg_cl_finance_details",        "status": "SUCCESS",           "start_time": "2026-05-13 06:30:00", "end_time": "2026-05-13 06:48:00", "avg_runtime_minutes": 18 },
     { "dag_name": "t0_rbg_cl_finance_details",        "status": "SUCCESS",           "start_time": "2026-05-13 06:30:00", "end_time": "2026-05-13 06:46:00", "avg_runtime_minutes": 16 },
 
     /* ── Fourth wave (~07:00): deposits — one failed, one in flight ─ */
-    { "dag_name": "t0_wbg_cl_deposit_details",        "status": "SUCCESS",            "start_time": "2026-05-13 07:00:00", "end_time": "2026-05-13 07:08:00", "avg_runtime_minutes": 10 },
+    { "dag_name": "t0_wbg_cl_deposit_details",        "status": "FAILED",            "start_time": "2026-05-13 07:00:00", "end_time": "2026-05-13 07:08:00", "avg_runtime_minutes": 10 },
     { "dag_name": "t0_rbg_cl_deposit_details",        "status": "RUNNING",           "start_time": "2026-05-13 08:20:00", "end_time": null,                  "avg_runtime_minutes": 13 },
 
     /* ── Last in line: wakala queued, non-funded not yet scheduled ── */
@@ -69,7 +75,7 @@ window.DASHBOARD_DATA = {
     { "dag_name": "t0_wbg_finance_genome",      "status": "RUNNING",           "start_time": "2026-05-13 08:00:00", "end_time": null,                  "avg_runtime_minutes": 12 },
 
     /* ── Awaiting retry slot ──────────────────────────────────────── */
-    { "dag_name": "t0_ace_covered_card_genome", "status": "UP_FOR_RESCHEDULE", "start_time": "2026-05-13 08:05:00", "end_time": null,                  "avg_runtime_minutes": 13 },
+    { "dag_name": "t0_ace_covered_card_genome", "status": "UP_FOR_RESCHEDULE", "start_time": "2026-05-18 16:25:00", "end_time": null,                  "avg_runtime_minutes": 13, "attempt_number": 1 },
 
     /* ── Blocked by failed upstream (deposit details) ─────────────── */
     { "dag_name": "t0_wbg_deposit_genome",      "status": "UPSTREAM_FAILED",   "start_time": null,                  "end_time": null,                  "avg_runtime_minutes": 12 },
