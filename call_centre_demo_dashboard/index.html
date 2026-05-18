@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en">  
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -403,6 +403,8 @@
   /* ============ SECTION ============ */
   .section { display: none; padding: 64px 56px 96px; animation: fadeUp 0.6s cubic-bezier(.2,.8,.2,1); }
   .section.active { display: block; }
+  #processing.section { padding-bottom: 56px; }
+
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
@@ -1336,7 +1338,7 @@
 
   .spotlight-metric {
     display: inline-flex;
-    align-items: baseline;
+    align-items: center;
     gap: 18px;
     padding: 18px 22px;
     background: linear-gradient(135deg, #0B1F3A 0%, #123A72 100%);
@@ -1378,9 +1380,11 @@
     text-transform: uppercase;
     font-weight: 500;
     line-height: 1.5;
-    max-width: 220px;
+    max-width: 270px;
     position: relative; z-index: 1;
   }
+
+  .spotlight-metric .metric-l:empty { display: none; }
 
   .spotlight-outcomes { margin-bottom: auto; }
   .outcomes-label {
@@ -1889,10 +1893,11 @@
   #architecture .hero { margin-bottom: 24px; max-width: 1280px; }
   #architecture .hero .eyebrow { margin-bottom: 14px; padding: 5px 11px 5px 9px; font-size: 10px; }
   #architecture .hero h1 {
-    font-size: clamp(28px, 3.4vw, 40px);
-    line-height: 1.08;
+    /* Single line beside nav: avoid narrow max-width + slightly smaller scale than global hero */
+    font-size: clamp(22px, 2.5vw, 36px);
+    line-height: 1.1;
     margin-bottom: 12px;
-    max-width: 920px;
+    max-width: none;
   }
   #architecture .hero p.sub { font-size: 14.5px; line-height: 1.55; max-width: 940px; }
   #architecture { padding-top: 44px; padding-bottom: 50px; }
@@ -2275,6 +2280,7 @@
   }
   .pov-track {
     display: flex;
+    align-items: flex-start;
     transition: transform 0.7s cubic-bezier(.2,.8,.2,1);
     will-change: transform;
   }
@@ -2282,10 +2288,22 @@
     flex: 0 0 100%;
     min-width: 0;
     padding: 4px;
-    opacity: 0.35;
-    transition: opacity 0.6s ease;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.45s ease;
   }
-  .pov-slide.active { opacity: 1; }
+  .pov-slide.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  /* Only the active slide contributes height — avoids empty space under shorter slides */
+  .pov-slide:not(.active) {
+    height: 0 !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden;
+  }
 
   .pov-slide-head { margin-bottom: 36px; max-width: 880px; }
   .pov-slide-eyebrow {
@@ -2414,7 +2432,7 @@
   .cat-canvas {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(360px, 1.05fr) minmax(0, 1fr);
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: auto auto;
     gap: 22px;
     margin-bottom: 26px;
   }
@@ -5432,17 +5450,16 @@
         <p class="spotlight-lead" data-spotlight-lead>Identify and re-engage customers who made product enquiries during their service calls. Every qualified lead surfaces to the right team within the day — closing the revenue gap that sat invisible inside voice data.</p>
 
         <div class="spotlight-metric">
-          <div class="metric-v" data-spotlight-metric-v>AED 7.9M<span class="metric-u">p.a.</span></div>
-          <div class="metric-l" data-spotlight-metric-l>First-year revenue opportunity identified</div>
+          <div class="metric-v" data-spotlight-metric-v>2.5<span class="metric-u">%</span></div>
+          <div class="metric-l" data-spotlight-metric-l>of calls pertain to missed cross sell opportunities</div>
         </div>
 
         <div class="spotlight-outcomes">
           <div class="outcomes-label">Key Outcomes</div>
           <ul class="outcomes-grid" data-spotlight-outcomes>
-            <li>418 leads identified in one day of calls</li>
-            <li>AED 26M eligible amount per day of sample</li>
-            <li>Extrapolates to AED 515M annual sales</li>
-            <li>Re-engages existing-customer demand</li>
+            <li>Cross-sell eligible demand surfaced daily</li>
+            <li>Drives sales &amp; revenue</li>
+            <li>Improves customer experience and satisfaction</li>
           </ul>
         </div>
 
@@ -5465,7 +5482,7 @@
           <div class="tile-icon"><svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
           <div class="tile-body">
             <div class="tile-name">Powering Cross-Sell</div>
-            <div class="tile-sub">AED 7.9M opportunity</div>
+            <div class="tile-sub">Pipeline &amp; revenue uplift</div>
           </div>
           <span class="tile-flag">Flagship</span>
         </button>
@@ -6206,7 +6223,7 @@
       <div class="pov-track" id="povTrack">
 
         <!-- ===== SLIDE 1 · CALL CATEGORISATION ===== -->
-        <article class="pov-slide">
+        <article class="pov-slide active">
 
           <div class="cat-head">
             <div class="cat-head-text">
@@ -7375,13 +7392,12 @@
         problem: 'Solves · Revenue gap on existing customers',
         title: 'Powering Cross-Sell',
         lead: 'Identify and re-engage customers who made product enquiries during their service calls. Every qualified lead surfaces to the right team within the day — closing the revenue gap that sat invisible inside voice data.',
-        metricV: 'AED 7.9M<span class="metric-u">p.a.</span>',
-        metricL: 'First-year revenue opportunity identified',
+        metricV: '2.5<span class="metric-u">%</span>',
+        metricL: 'of calls pertain to missed cross sell opportunities',
         outcomes: [
-          '418 leads identified in one day of calls',
-          'AED 26M eligible amount per day of sample',
-          'Extrapolates to AED 515M annual sales',
-          'Re-engages existing-customer demand'
+          'Cross-sell eligible demand surfaced daily',
+          'Drives sales & revenue',
+          'Improves customer experience and satisfaction'
         ],
         agents: ['A·05', 'A·06', 'A·04']
       },
