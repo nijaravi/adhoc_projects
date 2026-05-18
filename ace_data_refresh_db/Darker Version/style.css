@@ -171,6 +171,20 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.header-logo {
+  height: 48px;
+  width: auto;
+  max-width: min(200px, 28vw);
+  object-fit: contain;
+  object-position: left center;
+  flex-shrink: 0;
+  border-radius: 12px;
+  /* White PNG background reads as transparent over dark header */
+  mix-blend-mode: multiply;
 }
 
 .brand-title {
