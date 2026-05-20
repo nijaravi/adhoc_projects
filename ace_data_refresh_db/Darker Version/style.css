@@ -378,6 +378,13 @@ body {
 .kpi-value.eta {
   font-size: 22px;
   letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+/* ETA countdown after target time — turn the value red so it reads as a
+   breach at a glance without changing the rest of the card. */
+.kpi-value.eta.overdue {
+  color: var(--st-failed);
+  text-shadow: 0 0 14px var(--st-failed);
 }
 
 .kpi-label {

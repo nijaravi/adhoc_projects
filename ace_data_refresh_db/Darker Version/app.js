@@ -12,6 +12,7 @@ const STATE = {
   data: null,
   lastFetch: null,
   nextRefresh: null,
+  etaTarget: null,   // Parsed Date for the overall-ETA countdown (or null)
 };
 
 /* ────────────── ICONS (inline SVG) ────────────── */
@@ -89,6 +90,7 @@ async function fetchData() {
     STATE.data = raw;
     STATE.lastFetch = new Date();
     STATE.nextRefresh = new Date(Date.now() + CONFIG.refreshIntervalMs);
+    STATE.etaTarget = parseEta(raw.eta, raw.refresh_date);
     setSystemStatus('nominal', 'SYSTEM NOMINAL');
     render();
   } catch (err) {
@@ -133,100 +135,67 @@ function computeSummary(data) {
       case 'QUEUED':             counts.pending++;    break;
     }
   }
-  return { ...counts, overall_eta_minutes: computeOverallEta(data) };
+  return counts;
 }
 
-/* Parallel-aware ETA. Models three independent paths and returns the longest:
-   1. Running DAGs: remaining time on the slowest currently-running job.
-   2. Reschedule queue: retry delay (30m) + runtime of slowest waiting job.
-   3. Pending wave: assumes ace_consumption pending DAGs run in parallel
-      (max of their runtimes), then ace_analytics pending DAGs run in parallel
-      after consumption finishes (their max added on top).
-   The dashboard finishes when the slowest of these three paths finishes. */
-function computeOverallEta(data) {
-  const now = Date.now();
-  const consumption = data.ace_consumption || [];
-  const analytics   = data.ace_analytics || [];
-
-  // ── Path 1: running, take the slowest remaining time
-  let runningRemaining = 0;
-  for (const d of [...consumption, ...analytics]) {
-    if (d.status !== 'RUNNING' || !d.start_time) continue;
-    const start = parseTs(d.start_time);
-    if (!start) continue;
-    const elapsedMin = (now - start.getTime()) / 60000;
-    const remaining = Math.max(0, (d.avg_runtime_minutes || 0) - elapsedMin);
-    if (remaining > runningRemaining) runningRemaining = remaining;
+/* Overall ETA is producer-driven now. The dashboard_data.js file supplies
+   an `eta` field naming the target completion time, and we count down to it
+   at 1Hz. Two formats are accepted:
+     "11:15:00"             — time-only, paired with refresh_date
+     "2026-05-13 11:15:00"  — full datetime (use this if the batch crosses
+                              midnight or the date isn't refresh_date) */
+function parseEta(etaStr, refreshDate) {
+  if (!etaStr || typeof etaStr !== 'string') return null;
+  const trimmed = etaStr.trim();
+  if (!trimmed) return null;
+  // Full datetime form (contains a space)
+  if (trimmed.includes(' ')) {
+    const d = new Date(trimmed.replace(' ', 'T'));
+    return isNaN(d.getTime()) ? null : d;
   }
-
-  // ── Path 2: reschedule queue — retry delay + runtime, take the slowest
-  let rescheduleRemaining = 0;
-  for (const d of [...consumption, ...analytics]) {
-    if (d.status !== 'UP_FOR_RESCHEDULE' || !d.start_time) continue;
-    const start = parseTs(d.start_time);
-    if (!start) continue;
-    const retryAtMin = Math.max(0,
-      (start.getTime() + CONFIG.retryDelayMinutes * 60000 - now) / 60000);
-    const total = retryAtMin + (d.avg_runtime_minutes || 0);
-    if (total > rescheduleRemaining) rescheduleRemaining = total;
-  }
-
-  // ── Path 3: pending wave — consumption pending in parallel, then analytics
-  // We assume infinite worker concurrency (best-case parallelism within zone).
-  // If consumption has any pending, analytics waiters can't start until it's done.
-  const consumptionPending = consumption.filter(isPending);
-  const analyticsPending   = analytics.filter(isPending);
-
-  const consumptionWaveMin = consumptionPending.length
-    ? Math.max(...consumptionPending.map(d => d.avg_runtime_minutes || 0))
-    : 0;
-  const analyticsWaveMin = analyticsPending.length
-    ? Math.max(...analyticsPending.map(d => d.avg_runtime_minutes || 0))
-    : 0;
-
-  // Analytics waiters that depend on consumption add on top; analytics
-  // that are merely NOT_STARTED (independent) can run in parallel with
-  // consumption, so they're already absorbed into consumptionWaveMin via max.
-  const pendingPath = consumption.some(d => d.status === 'RUNNING' || isPending(d))
-    ? consumptionWaveMin + analyticsWaveMin
-    : analyticsWaveMin;
-
-  const overallMin = Math.max(runningRemaining, rescheduleRemaining, pendingPath);
-  return Math.round(overallMin);
+  // Time-only form — needs a refresh_date to anchor the day
+  if (!refreshDate) return null;
+  const d = new Date(`${refreshDate}T${trimmed}`);
+  return isNaN(d.getTime()) ? null : d;
 }
 
-function isPending(dag) {
-  // "Pending" for ETA purposes = states that will eventually run this batch.
-  // UPSTREAM_FAILED / SKIPPED / REMOVED won't run, so they're excluded.
-  return dag.status === 'NOT_STARTED' || dag.status === 'QUEUED';
+/* Returns the countdown string for the overall ETA. Format is HH:MM:SS
+   (always padded for tabular-stable rendering). When the ETA has been
+   reached or passed, the same format is returned with a "+" prefix to
+   indicate overrun: "+00:02:13" means we're 2m 13s past expected. */
+function fmtEtaCountdown(target, now) {
+  if (!target) return '—';
+  const diffSec = Math.floor((target.getTime() - now.getTime()) / 1000);
+  const abs = Math.abs(diffSec);
+  const h = Math.floor(abs / 3600);
+  const m = Math.floor((abs % 3600) / 60);
+  const s = abs % 60;
+  const formatted = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  return diffSec >= 0 ? formatted : `+${formatted}`;
 }
 
 function renderKpis(summary) {
   const bar = document.getElementById('kpiBar');
+  const now = new Date();
+  const etaInitial = fmtEtaCountdown(STATE.etaTarget, now);
+  const etaOverdue = STATE.etaTarget && now.getTime() > STATE.etaTarget.getTime();
+
   const cards = [
     { id: 'completed',  label: 'Completed',   value: summary.completed,  icon: ICONS.completed },
     { id: 'running',    label: 'Running',     value: summary.running,    icon: ICONS.running },
     { id: 'pending',    label: 'Yet To Start',value: summary.pending,    icon: ICONS.pending },
     { id: 'failed',     label: 'Failed',      value: summary.failed,     icon: ICONS.failed },
     { id: 'reschedule', label: 'Reschedule',  value: summary.reschedule, icon: ICONS.retry },
-    { id: 'eta',        label: 'Overall ETA', value: fmtEta(summary.overall_eta_minutes), icon: ICONS.eta, isEta: true },
+    { id: 'eta',        label: 'Overall ETA', value: etaInitial,         icon: ICONS.eta, isEta: true },
   ];
 
   bar.innerHTML = cards.map((c, i) => `
     <div class="kpi-card kpi-${c.id}" style="animation-delay:${i * 60}ms">
       <div class="kpi-icon">${c.icon}</div>
-      <div class="kpi-value${c.isEta ? ' eta' : ''}">${c.value}</div>
+      <div class="kpi-value${c.isEta ? ' eta' : ''}${c.isEta && etaOverdue ? ' overdue' : ''}"${c.isEta ? ' data-eta-countdown' : ''}>${c.value}</div>
       <div class="kpi-label">${c.label}</div>
     </div>
   `).join('');
-}
-
-function fmtEta(minutes) {
-  if (minutes == null) return '—';
-  if (minutes < 60) return `${minutes}m`;
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  return `${h}h ${String(m).padStart(2, '0')}m`;
 }
 
 function renderZone(key, dags) {
@@ -409,6 +378,16 @@ function tick() {
     const s = Math.floor((remaining % 60000) / 1000);
     document.getElementById('nextSync').textContent =
       `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }
+
+  // Update overall-ETA countdown on the KPI card (HH:MM:SS, or "+HH:MM:SS"
+  // once we cross the target). Toggling the .overdue class lets CSS swap
+  // the value's color to red without a re-render.
+  const etaEl = document.querySelector('[data-eta-countdown]');
+  if (etaEl) {
+    etaEl.textContent = fmtEtaCountdown(STATE.etaTarget, now);
+    const isOverdue = STATE.etaTarget && now.getTime() > STATE.etaTarget.getTime();
+    etaEl.classList.toggle('overdue', !!isOverdue);
   }
 
   // Update countdowns on each card
