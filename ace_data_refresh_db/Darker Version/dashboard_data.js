@@ -46,7 +46,7 @@
 
    TOP-LEVEL ETA:
    ──────────────────────────────────────────────────────────
-     The `eta` field drives the Overall ETA countdown card. Two
+     The `eta` field drives the Expected In countdown card. Two
      formats are accepted:
        "11:15:00"             time-only, paired with refresh_date
        "2026-05-13 11:15:00"  full datetime (use this if the batch
