@@ -1,5 +1,5 @@
 /* ============================================================
-   Intelligence Platform — Dashboard Controller
+   ACE INTELLIGENCE PLATFORM — Dashboard Controller
    ============================================================ */
 
 const CONFIG = {
@@ -247,6 +247,7 @@ function renderCard(dag, index) {
          data-dag="${dag.dag_name}"
          data-status="${dag.status}"
          data-start="${dag.start_time || ''}"
+         data-end="${dag.end_time || ''}"
          data-avg="${dag.avg_runtime_minutes}"
          style="animation-delay:${index * 30}ms">
 
@@ -275,17 +276,29 @@ function renderCard(dag, index) {
    is visible rather than hidden. */
 function renderTimeBlocks(dag, start, end, slaBreach) {
   switch (dag.status) {
-    case 'SUCCESS':
+    case 'SUCCESS': {
+      // If the producer flagged this run as having materially overrun its
+      // average (their threshold, computed at end-of-task), they push an
+      // `overrun` string (e.g. "30 min") which we surface as a middle column.
+      // Most rows won't have it — those keep the original 2-column layout.
+      const overrunBlock = dag.overrun ? `
+        <div class="dag-time-block center warn">
+          <span class="dag-time-label">Overrun</span>
+          <span class="dag-time-value">${escapeHtml(String(dag.overrun))}</span>
+        </div>
+      ` : '';
       return `
         <div class="dag-time-block">
           <span class="dag-time-label">Started</span>
           <span class="dag-time-value">${fmtTime(start)}</span>
         </div>
+        ${overrunBlock}
         <div class="dag-time-block right">
           <span class="dag-time-label">Ended</span>
           <span class="dag-time-value highlight">${fmtTime(end)}</span>
         </div>
       `;
+    }
 
     case 'FAILED':
       return `
@@ -313,12 +326,15 @@ function renderTimeBlocks(dag, start, end, slaBreach) {
 
     case 'UP_FOR_RESCHEDULE':
       // 3-column layout: Last Run · Attempt · Retry In
+      // "Last Run" shows end_time — the moment the last attempt actually
+      // ended/failed. The "Retry In" countdown anchors on end_time too
+      // (end + 30 min), so the two values read as a coherent narrative.
       // attempt_number is supplied by the producer only on UP_FOR_RESCHEDULE
       // rows; if missing we render an em-dash rather than inventing a value.
       return `
         <div class="dag-time-block">
           <span class="dag-time-label">Last Run</span>
-          <span class="dag-time-value">${fmtTime(start)}</span>
+          <span class="dag-time-value">${fmtTime(end)}</span>
         </div>
         <div class="dag-time-block center">
           <span class="dag-time-label">Attempt</span>
@@ -417,14 +433,23 @@ function tick() {
       if (fill) fill.style.width = `${pct}%`;
     }
 
-    if (status === 'UP_FOR_RESCHEDULE' && start) {
-      const retryAt = new Date(start.getTime() + CONFIG.retryDelayMinutes * 60000);
-      const remainingSec = (retryAt.getTime() - now.getTime()) / 1000;
+    if (status === 'UP_FOR_RESCHEDULE') {
+      // Anchor the retry countdown on end_time (when the last attempt ended).
+      // start_time would be wrong here — the 30-min retry delay starts from
+      // when the failed attempt cleared the worker, not when it began.
+      const end = parseTs(card.dataset.end);
       const retryEl = card.querySelector('[data-countdown="retry"]');
       if (retryEl) {
-        retryEl.textContent = remainingSec >= 0
-          ? fmtDuration(remainingSec)
-          : 'IMMINENT';
+        if (end) {
+          const retryAt = new Date(end.getTime() + CONFIG.retryDelayMinutes * 60000);
+          const remainingSec = (retryAt.getTime() - now.getTime()) / 1000;
+          retryEl.textContent = remainingSec >= 0
+            ? fmtDuration(remainingSec)
+            : 'IMMINENT';
+        } else {
+          // Producer hasn't pushed end_time yet — can't compute countdown
+          retryEl.textContent = '—';
+        }
       }
     }
   });
