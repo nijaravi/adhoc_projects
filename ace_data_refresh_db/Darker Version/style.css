@@ -624,6 +624,18 @@ body {
   /* Slight horizontal padding so it doesn't crowd Last Run on narrow cards */
   padding: 0 4px;
 }
+/* Warning treatment for the center column — used by the "Overrun" marker
+   on SUCCESS cards so the long-running ones stand out at end-of-day glance
+   without overriding the card's overall green theme. */
+.dag-time-block.center.warn .dag-time-label {
+  color: var(--st-sla);
+  opacity: 0.9;
+}
+.dag-time-block.center.warn .dag-time-value {
+  color: var(--st-sla);
+  text-shadow: 0 0 8px rgba(255, 122, 0, 0.45);
+  font-weight: 700;
+}
 .dag-time-label {
   font-size: 9px;
   letter-spacing: 0.18em;
