@@ -202,7 +202,7 @@ function renderKpis(summary) {
     { id: 'pending',    label: 'Yet To Start',value: summary.pending,    icon: ICONS.pending },
     { id: 'failed',     label: 'Failed',      value: summary.failed,     icon: ICONS.failed },
     { id: 'reschedule', label: 'Reschedule',  value: summary.reschedule, icon: ICONS.retry },
-    { id: 'eta',        label: 'Overall ETA', value: etaInitial,         icon: ICONS.eta, isEta: true },
+    { id: 'eta',        label: 'Estimated ETC', value: etaInitial,        icon: ICONS.eta, isEta: true },
   ];
 
   bar.innerHTML = cards.map((c, i) => `
@@ -335,7 +335,7 @@ function renderTimeBlocks(dag, start, end, slaBreach) {
           <span class="dag-time-value">${fmtTime(start)}</span>
         </div>
         <div class="dag-time-block right">
-          <span class="dag-time-label">${slaBreach ? 'Overrun' : 'ETA'}</span>
+          <span class="dag-time-label">${slaBreach ? 'Overrun' : 'ETC'}</span>
           <span class="dag-time-value highlight" data-countdown="eta">…</span>
         </div>
       `;
