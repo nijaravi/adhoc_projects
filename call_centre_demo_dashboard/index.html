@@ -4588,6 +4588,28 @@
   }
   .bc-slide.active { opacity: 1; }
 
+  /* PRESENTATION MODE — remove class bc-presentation from #business to restore */
+  #business.bc-presentation .hero,
+  #business.bc-presentation .bc-control { display: none !important; }
+  #business.bc-presentation { padding-top: 32px; }
+  #business.bc-presentation .bc-slide:first-child { display: none !important; }
+  #business.bc-presentation .bc-track {
+    transform: none !important;
+    transition: none !important;
+  }
+  #business.bc-presentation .bc-slide:last-child {
+    opacity: 1 !important;
+    flex: 0 0 100%;
+  }
+  #business.bc-presentation .bc-viewport {
+    max-width: none;
+    border-radius: 0;
+    overflow: visible;
+  }
+  #business.bc-presentation .bc-econ-v2 .econ-grid {
+    min-width: 100%;
+  }
+
   /* =============================================================
      SLIDE 1 · INVESTMENT CASE
      4 hero KPI cards + 3-year trajectory + confidence notes
@@ -4845,17 +4867,28 @@
   .bc-econ-v2 .econ-grid {
     display: grid;
     grid-template-columns: 190px repeat(4, 1fr) 1.1fr;
+    grid-template-rows:
+      68px
+      30px
+      repeat(4, 44px)
+      30px
+      68px
+      30px
+      repeat(4, 44px)
+      52px
+      70px;
     gap: 0;
-    /* stretch so every column matches the tallest card; flex below pins annual/y3 to the bottom */
     align-items: stretch;
     min-width: 920px;
   }
+  .bc-econ-v2 .col-labels,
+  .bc-econ-v2 .col-card {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / -1;
+  }
   .bc-econ-v2 .col-labels {
     padding-right: 8px;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    min-height: 100%;
   }
   .bc-econ-v2 .col-card {
     background: var(--bg-elevated);
@@ -4865,10 +4898,6 @@
     overflow: hidden;
     box-shadow: var(--shadow-sm);
     transition: box-shadow 0.3s, border-color 0.3s;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    min-height: 100%;
   }
   .bc-econ-v2 .col-card:hover {
     border-color: var(--line-strong);
@@ -4880,7 +4909,13 @@
   }
   .bc-econ-v2 .col-card.col-total:hover { border-color: #1A4FA3; }
   .bc-econ-v2 .card-header {
-    padding: 20px 18px 16px;
+    height: 68px;
+    box-sizing: border-box;
+    padding: 0 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     border-bottom: 1px solid var(--line-soft);
     background: linear-gradient(180deg, var(--bg-warm) 0%, var(--bg-elevated) 100%);
@@ -4924,6 +4959,10 @@
   }
   .bc-econ-v2 .section-label {
     padding: 12px 0 6px;
+    min-height: 30px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
     font-family: var(--font-mono);
     font-size: 9px;
     letter-spacing: 0.22em;
@@ -4933,6 +4972,8 @@
     white-space: nowrap;
   }
   .bc-econ-v2 .section-spacer {
+    min-height: 30px;
+    box-sizing: border-box;
     padding: 12px 18px 6px;
     border-top: 1px solid var(--line-soft);
     background: var(--bg-section);
@@ -5039,10 +5080,8 @@
     min-height: 52px;
     display: flex;
     align-items: center;
-    margin-top: auto;
   }
   .bc-econ-v2 .annual-val {
-    margin-top: auto;
     padding: 15px 18px;
     text-align: right;
     font-family: var(--font-display);
@@ -6874,7 +6913,8 @@
   </section>
 
   <!-- ============== SECTION 6: BUSINESS CASE ============== -->
-  <section class="section" id="business">
+  <!-- PRESENTATION: remove class bc-presentation below to restore full Business Case -->
+  <section class="section bc-presentation" id="business">
     <div class="hero">
       <svg class="hero-mark" viewBox="0 0 280 280" fill="none">
         <circle cx="140" cy="140" r="130" stroke="#D6DDE7" stroke-width="0.5"/>
@@ -7173,7 +7213,7 @@
                 <div class="metric-val">148</div>
                 <div class="metric-val">AED 26.4M</div>
                 <div class="section-spacer"></div>
-                <div class="metric-val muted">—</div>
+                <div class="metric-val muted profile">—</div>
                 <div class="section-spacer"></div>
                 <div class="metric-val muted">—</div>
                 <div class="metric-val">4,507</div>
@@ -7600,15 +7640,18 @@
     const track = document.getElementById('bcTrack');
     if (!track) return;
 
+    const section = document.getElementById('business');
+    const presentation = section && section.classList.contains('bc-presentation');
     const slides  = track.querySelectorAll('.bc-slide');
     const tabs    = document.querySelectorAll('.bc-tab');
     const prevBtn = document.getElementById('bcPrev');
     const nextBtn = document.getElementById('bcNext');
     const curEl   = document.getElementById('bcCur');
     const total   = slides.length;
-    let idx = 0;
+    let idx = presentation ? 1 : 0;
 
     function go(n) {
+      if (presentation) return;
       idx = Math.max(0, Math.min(total - 1, n));
       track.style.transform = `translateX(-${idx * 100}%)`;
       slides.forEach((s, i) => s.classList.toggle('active', i === idx));
@@ -7618,20 +7661,24 @@
       nextBtn.disabled = idx === total - 1;
     }
 
-    tabs.forEach((t, i) => t.addEventListener('click', () => go(i)));
-    prevBtn.addEventListener('click', () => go(idx - 1));
-    nextBtn.addEventListener('click', () => go(idx + 1));
+    if (!presentation) {
+      tabs.forEach((t, i) => t.addEventListener('click', () => go(i)));
+      prevBtn.addEventListener('click', () => go(idx - 1));
+      nextBtn.addEventListener('click', () => go(idx + 1));
 
-    // Keyboard nav only when this section is active
-    document.addEventListener('keydown', (e) => {
-      const section = document.getElementById('business');
-      if (!section || !section.classList.contains('active')) return;
-      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
-      if (e.key === 'ArrowRight') { e.preventDefault(); go(idx + 1); }
-      if (e.key === 'ArrowLeft')  { e.preventDefault(); go(idx - 1); }
-    });
+      document.addEventListener('keydown', (e) => {
+        if (!section || !section.classList.contains('active')) return;
+        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+        if (e.key === 'ArrowRight') { e.preventDefault(); go(idx + 1); }
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); go(idx - 1); }
+      });
 
-    go(0);
+      go(0);
+    } else {
+      track.style.transform = 'none';
+      slides.forEach((s, i) => s.classList.toggle('active', i === 1));
+      tabs.forEach((t, i) => t.classList.toggle('active', i === 1));
+    }
   })();
 
   // ============ "WHAT AI CAN DO" MODAL ============
