@@ -113,6 +113,19 @@ function render() {
   updateRefreshMeta();
 }
 
+/* Returns true when no DAG in the batch is still active or pending.
+   Active/pending states = RUNNING, QUEUED, NOT_STARTED, UP_FOR_RESCHEDULE.
+   Everything else (SUCCESS, FAILED, UPSTREAM_FAILED, SKIPPED, REMOVED) is
+   terminal — once every row is terminal, the batch is done regardless of
+   what the producer-supplied ETA still claims. */
+function isBatchComplete(data) {
+  if (!data) return false;
+  const all = [...(data.ace_consumption || []), ...(data.ace_analytics || [])];
+  if (!all.length) return false;
+  const active = new Set(['RUNNING', 'QUEUED', 'NOT_STARTED', 'UP_FOR_RESCHEDULE']);
+  return all.every(d => !active.has(d.status));
+}
+
 function computeSummary(data) {
   const all = [...(data.ace_consumption || []), ...(data.ace_analytics || [])];
   const counts = {
@@ -177,8 +190,11 @@ function fmtEtaCountdown(target, now) {
 function renderKpis(summary) {
   const bar = document.getElementById('kpiBar');
   const now = new Date();
-  const etaInitial = fmtEtaCountdown(STATE.etaTarget, now);
-  const etaOverdue = STATE.etaTarget && now.getTime() > STATE.etaTarget.getTime();
+  const batchDone = isBatchComplete(STATE.data);
+  // Once the batch is complete, the countdown is meaningless — pin it at
+  // 00:00:00 and drop overdue styling regardless of the producer's eta.
+  const etaInitial = batchDone ? '00:00:00' : fmtEtaCountdown(STATE.etaTarget, now);
+  const etaOverdue = !batchDone && STATE.etaTarget && now.getTime() > STATE.etaTarget.getTime();
 
   const cards = [
     { id: 'completed',  label: 'Completed',   value: summary.completed,  icon: ICONS.completed },
@@ -186,7 +202,7 @@ function renderKpis(summary) {
     { id: 'pending',    label: 'Yet To Start',value: summary.pending,    icon: ICONS.pending },
     { id: 'failed',     label: 'Failed',      value: summary.failed,     icon: ICONS.failed },
     { id: 'reschedule', label: 'Reschedule',  value: summary.reschedule, icon: ICONS.retry },
-    { id: 'eta',        label: 'Expected In', value: etaInitial,         icon: ICONS.eta, isEta: true },
+    { id: 'eta',        label: 'Overall ETA', value: etaInitial,         icon: ICONS.eta, isEta: true },
   ];
 
   bar.innerHTML = cards.map((c, i) => `
@@ -397,13 +413,20 @@ function tick() {
   }
 
   // Update overall-ETA countdown on the KPI card (HH:MM:SS, or "+HH:MM:SS"
-  // once we cross the target). Toggling the .overdue class lets CSS swap
-  // the value's color to red without a re-render.
+  // once we cross the target). Once the batch is complete, pin to 00:00:00.
+  // Toggling the .overdue class lets CSS swap the value's color to red
+  // without a re-render.
   const etaEl = document.querySelector('[data-eta-countdown]');
   if (etaEl) {
-    etaEl.textContent = fmtEtaCountdown(STATE.etaTarget, now);
-    const isOverdue = STATE.etaTarget && now.getTime() > STATE.etaTarget.getTime();
-    etaEl.classList.toggle('overdue', !!isOverdue);
+    const batchDone = isBatchComplete(STATE.data);
+    if (batchDone) {
+      etaEl.textContent = '00:00:00';
+      etaEl.classList.remove('overdue');
+    } else {
+      etaEl.textContent = fmtEtaCountdown(STATE.etaTarget, now);
+      const isOverdue = STATE.etaTarget && now.getTime() > STATE.etaTarget.getTime();
+      etaEl.classList.toggle('overdue', !!isOverdue);
+    }
   }
 
   // Update countdowns on each card
